@@ -1,0 +1,39 @@
+﻿
+<form id="capture-data" method="post">
+    <input type="text" name="ProductId" />
+    <input type="text" name="Price" />
+    <input type="text" name="Amount" />
+    <input type="submit" value="Send" />
+</form>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script>
+  $('#capture-data').submit(function(event) {
+			if (!event)
+				var event = window.event;
+			event.preventDefault();
+			try {
+				
+			    var dt = '{"ProductId": "Xucsac-1111", "Price": 100, "Amount":1,' +
+			        ' "Customer": { "Name":"thin nguyễn test ","Address": "40 Quảng hiền","Phone":"123456333434"},' +
+			        '  "Company":{"CompanyName":"Vienthonga","Address":"anvibaby.com"}';
+			    alert(dt);
+
+			$.ajax({
+  type: "POST",
+  contentType: "application/json; charset=utf-8",
+  url: "http://vi.vinaas.com/api-order/InsertOrder",
+  data: dt,
+  dataType: "json"
+});
+
+
+		} catch (exception) {
+			alert('There was some issue, please check browser console');
+			console.log(exception);
+		}
+		});
+
+		
+
+		
+</script>
