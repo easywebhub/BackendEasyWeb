@@ -3,7 +3,7 @@
  + Web Admin:  Aurelia 
  
 ### Core features
-#### User management  with Admin forms
+#### 1. User management  with Admin forms
   + Sign in/ Sign up 
     + API: add here  add here link to the Url (or screenshot) 
     + WebAdmin: add here link to the Url (or screenshot)
@@ -12,7 +12,8 @@
     + WebAdmin: add here link to the Url (or screenshot)
   + List Users 
     + List groups that a user belongs
-#### Group management with Admin forms
+ 
+#### 2. Group management with Admin forms
    + A Group could have children groups
    + Create / Edit a group 
    + Set permissions for a group
