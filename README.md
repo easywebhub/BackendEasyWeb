@@ -3,7 +3,7 @@
    + Save source on ```/CouchbaseAPIMVC/*```
    + Push to deploy: branch ```publicAPI``` is used to push and deploy to ```api.easywebhub.com``` 
  
-#### 2. Web Admin:  Aurelia with Semantic UI (not use Bootstrap)
+#### 2. Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
    + Save source on ```WebAdmin/*```
    + Use branch ```gh-pages``` to host Aurelia website on GitHub pages.
    + CNAME:  admin.easywebhub.com
