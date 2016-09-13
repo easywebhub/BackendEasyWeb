@@ -5,7 +5,7 @@
  
 #### 2. Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
    + Save source on ```WebAdmin/*```
-   + Use branch ```gh-pages``` to host Aurelia website on GitHub pages.
+   + Use branch `/gh-pages` to host Aurelia website on GitHub pages.
    + CNAME:  admin.easywebhub.com
  
 ### Core features
