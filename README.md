@@ -1,3 +1,25 @@
+## List of API 
+### Authentication (with sample  ```input & output json```)
+  + Sign Up  
+  + Sign In 
+  + Update Account Info
+
+###  Create new website
+  + new website with owner is current user ```["creator", "dev"]```
+  + add ```websiteId``` to list of websites
+
+### Allow users to access website
+  + update website.json with input:  ```websiteId``` and  permisson ```accessLevel```
+  + add ```websiteId``` to list of websites
+
+### Update website Info:
+  + update Stagging or Deploy information
+  + update website.json only.
+
+### List of results (json) for easy debug or integrate with Aurelia Admin
+  + List of accounts
+  + List of created websites  [JSON](https://gist.github.com/thinnv/47d4d486aa642c976c2f3f28c9b9d649)
+
 ### Overview of BackendEasyWeb
 #### 1. API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
    + Save source on ```/CouchbaseAPIMVC/*```
