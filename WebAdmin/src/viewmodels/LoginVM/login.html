@@ -1,0 +1,67 @@
+<template>
+  <section>
+    <!-- <h2 style="text-align: center; line-height: 55px;  margin: 30px 10px; text-transform: uppercase">Đăng nhập</h2> -->
+      <div class="splash" if.bind="logging">
+            <i class="fa fa-spinner fa-spin"></i>
+      </div>
+    <div if.bind="!logging" class="panel panel-default col-md-4 col-md-offset-4 col-sm-12" style="margin-top: 100px;">
+      <div class="panel-body"></div>
+      <form class="form" role="form" submit.delegate="submit()" > 
+        <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+        <div class="form-group">
+          <label  class="control-label" for="username">Tài khoản</label>
+          <div class="input-group margin-bottom-sm">
+            <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+            <input class="form-control" type="text" id="username" placeholder="Tài khoản" value.bind="Login.UserName & validate">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label" for="pwd">Mật khẩu</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+            <input class="form-control" type="password" id="pwd" placeholder="Mật khẩu" value.bind="Login.Password & validate" >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"> Ghi nhớ</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="" style="width: 150px; margin-bottom: 35px; margin-left: 100px;">
+            <!--<button type="submit" class="btn btn-primary" disabled.bind="!validation.result.isValid" >Đăng nhập</button>-->
+                        <button type="submit" class="btn btn-primary"  >Đăng nhập</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  </div>
+  <style>
+    .form-group {
+      width: 50%;
+      margin: 0 auto;
+      margin-bottom: 25px;
+    }
+
+    .profile-img-card {
+        width: 96px;
+        height: 96px;
+        margin: 0 auto 10px;
+        display: block;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+    }
+
+    body {
+
+    }
+  </style>
+
+</template>
