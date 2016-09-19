@@ -19,6 +19,7 @@
   + List Users 
     + List groups that a user belongs
  
+
 #### 2. Group management with Admin forms
    + A Group could have children groups
    + Create / Edit a group 
