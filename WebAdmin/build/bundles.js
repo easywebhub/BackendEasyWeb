@@ -29,8 +29,14 @@ module.exports = {
         "aurelia-logging-console",
         "bootstrap",
         "bootstrap/css/bootstrap.css!text",
+        "aurelia-validation",
+        "tungptvn/aurelia-paginator",
+        "aurelia-dialog",
         "fetch",
-        "jquery"
+        "jquery",
+        "moment",
+        "select2",
+        "text"
       ],
       "options": {
         "inject": true,

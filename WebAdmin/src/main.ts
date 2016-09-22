@@ -3,7 +3,6 @@ import 'lockr';
 import 'sweetalert';
 import 'numeral';
 import 'jquery';
-import 'moment';
 import 'semantic';
 
 /**
