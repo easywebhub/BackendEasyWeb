@@ -48,7 +48,7 @@ System.config({
     "font-awesome": "npm:font-awesome@4.6.3",
     "jquery": "npm:jquery@2.2.4",
     "jquery-ui": "github:components/jqueryui@1.12.1",
-    "moment": "npm:moment@2.15.0",
+    "moment": "npm:moment@2.15.1",
     "select2": "github:select2/select2@4.0.3",
     "text": "github:systemjs/plugin-text@0.0.8",
     "tungptvn/aurelia-paginator": "github:tungptvn/aurelia-paginator@0.1.8",
@@ -258,6 +258,12 @@ System.config({
     "aurelia.js": [
       "github:github/fetch@1.0.0.js",
       "github:github/fetch@1.0.0/fetch.js",
+      "github:select2/select2@4.0.3.js",
+      "github:select2/select2@4.0.3/js/select2.js",
+      "github:systemjs/plugin-text@0.0.8.js",
+      "github:systemjs/plugin-text@0.0.8/text.js",
+      "github:tungptvn/aurelia-paginator@0.1.8.js",
+      "github:tungptvn/aurelia-paginator@0.1.8/index.js",
       "github:twbs/bootstrap@3.3.7.js",
       "github:twbs/bootstrap@3.3.7/css/bootstrap.css!github:systemjs/plugin-text@0.0.8.js",
       "github:twbs/bootstrap@3.3.7/js/bootstrap.js",
@@ -269,6 +275,21 @@ System.config({
       "npm:aurelia-bootstrapper@1.0.0/aurelia-bootstrapper.js",
       "npm:aurelia-dependency-injection@1.0.0.js",
       "npm:aurelia-dependency-injection@1.0.0/aurelia-dependency-injection.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/ai-dialog-body.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/ai-dialog-footer.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/ai-dialog-header.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/ai-dialog.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/attach-focus.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/aurelia-dialog.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/dialog-configuration.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/dialog-controller.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/dialog-options.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/dialog-renderer.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/dialog-result.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/dialog-service.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/lifecycle.js",
+      "npm:aurelia-dialog@1.0.0-beta.3.0.0/renderer.js",
       "npm:aurelia-event-aggregator@1.0.0.js",
       "npm:aurelia-event-aggregator@1.0.0/aurelia-event-aggregator.js",
       "npm:aurelia-fetch-client@1.0.0.js",
@@ -343,12 +364,32 @@ System.config({
       "npm:aurelia-templating-router@1.0.0/router-view.js",
       "npm:aurelia-templating@1.1.0.js",
       "npm:aurelia-templating@1.1.0/aurelia-templating.js",
+      "npm:aurelia-validation@0.12.5.js",
+      "npm:aurelia-validation@0.12.5/aurelia-validation.js",
+      "npm:aurelia-validation@0.12.5/implementation/rules.js",
+      "npm:aurelia-validation@0.12.5/implementation/standard-validator.js",
+      "npm:aurelia-validation@0.12.5/implementation/util.js",
+      "npm:aurelia-validation@0.12.5/implementation/validation-messages.js",
+      "npm:aurelia-validation@0.12.5/implementation/validation-parser.js",
+      "npm:aurelia-validation@0.12.5/implementation/validation-rules.js",
+      "npm:aurelia-validation@0.12.5/property-info.js",
+      "npm:aurelia-validation@0.12.5/validate-binding-behavior.js",
+      "npm:aurelia-validation@0.12.5/validate-trigger.js",
+      "npm:aurelia-validation@0.12.5/validation-controller-factory.js",
+      "npm:aurelia-validation@0.12.5/validation-controller.js",
+      "npm:aurelia-validation@0.12.5/validation-error.js",
+      "npm:aurelia-validation@0.12.5/validation-errors-custom-attribute.js",
+      "npm:aurelia-validation@0.12.5/validation-renderer-custom-attribute.js",
+      "npm:aurelia-validation@0.12.5/validator.js",
       "npm:jquery@2.2.4.js",
-      "npm:jquery@2.2.4/dist/jquery.js"
+      "npm:jquery@2.2.4/dist/jquery.js",
+      "npm:moment@2.15.1.js",
+      "npm:moment@2.15.1/moment.js"
     ],
     "app-build.js": [
       "app.html!github:systemjs/plugin-text@0.0.8.js",
       "app.js",
+      "configs/appConfig.js",
       "configs/authorizeStep.js",
       "main.js",
       "models/login.js",
@@ -401,7 +442,7 @@ System.config({
     ],
     "configs/authorizeStep.js": [
       "aurelia-framework",
-      "..//services/appState"
+      "../services/appState"
     ],
     "main.js": [
       "bootstrap",
@@ -409,7 +450,6 @@ System.config({
       "sweetalert",
       "numeral",
       "jquery",
-      "moment",
       "semantic"
     ],
     "models/login.js": [
@@ -465,12 +505,13 @@ System.config({
     ],
     "services/HttpService.js": [
       "aurelia-framework",
-      "aurelia-fetch-client"
+      "aurelia-fetch-client",
+      "..//Configs/appConfig"
     ],
     "viewmodels/DashBoardVM/dash_board.js": [
       "aurelia-framework",
       "aurelia-fetch-client",
-      "../..//services/appState"
+      "../../services/appState"
     ],
     "viewmodels/LoginVM/login.js": [
       "../../services/appState",
