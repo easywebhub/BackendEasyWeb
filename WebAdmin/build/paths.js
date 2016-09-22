@@ -1,6 +1,7 @@
 var appRoot = 'src/';
 var outputRoot = 'dist/';
-var exporSrvtRoot = 'export/'
+var exporSrvtRoot = 'export/';
+const deployRoot = 'deploy/BackendEasyWeb';
 
 module.exports = {
   root: appRoot,
@@ -16,5 +17,7 @@ module.exports = {
   dtsSrc: [
     './typings/**/*.d.ts',
     './custom_typings/**/*.d.ts'
-  ]
+  ],
+  deploy: deployRoot
+
 }
