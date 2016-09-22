@@ -6,6 +6,8 @@
         "**/bower_components": true,
         "**/jspm_packages": true,
         "**/typings": true,
-        "**/out": true
+        "**/out": true,
+        "**/export" : true,
+        "**/dist" : true
     }
 }
