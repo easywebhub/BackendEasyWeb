@@ -6,7 +6,6 @@ export function configure(aurelia) {
         './ValueConverter/to-length',
         './ValueConverter/json',
         './ValueConverter/take-from-to',
-        './ValueConverter/toGender',
         './ValueConverter/date-format',
         './CustomAttributes/select2',
         './CustomAttributes/bootstrap-tooltip',

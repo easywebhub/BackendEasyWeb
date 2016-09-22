@@ -1,7 +1,7 @@
 // import {OrderService} from '/src/services/ordersvc/orderservice';
 import { inject } from 'aurelia-framework';
 import { HttpClient } from 'aurelia-fetch-client';
-import { AppState } from '../..//services/appState';
+import { AppState } from '../../services/appState';
 @inject(HttpClient, AppState)
 export class Dashboard {
 	appState : AppState;

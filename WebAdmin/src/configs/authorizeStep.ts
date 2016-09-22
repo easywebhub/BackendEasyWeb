@@ -1,5 +1,5 @@
 import {  inject} from 'aurelia-framework';
-import {  AppState } from '..//services/appState';
+import {  AppState } from '../services/appState';
 import {  Redirect} from 'aurelia-router';
 @inject(AppState)
 export class AuthorizeStep {
