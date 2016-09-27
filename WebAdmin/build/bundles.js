@@ -36,6 +36,7 @@ module.exports = {
         "jquery",
         "moment",
         "select2",
+        "numeral",
         "text"
       ],
       "options": {
