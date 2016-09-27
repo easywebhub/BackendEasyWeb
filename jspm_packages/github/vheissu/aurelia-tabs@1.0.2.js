@@ -1,1 +1,0 @@
-module.exports = require("github:vheissu/aurelia-tabs@1.0.2/index");

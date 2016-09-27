@@ -384,7 +384,8 @@ System.config({
       "npm:jquery@2.2.4.js",
       "npm:jquery@2.2.4/dist/jquery.js",
       "npm:moment@2.15.1.js",
-      "npm:moment@2.15.1/moment.js"
+      "npm:moment@2.15.1/moment.js",
+      "numeral"
     ],
     "app-build.js": [
       "app.html!github:systemjs/plugin-text@0.0.8.js",
