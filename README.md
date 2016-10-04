@@ -22,6 +22,7 @@
   + Insert Order [JSON](https://gist.github.com/thinnv/584eacc7db1e8956dd2021b6ed5996d7)
   + Update Order [JSON](https://gist.github.com/thinnv/df86acfcd7a19e13072b4de29181a242) // Có thêm OrderId
   + Get List Order [link]( http://api.easywebhub.com//api-order/GetListOrder?siteId=mtfashion)
+
 ### List of results (json) for easy debug or integrate with Aurelia Admin
   + List of accounts
   + List of created websites  [JSON](https://gist.github.com/thinnv/47d4d486aa642c976c2f3f28c9b9d649)
