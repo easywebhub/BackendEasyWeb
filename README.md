@@ -14,6 +14,7 @@
 ### Update website Info:
   + update Stagging or Deploy information
   + update website.json only.
+  
 ### Create SiteInfo
   + Create Site [JSON](https://gist.github.com/thinnv/97ca63a2a7a40e7701aa84cc983445b8)
 ### Order
