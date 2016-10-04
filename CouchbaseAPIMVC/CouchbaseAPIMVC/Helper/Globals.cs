@@ -63,5 +63,10 @@ namespace CouchbaseAPIMVC.Helper
             return regex.IsMatch(text);
         }
         #endregion
+        public static class AccessLevel
+        {
+            public static List<string> CreateWebsite = new List<string>() { "creator", "dev" };
+            
+        }
     }
 }

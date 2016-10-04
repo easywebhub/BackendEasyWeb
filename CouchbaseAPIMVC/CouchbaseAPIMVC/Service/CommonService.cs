@@ -223,12 +223,72 @@ namespace CouchbaseAPIMVC.Service
             var db = new DbContext(ClusterHelper.Get(), "beer-sample");
 
             var query = from b in db.Query<User>()
-                        where b.AccountType == "user" && b.Username == user.Username
+                        where b.AccountType == "user" && b.UserName == user.UserName
                         select b;
 
             var rs = query.ToList();
 
             return rs.FirstOrDefault();
+            //return query.FirstOrDefault();
+        }
+        public static List<Website> GetDocumentWebsite(User user)
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var web = from b in db.Query<Website>()
+                      where user.Websites.Select(x => x.Id.Contains(b.Id)).Any()
+                      select b;
+            var websites = web.ToList();
+
+
+            return websites;
+            //return query.FirstOrDefault();
+        }
+        public static List<User> UpdateDocumentUser(List<Account> accounts)
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var listAccountId = accounts.Select(x => x.AccountId).ToList();
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user"// && listAccountId.Contains(b.AccountId) 
+                        select b;
+
+            var rs = query.ToList();
+            var result = rs.Where(x => listAccountId.Contains(x.AccountId)).ToList();
+            return result;
+            //return query.FirstOrDefault();
+        }
+        public static List<User> GetDocumentAllUser()
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+          
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user"// && listAccountId.Contains(b.AccountId) 
+                        select b;
+
+            var rs = query.ToList();
+            
+            return rs;
+            //return query.FirstOrDefault();
+        }
+        public static List<Website> GetDocumentAllWebsite()
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var query = from b in db.Query<Website>()
+                        where b.Type == "Website"// && listAccountId.Contains(b.AccountId) 
+                        select b;
+
+            var rs = query.ToList();
+
+            return rs;
             //return query.FirstOrDefault();
         }
     }
