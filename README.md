@@ -11,7 +11,6 @@
 ### Allow users to access website
   + update website.json with input:  ```websiteId``` and  permisson ```accessLevel```
   + add ```websiteId``` to list of websites
-
 ### Update website Info:
   + update Stagging or Deploy information
   + update website.json only.
