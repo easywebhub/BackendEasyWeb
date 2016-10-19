@@ -28,7 +28,7 @@
   + update website.json  only.
   
 ### Update more Info beside of WebsiteInfo
-  + Info to process the Shopping Cart
+  + Info to process the Shopping Cart https://gist.github.com/thinnv/97ca63a2a7a40e7701aa84cc983445b8/revisions
   + Info of live domain
   
 ### Order
