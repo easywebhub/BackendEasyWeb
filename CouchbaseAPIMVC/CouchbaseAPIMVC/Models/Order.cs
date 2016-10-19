@@ -7,60 +7,79 @@ using Newtonsoft.Json;
 
 namespace CouchbaseAPIMVC.Models
 {
-    public class Order : IObject
+    public class OrderInfo
     {
-        public Order()
+        public OrderInfo()
         {
-            Type = _type;
-            Id = Guid.NewGuid().ToString();
+         
             Ngaydat = DateTime.Now;
         }
-        private static readonly string _type = "Order";
-
-        public string Id { get; set; }
-
-
-
-
-        public Customer Customer { get; set; }
-        public string Type { get; private set; }
-
+    
         public string Status { get; set; }
         public DateTime Ngaydat { get; set; }
 
         public Employee Employee { get; set; }
         public Company Company { get; set; }
-        public List<OrderDetail> ListOrderDetails { get; set; }
+        public List<OrderDetail> ListProduct { get; set; }
 
-        public float DiscountTotal
+        public float DiscountPrice
         {
-            get { return ListOrderDetails.Sum(x => x.Discount); }
+            get { return ListProduct.Sum(x => x.Discount); }
         }
-        public float MoneyTotal
+        public float TotalPrice
         {
-            get { return ListOrderDetails.Sum(x => x.Price * x.Amount); }
-        }
-        public string DiscountDesc
-        {
-            get { return String.Join(",", ListOrderDetails.Select(x => x.DiscountDetail)); }
+            get { return ListProduct.Sum(x => x.Price * x.Unit); }
         }
 
-
+        public float ShippingCost { get; set; }
     }
 
     public class OrderDetail
     {
-
-
-        public string ProductId { get; set; }
-        public string Color { get; set; }
+        
+        public string ProductUrl { get; set; }
+        public string Sku { get; set; }
+        public string ProductName { get; set; }
         public float Price { get; set; }
 
-        public int Amount { get; set; }
+        public int Unit { get; set; }
         public float Discount { get; set; }
-        public string DiscountDetail { get; set; }
+       
 
     }
+
+    public class Order
+    {
+        public Order()
+        {
+            OrderId = Guid.NewGuid().ToString();
+            OrderStatus = "New";
+            Type = "Order";
+        }
+        public string OrderId { get; set; }
+        public string OrderStatus { get; set; }
+        public Site SiteInfo { get; set; }
+        public Customer CustomerInfo { get; set; }
+        public Customer ShippintInfo { get; set; }
+        public  OrderInfo OrderInfo { get; set; }
+
+        public string Type { get;  set; }
+
+    }
+
+    public class Site
+    {
+        public string SiteId { get; set; }
+        public string Domain { get; set; }
+        public ConfirmEmail ConfirmEmail { get; set; }
+    }
+    public class ConfirmEmail
+    {
+        public string AdminEmail { get; set; }
+        public string EmailTitle { get; set; }
+        public string HtmlTemplate { get; set; }
+    }
+
     public class DangkyModel
     {
 
@@ -76,6 +95,24 @@ namespace CouchbaseAPIMVC.Models
 
 
         public string Content { get; set; }
+
+
+    }
+    public class ShippintInfo
+    {
+
+
+        public string DisplayName { get; set; }
+
+        public string Phone { get; set; }
+
+
+        public string Email { get; set; }
+
+        public string Address { get; set; }
+
+
+        public string Sex { get; set; }
 
 
     }

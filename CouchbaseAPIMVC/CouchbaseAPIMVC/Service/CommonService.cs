@@ -96,7 +96,7 @@ namespace CouchbaseAPIMVC.Service
                 string companyName = user.Rows[0]["c"]["employee"]["company"]["companyName"].ToString();
 
                 var query = from b in db.Query<Order>()
-                            where b.Type == "Order" && b.Company.CompanyName == companyName//user.Rows[0].Employee.Company.CompanyName
+                            where b.Type == "Order" //&& b.Company.CompanyName == companyName//user.Rows[0].Employee.Company.CompanyName
                             select b;
 
                 var rs = query.ToList();
@@ -114,7 +114,7 @@ namespace CouchbaseAPIMVC.Service
             var db = new DbContext(ClusterHelper.Get(), "beer-sample");
 
             var query = from b in db.Query<Order>()
-                        where b.Type == "Order" && b.Id == id
+                        where b.Type == "Order" && b.OrderId == id
                         select b;
 
             var rs = query.ToList();
@@ -123,48 +123,48 @@ namespace CouchbaseAPIMVC.Service
             //return query.FirstOrDefault();
         }
 
-        public static bool InsertOrder(Order value)
-        {
-            _bucket = ClusterHelper.GetBucket("beer-sample");
-            value.Id = Guid.NewGuid().ToString();
-            if (value.Status == null)
-            {
-                value.Status = DataDictionary.OrderStatus.New;
-            }
-            //   _bucket = ClusterHelper.
-            //NullableValueTransformer==
-            value.Customer.Id = Guid.NewGuid().ToString();
-            var result = _bucket.InsertAsync(value.Id, value, ReplicateTo.Zero, PersistTo.Two);
+        //public static bool InsertOrder(Order value)
+        //{
+        //    _bucket = ClusterHelper.GetBucket("beer-sample");
+        //    value.Id = Guid.NewGuid().ToString();
+        //    if (value.Status == null)
+        //    {
+        //        value.Status = DataDictionary.OrderStatus.New;
+        //    }
+        //    //   _bucket = ClusterHelper.
+        //    //NullableValueTransformer==
+        //    value.Customer.Id = Guid.NewGuid().ToString();
+        //    var result = _bucket.InsertAsync(value.Id, value, ReplicateTo.Zero, PersistTo.Two);
 
-            var order = _bucket.UpsertAsync(value.Customer.Id, value.Customer, ReplicateTo.Two);
+        //    var order = _bucket.UpsertAsync(value.Customer.Id, value.Customer, ReplicateTo.Two);
 
 
            
-            return true;
-        }
+        //    return true;
+        //}
 
-        public static bool EditOrder(Order value)
-        {
-            _bucket = ClusterHelper.GetBucket("beer-sample");
-            if (value.Status == null)
-            {
-                value.Status = DataDictionary.OrderStatus.New;
-            }
+        //public static bool EditOrder(Order value)
+        //{
+        //    _bucket = ClusterHelper.GetBucket("beer-sample");
+        //    if (value.Status == null)
+        //    {
+        //        value.Status = DataDictionary.OrderStatus.New;
+        //    }
           
-            var result = _bucket.UpsertAsync(value.Id, value, ReplicateTo.Two);
-            if (value.Employee != null)
-            {
-                var emp = _bucket.UpsertAsync(value.Employee.Id, value.Employee, ReplicateTo.Two);
-            }
+        //    var result = _bucket.UpsertAsync(value.Id, value, ReplicateTo.Two);
+        //    if (value.Employee != null)
+        //    {
+        //        var emp = _bucket.UpsertAsync(value.Employee.Id, value.Employee, ReplicateTo.Two);
+        //    }
 
-            var order = _bucket.UpsertAsync(value.Customer.Id, value.Customer, ReplicateTo.Two);
+        //    var order = _bucket.UpsertAsync(value.Customer.Id, value.Customer, ReplicateTo.Two);
            
-            return true;
+        //    return true;
 
 
 
 
-        }
+        //}
 
       /*public static  void SendMail(Order order)
         {
@@ -189,33 +189,33 @@ namespace CouchbaseAPIMVC.Service
            
         }*/
 
-        public static  void SendMail(Order order)
-        {
+        //public static  void SendMail(Order order)
+        //{
 
-            var mail = new MailHelper();
-            string subject = "";
-            string body = "";
-            string mailTemp = "/Templete/Email.htm";
-            string emailSend = ConfigurationManager.AppSettings["EmailSend"];
-            string emailBcc = ConfigurationManager.AppSettings["EmailBCC"];
-            if (mail.ReadEmailTemplate(mailTemp, ref subject, ref body))
-            {
+        //    var mail = new MailHelper();
+        //    string subject = "";
+        //    string body = "";
+        //    string mailTemp = "/Templete/Email.htm";
+        //    string emailSend = ConfigurationManager.AppSettings["EmailSend"];
+        //    string emailBcc = ConfigurationManager.AppSettings["EmailBCC"];
+        //    if (mail.ReadEmailTemplate(mailTemp, ref subject, ref body))
+        //    {
 
-                body = body.Replace("[HoTen]", order.Customer.Name);
-                body = body.Replace("[DienThoai]", order.Customer.Phone);
-                body = body.Replace("[Email]", order.Customer.Email);
-                body = body.Replace("[Address]", order.Customer.Address);
-                body = body.Replace("[product]", order.ListOrderDetails[0].ProductId);
-                body = body.Replace("[Amount]", order.ListOrderDetails[0].Amount.ToString());
-                body = body.Replace("[DateCreated]", order.Ngaydat.ToString("dd/MM/yyyy hh:mm:ss"));
-                mail.SendEmail(emailSend,
-                    emailBcc,
-                    "",
-                    subject, body);
-            }
+        //        body = body.Replace("[HoTen]", order.Customer.Name);
+        //        body = body.Replace("[DienThoai]", order.Customer.Phone);
+        //        body = body.Replace("[Email]", order.Customer.Email);
+        //        body = body.Replace("[Address]", order.Customer.Address);
+        //        body = body.Replace("[product]", order.ListOrderDetails[0].ProductId);
+        //        body = body.Replace("[Amount]", order.ListOrderDetails[0].Amount.ToString());
+        //        body = body.Replace("[DateCreated]", order.Ngaydat.ToString("dd/MM/yyyy hh:mm:ss"));
+        //        mail.SendEmail(emailSend,
+        //            emailBcc,
+        //            "",
+        //            subject, body);
+        //    }
            
            
-        }
+        //}
         public static User GetDocumentUser(User user)
         {
 
@@ -223,13 +223,105 @@ namespace CouchbaseAPIMVC.Service
             var db = new DbContext(ClusterHelper.Get(), "beer-sample");
 
             var query = from b in db.Query<User>()
-                        where b.AccountType == "user" && b.Username == user.Username
+                        where b.AccountType == "user" && b.UserName == user.UserName
                         select b;
 
             var rs = query.ToList();
 
             return rs.FirstOrDefault();
             //return query.FirstOrDefault();
+        }
+        public static User ChecktUser(string userName)
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user" && b.UserName == userName
+                        select b;
+
+            var rs = query.ToList();
+
+            return rs.FirstOrDefault();
+            //return query.FirstOrDefault();
+        }
+        public static List<Website> GetDocumentWebsite(User user)
+        {
+
+            if(user.Websites.Count == 0) return new List<Website>();
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            List<string> list;
+                list= user.Websites.Select(x => x.Id).ToList();
+            var web = from b in db.Query<Website>()
+                      where list.Contains(b.Id)
+                      select b;
+            List<Website> websites = web.ToList();
+
+
+            return websites;
+            //return query.FirstOrDefault();
+        }
+        public static List<User> UpdateDocumentUser(List<Account> accounts)
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var listAccountId = accounts.Select(x => x.AccountId).ToList();
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user"// && listAccountId.Contains(b.AccountId) 
+                        select b;
+
+            var rs = query.ToList();
+            var result = rs.Where(x => listAccountId.Contains(x.AccountId)).ToList();
+            return result;
+            //return query.FirstOrDefault();
+        }
+        public static List<User> GetDocumentAllUser()
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+          
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user"// && listAccountId.Contains(b.AccountId) 
+                        select b;
+
+            var rs = query.ToList();
+            
+            return rs;
+            //return query.FirstOrDefault();
+        }
+        public static List<Website> GetDocumentAllWebsite()
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var query = from b in db.Query<Website>()
+                        where b.Type == "Website"// && listAccountId.Contains(b.AccountId) 
+                        select b;
+
+            var rs = query.ToList();
+
+            return rs;
+            //return query.FirstOrDefault();
+        }
+        // Lấy order
+        public static List<Order> GetListOrder(string siteId)
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var query = from b in db.Query<Order>()
+                        where b.Type == "Order" && b.SiteInfo.SiteId== siteId
+                        select b;
+
+            var rs = query.ToList();
+
+            return rs;
+            
         }
     }
 }

@@ -76,10 +76,10 @@ namespace CouchbaseAPIMVC.Controllers
                 // TODO: Add update logic here
 
                // ViewBag.OrderStatus  = typeof (DataDictionary.OrderStatus).GetFields().ToList();
-                order.Status = status;
+                order.OrderStatus = status;
                
-               order.Employee = new Employee { Name = User.Identity.Name, Company = order.Company };
-                var rs = CommonService.EditOrder(order);
+            //   order.Employee = new Employee { Name = User.Identity.Name, Company = order.Company };
+               // var rs = CommonService.EditOrder(order);
                
 
               

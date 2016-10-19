@@ -45,6 +45,11 @@ namespace CouchbaseAPIMVC.Helper
                 public const int Code = 401;
                 public const string Message = "Không tìm thấy dữ liệu!";
             }
+            public static class DataConflict
+            {
+                public const int Code = 403;
+                public const string Message = "Dữ liệu trùng!";
+            }
         }
 
         public static object GetParameterNull(object val)
@@ -63,5 +68,10 @@ namespace CouchbaseAPIMVC.Helper
             return regex.IsMatch(text);
         }
         #endregion
+        public static class AccessLevel
+        {
+            public static List<string> CreateWebsite = new List<string>() { "creator", "dev" };
+            
+        }
     }
 }

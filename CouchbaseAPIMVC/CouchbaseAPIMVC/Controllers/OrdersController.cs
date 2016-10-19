@@ -36,8 +36,8 @@ namespace CouchbaseAPIMVC.Controllers
                     {
                         throw new Exception("Order already Exists!");
                     }
-                    var rs = CouchbaseStorageHelper.Instance.Upsert(model.Id, model, "beer-sample");
-                    CommonService.SendMail(model);
+                    var rs = CouchbaseStorageHelper.Instance.Upsert(model.OrderId, model, "beer-sample");
+                   // CommonService.SendMail(model);
                     // CommonService.SendMail(model);
                     if (!rs.Success || rs.Exception != null)
                     {
@@ -163,7 +163,71 @@ namespace CouchbaseAPIMVC.Controllers
         //var salt = user.PasswordSalt;
         //var hash = StringUtils.GenerateSaltedHash(password, salt);
         //var passwordMatches = hash == user.Password;
+        public HttpContentResultModel<dynamic> GetListOrder(string siteId)
+        {
+
+            var result = new HttpContentResultModel<dynamic>();
+            try
+            {
+
+                var rs = CommonService.GetListOrder(siteId);
+
+               
+                result.Data = rs;
+                result.StatusCode = Globals.StatusCode.Success.Code;
+                result.Message = Globals.StatusCode.Success.Message;
+                result.Result = true;
+                result.ItemsCount = rs.Count;
+
+            }
+            catch (Exception ex)
+            {
+                result.StatusCode = Globals.StatusCode.Error.Code;
+                result.Message = ex.Message;
+                result.Result = false;
+                result.ItemsCount = 0;
 
 
+            }
+
+
+
+            return result;
+        }
+        public HttpContentResultModel<bool> InsertSite(Site model)
+        {
+
+            var result = new HttpContentResultModel<bool>();
+            try
+            {
+
+                var rs = CouchbaseStorageHelper.Instance.Upsert(model.SiteId, model, "beer-sample");
+
+                if (!rs.Success || rs.Exception != null)
+                {
+                    throw new Exception("could not save user to Couchbase");
+                }
+
+                result.Data = true;
+                result.StatusCode = Globals.StatusCode.Success.Code;
+                result.Message = Globals.StatusCode.Success.Message;
+                result.Result = true;
+                result.ItemsCount = 1;
+
+            }
+            catch (Exception ex)
+            {
+                result.StatusCode = Globals.StatusCode.Error.Code;
+                result.Message = ex.Message;
+                result.Result = false;
+                result.ItemsCount = 0;
+
+
+            }
+
+
+
+            return result;
+        }
     }
 }
