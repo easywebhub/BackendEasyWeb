@@ -1,4 +1,15 @@
-## List of API 
+
+## Overview of BackendEasyWeb
+#### 1. API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
+   + Save source on ```/CouchbaseAPIMVC/*```
+   + Push to deploy: branch ```publicAPI``` is used to push and deploy to ```api.easywebhub.com``` 
+ 
+#### 2. Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
+   + Save source on ```WebAdmin/*```
+   + Use branch `/gh-pages` to host Aurelia website on GitHub pages.
+   + CNAME:  admin.easywebhub.com
+ 
+### List of API 
 ### Authentication (with sample  ```input & output json```)
   + Sign Up  
   + Sign In 
@@ -11,12 +22,14 @@
 ### Allow users to access website
   + update website.json with input:  ```websiteId``` and  permisson ```accessLevel```
   + add ```websiteId``` to list of websites
+
 ### Update website Info:
   + update Stagging or Deploy information
-  + update website.json only.
+  + update website.json  only.
   
-### Create SiteInfo
-  + Create Site [JSON](https://gist.github.com/thinnv/97ca63a2a7a40e7701aa84cc983445b8)
+### Update more Info beside of WebsiteInfo
+  + Info to process the Shopping Cart
+  + Info of live domain
   
 ### Order
   + Insert Order [JSON](https://gist.github.com/thinnv/584eacc7db1e8956dd2021b6ed5996d7)
@@ -27,16 +40,6 @@
   + List of accounts
   + List of created websites  [JSON](https://gist.github.com/thinnv/47d4d486aa642c976c2f3f28c9b9d649)
 
-### Overview of BackendEasyWeb
-#### 1. API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
-   + Save source on ```/CouchbaseAPIMVC/*```
-   + Push to deploy: branch ```publicAPI``` is used to push and deploy to ```api.easywebhub.com``` 
- 
-#### 2. Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
-   + Save source on ```WebAdmin/*```
-   + Use branch `/gh-pages` to host Aurelia website on GitHub pages.
-   + CNAME:  admin.easywebhub.com
- 
 ### Core features
 #### 1. User management  with Admin forms
   + Sign in/ Sign up 
