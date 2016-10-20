@@ -271,6 +271,7 @@ namespace CouchbaseAPIMVC.Models
         }
         public WebsiteId() { }
     }
+
     public class Account
     {
         [JsonProperty("accountId")]
