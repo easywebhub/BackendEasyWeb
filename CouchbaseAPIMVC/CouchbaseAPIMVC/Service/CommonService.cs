@@ -216,14 +216,14 @@ namespace CouchbaseAPIMVC.Service
            
            
         //}
-        public static User GetDocumentUser(User user)
+        public static User GetDocumentUser(string userName)
         {
 
 
             var db = new DbContext(ClusterHelper.Get(), "beer-sample");
 
             var query = from b in db.Query<User>()
-                        where b.AccountType == "user" && b.UserName == user.UserName
+                        where b.AccountType == "user" && b.UserName == userName
                         select b;
 
             var rs = query.ToList();
@@ -246,23 +246,52 @@ namespace CouchbaseAPIMVC.Service
             return rs.FirstOrDefault();
             //return query.FirstOrDefault();
         }
-        public static List<Website> GetDocumentWebsite(User user)
+
+        public static User GetUserById(string userId)
         {
 
-            if(user.Websites.Count == 0) return new List<Website>();
+
             var db = new DbContext(ClusterHelper.Get(), "beer-sample");
-            List<string> list;
-                list= user.Websites.Select(x => x.Id).ToList();
-            var web = from b in db.Query<Website>()
-                      where list.Contains(b.Id)
-                      select b;
-            List<Website> websites = web.ToList();
 
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user" && b.AccountId == userId
+                        select b;
 
-            return websites;
+            var rs = query.ToList();
+
+            return rs.FirstOrDefault();
             //return query.FirstOrDefault();
         }
-        public static List<User> UpdateDocumentUser(List<Account> accounts)
+
+
+        public static List<Website> GetDocumentWebsite(string accountId)
+        {
+
+            //if(user.Websites.Count == 0) return new List<Website>();
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+        
+            var web = from b in db.Query<Website>()
+                      where b.Accounts.Select(x=>x.AccountId.Contains(accountId)).Any()
+                      select b;
+           // List<Website> websites = web.ToList();
+            return web.ToList();
+            //return query.FirstOrDefault();
+        }
+
+        public static List<Website> GetDocumentWebsiteId(List<string> websites)
+        {
+
+            //if(user.Websites.Count == 0) return new List<Website>();
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var web = (from b in db.Query<Website>()
+                     // where b.Accounts.Select(x => x.AccountId.Contains(accountId)).Any()
+                      select b).ToList();
+            List<Website> listWebsite = web.Where(x=> websites.Contains(x.Id)).ToList();
+            return listWebsite.ToList();
+            //return query.FirstOrDefault();
+        }
+        public static List<User> GetListUpdateDocumentUser(List<Account> accounts)
         {
 
 
@@ -273,7 +302,7 @@ namespace CouchbaseAPIMVC.Service
                         select b;
 
             var rs = query.ToList();
-            var result = rs.Where(x => listAccountId.Contains(x.AccountId)).ToList();
+           var result = rs.Where(x => listAccountId.Contains(x.AccountId)).ToList();
             return result;
             //return query.FirstOrDefault();
         }

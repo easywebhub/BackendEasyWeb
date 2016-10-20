@@ -39,18 +39,23 @@ namespace CouchbaseAPIMVC.Controllers
                 var hash = StringUtils.GenerateSaltedHash(model.Password, salt);
                 model.Password = hash;
                 model.PasswordSalt = salt;
-
+                
                 //var salt = user.PasswordSalt;
                 //var hash = StringUtils.GenerateSaltedHash(password, salt);
                 //var passwordMatches = hash == user.Password;
                 var user = new User(model);
-                var websites = model.Websites;
+              
                 var rs = CouchbaseStorageHelper.Instance.Upsert(user.AccountId, user, "beer-sample");
-                foreach (var data in websites)
-                {
-                    data.Accounts = data.Accounts.Select(x => new Account(user, x.AccessLevel)).ToList();
-                   CouchbaseStorageHelper.Instance.Upsert(data.Id, data, "beer-sample");
-                }
+                //diêu39
+               // var websites = model.ListWebsite;
+             //   NLog.LogManager.GetCurrentClassLogger().Debug("SoluongWs:----->{0}", websites.Count);
+                
+                //foreach (var data in websites)
+                //{
+                //    NLog.LogManager.GetCurrentClassLogger().Debug("SoluongWs:----->{0}", data.DisplayName);
+                //   data.Accounts = data.Accounts.Select(x => new Account(user, x.AccessLevel)).ToList();
+                //   CouchbaseStorageHelper.Instance.Upsert(data.Id, data, "beer-sample");
+                //}
               
                 // CommonService.SendMail(model);
                 if (!rs.Success || rs.Exception != null)
@@ -138,27 +143,14 @@ namespace CouchbaseAPIMVC.Controllers
 
             try
             {
-                var user = CommonService.GetDocumentUser(model);
+               // var user = CommonService.GetDocumentUser(model);
+                var service = new UserService();
+                var userViewModel = service.UserLogin(model.UserName, model.Password);
+
               
 
-                var salt = user.PasswordSalt;
-                var hash = StringUtils.GenerateSaltedHash(model.Password, salt);
-                var passwordMatches = hash == user.Password;
-                if (!passwordMatches)
-                {
-                    result.StatusCode = Globals.StatusCode.InvalidData.Code;
-                    result.Message = "Login Fail!!";
-                    result.Result = false;
-                    result.ItemsCount = 0;
 
-                    return result;
-                }
-
-                var websites = CommonService.GetDocumentWebsite(user);
-               var  userModel = new UserModel(user, websites);
-
-
-                result.Data = userModel;
+                result.Data = userViewModel;
                 result.StatusCode = Globals.StatusCode.Success.Code;
                 result.Message = Globals.StatusCode.Success.Message;
                 result.Result = true;
@@ -238,32 +230,46 @@ namespace CouchbaseAPIMVC.Controllers
         //    return LastLoginStatus == LoginAttemptStatus.LoginSuccessful;
         //}
 
+        private bool addWebsitetoAccount(string userId, string websiteId, string websiteDisplayName)
+        {
+            var user = CommonService.GetUserById(userId);
+            user.Websites.Add(new WebsiteId() { Id = websiteId, DisplayName =  websiteDisplayName});
+            CouchbaseStorageHelper.Instance.Upsert(user.AccountId, user, "beer-sample");
+            return true;
+        }
+
         [HttpPost]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public HttpContentResultModel<bool> CreateWebsite(Website model)
         {
 
+           // model.Accounts.FirstOrDefault().AccessLevel
             var result = new HttpContentResultModel<bool>();
 
             try
             {
 
-             
+            
                 var rs = CouchbaseStorageHelper.Instance.Upsert(model.Id, model, "beer-sample");
                 //var user = CouchbaseStorageHelper.Instance.Get(data.AccountId);
-               
-               /* for (int i = 0; i < model.Accounts.Count; i++)
+
+                /* for (int i = 0; i < model.Accounts.Count; i++)
+                 {
+                     model.Accounts[i].
+                 }*/
+                var user = CommonService.GetListUpdateDocumentUser(model.Accounts);
+                foreach (var data in user)
                 {
-                    model.Accounts[i].
-                }*/
-                      var user = CommonService.UpdateDocumentUser(model.Accounts);
-                    foreach (var data in user)
+                    if (data.Websites == null)
                     {
-                        data.Websites.Add(new Websites {Id = model.Id,DisplayName = model.DisplayName});
-                       CouchbaseStorageHelper.Instance.Upsert(data.AccountId, data, "beer-sample");
+                        data.Websites = new List<WebsiteId>();
+                    }
+                    data.Websites.Add(new WebsiteId { Id = model.Id, DisplayName = model.DisplayName });
+                    CouchbaseStorageHelper.Instance.Upsert(data.AccountId, data, "beer-sample");
                 }
-                   
-              
+                // Bỏ cai a  Bao chỉ support 1 user
+                //addWebsitetoAccount(model.Accounts.First().AccountId, model.Id, model.DisplayName)
+                //;
 
                 // CommonService.SendMail(model);
                 if (!rs.Success || rs.Exception != null)

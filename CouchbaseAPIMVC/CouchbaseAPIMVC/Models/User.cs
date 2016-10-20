@@ -3,9 +3,120 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CouchbaseAPIMVC.Helper;
+using CouchbaseAPIMVC.Service;
+using Newtonsoft.Json;
 
 namespace CouchbaseAPIMVC.Models
 {
+    public class UserVm
+    {
+        public string AccountId { get; set; }
+        public string AccountType { get; set; }
+        public string UserName { get; set; }
+        public string Status { get; set; }
+        public Info Info { get; set; }
+        public List<Website> ListWebsite { get; set; }
+
+        public UserVm(User user, List<Website> websites)
+        {
+
+            AccountId = user.AccountId;
+            AccountType = user.AccountType;
+            Status = user.Status;
+            Info = user.Info;
+            ListWebsite = websites.Select(c => HideInfo(c)).ToList();
+        }
+
+        public Website HideInfo(Website website)
+        {
+            var newWeb = website;
+            //  var listAccount = website.Accounts.Where(x => x.AccountId.Select(c=>c.ontains(accountId)).ToList();
+            var listAccount = website.Accounts.Where(x => x.AccountId.Contains(AccountId)).ToList();
+            newWeb.Accounts = new List<Account>();
+            newWeb.Accounts.AddRange(listAccount.ToList());
+            return newWeb;
+        }
+    }
+    public class UserService
+    {
+        private User _user;
+        private List<Website> _website;
+        private WebsiteService _services = new WebsiteService();
+
+        public UserVm UserLogin(string userName, string password)
+        {
+            // get value from db , then assign to _user, _website
+            if (!GetUserByName(userName, password))
+            {
+                return null; // check
+            }
+          
+            GetWebsite();
+            return new UserVm(_user, _website);
+        }
+
+        public UserVm GetUser(string userId)
+        {
+            LoadUserById(userId);
+            GetWebsite();
+            return new UserVm(_user, _website);
+        }
+
+        private bool GetUserByName(string userName,string passWord)
+        {
+            var user = CommonService.GetDocumentUser(userName);
+            if (user != null)
+            {
+                var salt = user.PasswordSalt;
+                var hash = StringUtils.GenerateSaltedHash(passWord, salt);
+                var passwordMatches = hash == user.Password;
+                if (!passwordMatches)
+                {
+
+                    return false;
+                }
+
+                _user = user;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+          
+            
+        }
+
+        private bool LoadUserById(string userId)
+        {
+            _user = new User();
+            return true;
+        }
+
+        private bool GetWebsite()
+        {
+            if (_user == null || _user.AccountId == "")
+                return false;
+            _website = _services.GetWebsitesOfUser(_user.Websites.Select(x=>x.Id).ToList());
+            return true;
+        }
+    }
+
+    public class WebsiteService
+    {
+        public List<Website> GetWebsitesOfUser(List<string> listWebsite)
+        {
+            
+            return CommonService.GetDocumentWebsiteId(listWebsite);
+        }
+
+        public bool UpdateWebsite(Website website)
+        {
+            return true;
+        }
+    }
+
     public class User
     {
         public User()
@@ -19,7 +130,7 @@ namespace CouchbaseAPIMVC.Models
         public string PasswordSalt { get; set; }
         public string Status { get; set; }
         public Info Info { get; set; }
-        public List<Websites> Websites { get; set; }
+        public List<WebsiteId> Websites { get; set; }
         public User(UserViewModel user)
         {
             AccountId = !string.IsNullOrEmpty(user.AccountId)? user.AccountId: Guid.NewGuid().ToString();
@@ -29,7 +140,11 @@ namespace CouchbaseAPIMVC.Models
             PasswordSalt = user.PasswordSalt;
             Status = user.Status;
             Info = user.Info;
-            Websites = user.Websites.Select(x=> new Websites(x)).ToList();
+            if (user.Websites != null && user.Websites.Count > 0)
+            {
+                Websites = user.Websites.Select(x => new WebsiteId(x)).ToList();
+            }
+           
         }
 
 
@@ -49,7 +164,7 @@ namespace CouchbaseAPIMVC.Models
         public string UserName { get; set; }
         public string Status { get; set; }
 
-        public List<Websites> Websites { get; set; }
+        public List<WebsiteId> Websites { get; set; }
         
     }
 
@@ -109,16 +224,29 @@ namespace CouchbaseAPIMVC.Models
         public string Address { get; set; }
       
     }
+
+    public static class Factory
+    {
+        public static Website CreateWebSite()
+        {
+            return new Website() { Id = Guid.NewGuid().ToString(), Type = "Website"};
+        }
+    }
+
     public class Website
     {
-        public Website()
-        {
-            Id = Guid.NewGuid().ToString();
-            Type = "Website";
-        }
-        
+        //public Website()
+        //{
+            
+        //        Id = Guid.NewGuid().ToString();
+        //        Type = "Website";
+           
+           
+        //}
+        [JsonProperty("id")]
         public string Id { get; set; }
-       public List<Account> Accounts { get; set; }// client push id
+        [JsonProperty("accounts")]
+        public List<Account> Accounts { get; set; }// client push id
         public string Name { get; set; }//client
         public string DisplayName { get; set; }//client
       //  public List<string> AccessLevel { get; set; } // Server gán: tham khao link https://github.com/easywebhub/BackendEasyWeb/issues/2
@@ -130,35 +258,39 @@ namespace CouchbaseAPIMVC.Models
 
 
     }
-    public class Websites
+    public class WebsiteId
     {
     
         public string Id { get; set; }
         public string DisplayName { get; set; }
 
-        public Websites(Website website)
+        public WebsiteId(Website website)
         {
             Id = website.Id;
             DisplayName = website. DisplayName;
         }
-        public Websites() { }
+        public WebsiteId() { }
     }
     public class Account
     {
-
+        [JsonProperty("accountId")]
         public string AccountId { get; set; }
+        [JsonProperty("accessLevel")]
         public  List<string> AccessLevel { get; set; }
 
         public Account()
         {
-
-            AccessLevel = Globals.AccessLevel.CreateWebsite;
+            //if (AccessLevel == null)
+            //{
+            //    AccessLevel = Globals.AccessLevel.CreateWebsite;
+            //}
+          
 
         }
         public Account(User user, List<string> accessLevel)
         {
             AccountId = user.AccountId;
-            AccessLevel = accessLevel;
+            AccessLevel = accessLevel.Distinct().ToList();
         }
     }
     public class Stagging
