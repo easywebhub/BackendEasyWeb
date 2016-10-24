@@ -1,5 +1,5 @@
 
-## Overview of BackendEasyWeb
+## Overview of AdminCP
 #### 1. API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
    + Save source on ```/CouchbaseAPIMVC/*```
    + Push to deploy: branch ```publicAPI``` is used to push and deploy to ```api.easywebhub.com``` 
