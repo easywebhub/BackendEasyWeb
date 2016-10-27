@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using Couchbase.Management;
@@ -327,7 +328,7 @@ namespace CouchbaseAPIMVC.Controllers
                 result.StatusCode = Globals.StatusCode.Success.Code;
                 result.Message = Globals.StatusCode.Success.Message;
                 result.Result = true;
-                result.ItemsCount = 1;
+                result.ItemsCount = rs.Count;
 
             }
             catch (Exception ex)
@@ -367,7 +368,7 @@ namespace CouchbaseAPIMVC.Controllers
                 result.StatusCode = Globals.StatusCode.Success.Code;
                 result.Message = Globals.StatusCode.Success.Message;
                 result.Result = true;
-                result.ItemsCount = 1;
+                result.ItemsCount = rs.Count;
 
             }
             catch (Exception ex)
