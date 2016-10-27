@@ -140,21 +140,26 @@ namespace CouchbaseAPIMVC.Controllers
         public HttpContentResultModel<dynamic> Logon(User model)
         {
             var result = new HttpContentResultModel<dynamic>();
-
+          
             try
             {
-               // var user = CommonService.GetDocumentUser(model);
-                var service = new UserService();
-                var userViewModel = service.UserLogin(model.UserName, model.Password);
+                if (!ModelState.IsValid)
+                {
+                    var service = new UserService();
+                    var userViewModel = service.UserLogin(model.UserName, model.Password);
 
-              
 
 
-                result.Data = userViewModel;
-                result.StatusCode = Globals.StatusCode.Success.Code;
-                result.Message = Globals.StatusCode.Success.Message;
-                result.Result = true;
-                result.ItemsCount = 1;
+
+                    result.Data = userViewModel;
+                    result.StatusCode = Globals.StatusCode.Success.Code;
+                    result.Message = Globals.StatusCode.Success.Message;
+                    result.Result = true;
+                    result.ItemsCount = 1;
+                }
+               
+                // var user = CommonService.GetDocumentUser(model);
+             
 
             }
             catch (Exception ex)
@@ -249,14 +254,15 @@ namespace CouchbaseAPIMVC.Controllers
             try
             {
 
-            
-                var rs = CouchbaseStorageHelper.Instance.Upsert(model.Id, model, "beer-sample");
-                //var user = CouchbaseStorageHelper.Instance.Get(data.AccountId);
+                if (model.Id == null) 
+                {
+                    model.Id = Guid.NewGuid().ToString();
+                    model.Type = "Website";
+                    
 
-                /* for (int i = 0; i < model.Accounts.Count; i++)
-                 {
-                     model.Accounts[i].
-                 }*/
+                }
+                model.InitAccesslevel();
+                  var rs = CouchbaseStorageHelper.Instance.Upsert(model.Id, model, "beer-sample");
                 var user = CommonService.GetListUpdateDocumentUser(model.Accounts);
                 foreach (var data in user)
                 {
