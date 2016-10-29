@@ -24,7 +24,11 @@ namespace CouchbaseAPIMVC.Models
             AccountType = user.AccountType;
             Status = user.Status;
             Info = user.Info;
-            ListWebsite = websites.Select(c => HideInfo(c)).ToList();
+            if (websites != null)
+            {
+                ListWebsite = websites.Select(c => HideInfo(c)).ToList();
+            }
+            
         }
 
         public Website HideInfo(Website website)
@@ -50,7 +54,10 @@ namespace CouchbaseAPIMVC.Models
             {
                 return null; // check
             }
-          
+            if (_user.Websites == null)
+            {
+              _user.Websites = new List<WebsiteId>();
+            }
             GetWebsite();
             return new UserVm(_user, _website);
         }
@@ -98,6 +105,7 @@ namespace CouchbaseAPIMVC.Models
         {
             if (_user == null || _user.AccountId == "")
                 return false;
+         
             _website = _services.GetWebsitesOfUser(_user.Websites.Select(x=>x.Id).ToList());
             return true;
         }
@@ -255,6 +263,13 @@ namespace CouchbaseAPIMVC.Models
         public List<Production> Production { get; set; }
         public string Type { get; set; }
 
+        public void InitAccesslevel()
+        {
+            foreach (var data in Accounts)
+            {
+                data.InitAccesslevel();
+            }
+        }
 
 
     }
@@ -274,19 +289,32 @@ namespace CouchbaseAPIMVC.Models
 
     public class Account
     {
-        [JsonProperty("accountId")]
+      //  [JsonProperty("accountId")]
         public string AccountId { get; set; }
-        [JsonProperty("accessLevel")]
-        public  List<string> AccessLevel { get; set; }
-
+      //  [JsonProperty("accessLevel")]
+        public  List<string> AccessLevel {
+            get
+            {
+             
+                return _accessLevel;
+            } set { _accessLevel = value; } }
+       
+        private List<string> _accessLevel = new List<string>();
         public Account()
         {
-            //if (AccessLevel == null)
-            //{
-            //    AccessLevel = Globals.AccessLevel.CreateWebsite;
-            //}
-          
+            //   AccessLevel = Globals.AccessLevel.CreateWebsite;
+            
 
+
+        }
+
+        public void InitAccesslevel()
+        {
+            if (_accessLevel.Count == 0)
+            {
+                _accessLevel = Globals.AccessLevel.CreateWebsite;
+
+            }
         }
         public Account(User user, List<string> accessLevel)
         {
