@@ -5,6 +5,7 @@ using System.Web;
 using CouchbaseAPIMVC.Helper;
 using CouchbaseAPIMVC.Service;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace CouchbaseAPIMVC.Models
 {
@@ -133,6 +134,7 @@ namespace CouchbaseAPIMVC.Models
         }
         public string AccountId { get; set; }
         public string AccountType { get; set; }
+        [Required]
         public string UserName { get; set; }
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
