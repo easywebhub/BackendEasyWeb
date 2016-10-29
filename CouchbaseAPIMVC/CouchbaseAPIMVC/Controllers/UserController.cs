@@ -144,7 +144,7 @@ namespace CouchbaseAPIMVC.Controllers
           
             try
             {
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var service = new UserService();
                     var userViewModel = service.UserLogin(model.UserName, model.Password);
