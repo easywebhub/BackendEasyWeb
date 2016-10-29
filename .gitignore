@@ -251,3 +251,6 @@ CouchbaseAPIMVC/CouchbaseAPIMVC/obj/Release/TemporaryGeneratedFile_E7A71F73-0F8D
 CouchbaseAPIMVC/CouchbaseAPIMVC/obj/Release/TransformWebConfig/assist/Web.config
 CouchbaseAPIMVC/CouchbaseAPIMVC/obj/Release/TransformWebConfig/original/Web.config
 CouchbaseAPIMVC/CouchbaseAPIMVC/obj/Release/TransformWebConfig/transformed/Web.config
+CouchbaseAPIMVC/ew.web/Web.config
+packages/
+bin/
