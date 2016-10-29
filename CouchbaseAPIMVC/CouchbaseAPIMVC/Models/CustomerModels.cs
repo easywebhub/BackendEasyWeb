@@ -70,9 +70,9 @@ namespace CouchbaseAPIMVC.Models
         {
 
            
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
-             var query = from b in db.Query<CustomerModel>()
+            var query = from b in db.Query<CustomerModel>()
                  where b.Type == "CustomerModel"
                  select b;
        

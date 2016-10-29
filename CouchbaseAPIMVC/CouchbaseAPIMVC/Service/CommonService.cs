@@ -16,6 +16,7 @@ using Couchbase.Core;
 using Couchbase.Linq;
 using CouchbaseAPIMVC.Helper;
 using CouchbaseAPIMVC.Models;
+using Couchbase.Linq;
 
 using Newtonsoft.Json.Linq;
 
@@ -72,7 +73,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
          
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<Order>()
                         where b.Type == "Order"
@@ -87,7 +88,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
             _bucket = ClusterHelper.GetBucket("beer-sample");
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
             string str = "SELECT c FROM `beer-sample` as c where email ='" + userName + "'";
             
             var user = _bucket.Query<dynamic>(str);
@@ -111,7 +112,7 @@ namespace CouchbaseAPIMVC.Service
         {
          
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<Order>()
                         where b.Type == "Order" && b.OrderId == id
@@ -220,7 +221,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.UserName == userName
@@ -235,7 +236,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.UserName == userName
@@ -251,7 +252,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.AccountId == userId
@@ -268,7 +269,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
             //if(user.Websites.Count == 0) return new List<Website>();
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
         
             var web = from b in db.Query<Website>()
                       where b.Accounts.Select(x=>x.AccountId.Contains(accountId)).Any()
@@ -282,7 +283,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
             //if(user.Websites.Count == 0) return new List<Website>();
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var web = (from b in db.Query<Website>()
                      // where b.Accounts.Select(x => x.AccountId.Contains(accountId)).Any()
@@ -295,7 +296,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
             var listAccountId = accounts.Select(x => x.AccountId).ToList();
             var query = from b in db.Query<User>()
                         where b.AccountType == "user"// && listAccountId.Contains(b.AccountId) 
@@ -310,7 +311,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
           
             var query = from b in db.Query<User>()
                         where b.AccountType == "user"// && listAccountId.Contains(b.AccountId) 
@@ -325,7 +326,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<Website>()
                         where b.Type == "Website"// && listAccountId.Contains(b.AccountId) 
@@ -341,7 +342,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<Order>()
                         where b.Type == "Order" && b.SiteInfo.SiteId== siteId
