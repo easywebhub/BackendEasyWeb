@@ -12,13 +12,13 @@ namespace CouchbaseAPIMVC.Helper
         {
             public static class Success
             {
-                public const int Code = 200;
+                public const string Code = "200";
                 public const string Message = "Thành công!";
             }
 
             public static class InvalidData
             {
-                public const int Code = 422;
+                public const string Code = "422";
                 public const string Message = "Dữ liệu có lỗi!";
             }
 
@@ -36,18 +36,18 @@ namespace CouchbaseAPIMVC.Helper
 
             public static class Error
             {
-                public const int Code = 444;
+                public const string Code = "444";
                 public const string Message = "Hệ thống gặp sự cố!";
             }
 
             public static class DataNotFound
             {
-                public const int Code = 401;
+                public const string Code = "401";
                 public const string Message = "Không tìm thấy dữ liệu!";
             }
             public static class DataConflict
             {
-                public const int Code = 403;
+                public const string Code = "403";
                 public const string Message = "Dữ liệu trùng!";
             }
         }
