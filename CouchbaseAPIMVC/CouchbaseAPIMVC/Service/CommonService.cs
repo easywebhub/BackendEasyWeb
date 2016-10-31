@@ -232,20 +232,26 @@ namespace CouchbaseAPIMVC.Service
             return rs.FirstOrDefault();
             //return query.FirstOrDefault();
         }
-        public static User ChecktUser(string userName)
+        public static User GetDocumentUserById(string id)
         {
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
 
+            var query = from b in db.Query<User>()
+                        where b.AccountType == "user" && b.AccountId == id
+                        select b;
 
-            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
+            return query.FirstOrDefault();
+            //return query.FirstOrDefault();
+        }
 
+        public static User CheckUser(string userName)
+        {
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.UserName == userName
                         select b;
-
             var rs = query.ToList();
-
             return rs.FirstOrDefault();
-            //return query.FirstOrDefault();
         }
 
         public static User GetUserById(string userId)
@@ -256,6 +262,22 @@ namespace CouchbaseAPIMVC.Service
 
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.AccountId == userId
+                        select b;
+
+            var rs = query.ToList();
+
+            return rs.FirstOrDefault();
+            //return query.FirstOrDefault();
+        }
+
+        public static Website GetWebsiteById(string id)
+        {
+
+
+            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+
+            var query = from b in db.Query<Website>()
+                        where b.Type == "Website" && b.Id == id
                         select b;
 
             var rs = query.ToList();

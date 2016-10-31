@@ -23,6 +23,7 @@ namespace CouchbaseAPIMVC.Models
 
             AccountId = user.AccountId;
             AccountType = user.AccountType;
+            UserName = user.UserName;
             Status = user.Status;
             Info = user.Info;
             if (websites != null)
@@ -47,6 +48,12 @@ namespace CouchbaseAPIMVC.Models
         private User _user;
         private List<Website> _website;
         private WebsiteService _services = new WebsiteService();
+        public string Status { get; set; }
+
+        public UserService()
+        {
+            Status = "Success";
+        }
 
         public UserVm UserLogin(string userName, string password)
         {
@@ -80,7 +87,7 @@ namespace CouchbaseAPIMVC.Models
                 var passwordMatches = hash == user.Password;
                 if (!passwordMatches)
                 {
-
+                    Status = "Password_Wrong";
                     return false;
                 }
 
@@ -89,16 +96,19 @@ namespace CouchbaseAPIMVC.Models
             }
             else
             {
+                Status = "Username_NotFound";
                 return false;
-            }
-            
-          
-            
+            } 
         }
 
         private bool LoadUserById(string userId)
         {
-            _user = new User();
+            _user = CommonService.GetDocumentUserById(userId);
+            if (_user == null)
+            {
+                Status = "User_NotFound";
+                return false;
+            }
             return true;
         }
 
@@ -188,6 +198,14 @@ namespace CouchbaseAPIMVC.Models
         
     }
 
+    public class AddWebsiteToAccountDto
+    {
+        public string AccountId { get; set; }
+        public string WebsiteId { get; set; }
+        public string WebsiteDisplayName { get; set; }
+        public List<string> AccessLevel { get; set; }
+    }
+
     public class UserViewModel
     {
         
@@ -253,9 +271,8 @@ namespace CouchbaseAPIMVC.Models
            
            
         //}
-        [JsonProperty("id")]
         public string Id { get; set; }
-        [JsonProperty("accounts")]
+        //[JsonProperty("accounts")]
         public List<Account> Accounts { get; set; }// client push id
         public string Name { get; set; }//client
         public string DisplayName { get; set; }//client
@@ -305,9 +322,6 @@ namespace CouchbaseAPIMVC.Models
         public Account()
         {
             //   AccessLevel = Globals.AccessLevel.CreateWebsite;
-            
-
-
         }
 
         public void InitAccesslevel()

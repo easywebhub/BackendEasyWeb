@@ -12,7 +12,7 @@ namespace CouchbaseAPIMVC.Models
 
         public string Message { get; set; }
 
-        public int StatusCode { get; set; }
+        public string StatusCode { get; set; }
 
         public int ItemsCount { get; set; }
 
@@ -26,8 +26,8 @@ namespace CouchbaseAPIMVC.Models
 
         public string Message { get; set; }
 
-        public int StatusCode { get; set; }
-
+        public string StatusCode { get; set; }
+        
         public int ItemsCount { get; set; }
 
         public object Data { get; set; }
