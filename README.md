@@ -11,17 +11,21 @@
  
 ### List of API 
 ### Authentication (with sample  ```input & output json```)
-  + Sign Up  
-  + Sign In 
+  + Sign Up [[more]](https://gist.github.com/thanhtdvn/0deddb983c95e64b15d7ba63532ac99b)
+  + Sign In [[more]](https://gist.github.com/thanhtdvn/b24379343a50fe29cc9190fd0825231b)
   + Update Account Info
 
 ###  Create new website
   + new website with owner is current user ```["creator", "dev"]```
   + add ```websiteId``` to list of websites
+  
+  [more](https://gist.github.com/thanhtdvn/b1cf56686335287e603f90e0915ac836)
 
 ### Allow users to access website
   + update website.json with input:  ```websiteId``` and  permisson ```accessLevel```
   + add ```websiteId``` to list of websites
+  
+  [[more]](https://gist.github.com/thanhtdvn/f4b1f9b2687fbe0716ac281d27c49172)
 
 ### Update website Info:
   + update Stagging or Deploy information
@@ -37,8 +41,9 @@
   + Get List Order [link]( http://api.easywebhub.com//api-order/GetListOrder?siteId=mtfashion)
 
 ### List of results (json) for easy debug or integrate with Aurelia Admin
-  + List of accounts
-  + List of created websites  [JSON](https://gist.github.com/thinnv/47d4d486aa642c976c2f3f28c9b9d649)
+  + List of accounts [[more]](https://gist.github.com/thanhtdvn/a451ec9898d221b739f37087a3a7af12)
+  
+  + List of created websites [[more]](https://gist.github.com/thanhtdvn/ad72e51475204f0265caef91d15c7cf6) 
 
 ### Core features
 #### 1. User management  with Admin forms
