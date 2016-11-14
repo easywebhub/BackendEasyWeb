@@ -3,6 +3,7 @@ using Couchbase.Linq;
 using Couchbase.Linq.Extensions;
 using Couchbase.N1QL;
 using ew.core;
+using ew.core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ew.infrastructure.Repositories
 {
-    public class GenericRepository<T> where T : ewDocument
+    public class GenericRepository<T> : IGenericRepository<T> where T : EwDocument
     {
         protected readonly IBucket _bucket;
         protected readonly IBucketContext _context;
@@ -27,6 +28,11 @@ namespace ew.infrastructure.Repositories
             return _context.Query<T>()
                .ScanConsistency(ScanConsistency.RequestPlus)   // waiting for the indexing to complete before it returns a response
                ;
+        }
+
+        public List<T> GetList(List<string> ids)
+        {
+            return FindAll().Where(x => ids.Contains(x.Id)).ToList();   // waiting for the indexing to complete before it returns a response
         }
 
         public T Get(string id)
