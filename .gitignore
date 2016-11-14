@@ -254,3 +254,12 @@ CouchbaseAPIMVC/CouchbaseAPIMVC/obj/Release/TransformWebConfig/transformed/Web.c
 CouchbaseAPIMVC/ew.web/Web.config
 packages/
 bin/
+bin/
+obj/
+bin/
+obj/
+CouchbaseAPIMVC/ew.web/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.csproj.FileListAbsolute.txt
+CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.csprojResolveAssemblyReference.cache
+CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.dll
+CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.pdb
