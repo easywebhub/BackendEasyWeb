@@ -9,10 +9,12 @@ namespace ew.core.Users
 {
    
     [DocumentTypeFilter("Account")]
-    public class Account : ewDocument
+    public class Account : EwDocument
     {
         public Account() : base("Account")
         {
+            Info = new AccountInfo();
+            Websites = new List<WebsiteIdentity>();
         }
 
         public string AccountType { get; set; }
@@ -22,7 +24,6 @@ namespace ew.core.Users
         public string Status { get; set; }
         public AccountInfo Info { get; set; }
         public List<WebsiteIdentity> Websites { get; set; }
-       
     }
 
     public class AccountIdentity
@@ -37,6 +38,5 @@ namespace ew.core.Users
         public string Age { get; set; }
         public string Sex { get; set; }
         public string Address { get; set; }
-
     }
 }

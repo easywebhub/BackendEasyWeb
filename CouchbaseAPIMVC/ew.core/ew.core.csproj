@@ -79,7 +79,14 @@
   <ItemGroup>
     <Compile Include="Authorization\Role.cs" />
     <Compile Include="CanFilterType.cs" />
+    <Compile Include="Dto\AccountDtos.cs" />
+    <Compile Include="Dto\WebsiteDtos.cs" />
+    <Compile Include="Enums\DeploymentEnviromentTypes.cs" />
+    <Compile Include="Enums\GlobalStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IWebsiteRepository.cs" />
+    <Compile Include="Repositories\IAccountRepository.cs" />
+    <Compile Include="Repositories\IGenericRepository.cs" />
     <Compile Include="Users\Account.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Website.cs" />

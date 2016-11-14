@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace ew.core
 {
-    public class ewDocument
+    public class EwDocument
     {
         [Key]
         public string Id { get; set; }
         public string Type { get; set; }
         
-        public ewDocument(string type)
+        public EwDocument(string type)
         {
             Type = type;
         }

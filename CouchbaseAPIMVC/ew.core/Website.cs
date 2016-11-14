@@ -10,10 +10,13 @@ namespace ew.core
 {  
 
     [DocumentTypeFilter("Website")]
-    public class Website : ewDocument
+    public class Website : EwDocument
     {
         public Website() : base("Website")
         {
+            Accounts = new List<WebsiteAccountAccessLevel>();
+            Stagging = new List<DeploymentEnvironment>();
+            Production = new List<DeploymentEnvironment>();
         }
 
         public string DisplayName { get; set; }
@@ -22,6 +25,7 @@ namespace ew.core
         public string Url { get; set; }
         public List<DeploymentEnvironment> Stagging { get; set; }
         public List<DeploymentEnvironment> Production { get; set; }
+
     }
 
     public class WebsiteIdentity
@@ -40,14 +44,16 @@ namespace ew.core
     public class WebsiteAccountAccessLevel
     {
         public string AccountId { get; set; }
-        public List<string> AccessLevel { get; set; }
+        public List<string> AccessLevels { get; set; }
     }
 
     public class DeploymentEnvironment
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string HostingFee { get; set; }
         public string Url { get; set; }
         public string Git { get; set; }
+        public bool IsDefault { get; set; }
     }
 }
