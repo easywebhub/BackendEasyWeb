@@ -234,7 +234,7 @@ namespace CouchbaseAPIMVC.Service
         }
         public static User GetDocumentUserById(string id)
         {
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.AccountId == id
@@ -246,7 +246,7 @@ namespace CouchbaseAPIMVC.Service
 
         public static User CheckUser(string userName)
         {
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
             var query = from b in db.Query<User>()
                         where b.AccountType == "user" && b.UserName == userName
                         select b;
@@ -274,7 +274,7 @@ namespace CouchbaseAPIMVC.Service
         {
 
 
-            var db = new DbContext(ClusterHelper.Get(), "beer-sample");
+            var db = new BucketContext(ClusterHelper.GetBucket("beer-sample"));
 
             var query = from b in db.Query<Website>()
                         where b.Type == "Website" && b.Id == id

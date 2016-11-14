@@ -116,8 +116,6 @@ namespace CouchbaseAPIMVC.Controllers
                 result.Message = ex.Message;
                 result.Result = false;
                 result.ItemsCount = 0;
-
-
             }
             return result;
         }
