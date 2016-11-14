@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Couchbase;
+using Couchbase.Configuration.Client;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,6 +19,20 @@ namespace ew.web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            var config = new ClientConfiguration();
+            config.Servers = new List<Uri>
+        {
+            new Uri(ConfigurationManager.AppSettings["couchbaseServer1"])
+        };
+            config.UseSsl = false;
+            ClusterHelper.Initialize(config);
+        }
+
+
+        protected void Application_End()
+        {
+            ClusterHelper.Close();
         }
     }
 }
