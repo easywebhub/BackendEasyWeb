@@ -82,6 +82,7 @@
     <Compile Include="Dto\AccountDtos.cs" />
     <Compile Include="Dto\WebsiteDtos.cs" />
     <Compile Include="Enums\DeploymentEnviromentTypes.cs" />
+    <Compile Include="Enums\EwHeaders.cs" />
     <Compile Include="Enums\GlobalStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IWebsiteRepository.cs" />

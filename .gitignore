@@ -263,3 +263,6 @@ CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.csproj.FileListAbsolute.txt
 CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.csprojResolveAssemblyReference.cache
 CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.dll
 CouchbaseAPIMVC/ew.web/obj/Debug/ew.web.pdb
+obj/
+bin/
+CouchbaseAPIMVC/ew.webapi/Web.config

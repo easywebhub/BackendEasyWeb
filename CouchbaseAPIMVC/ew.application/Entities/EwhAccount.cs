@@ -22,34 +22,37 @@ namespace ew.application.Entities
         private readonly IWebsiteService _websiteService;
         private readonly IEwhMapper _ewhMapper;
         //private readonly AuthService _authService;
-        public EwhAccount(IAccountService accountService, IWebsiteService websiteService, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhAccount(IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
         {
+            _websiteRepository = websiteRepository;
+            _accountRepository = accountRepository;
             _accountService = accountService;
             _websiteService = websiteService;
-            _accountRepository = accountRepository;
+
             _ewhMapper = ewhMapper;
             //_authService = authService;
         }
 
-        public EwhAccount(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhAccount(Account account, IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
         {
-            _account = new Account();
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
-            _ewhMapper = ewhMapper;
-        }
-
-        public EwhAccount(Account account, IAccountService accountService)
-        {
             _accountService = accountService;
+            _websiteService = websiteService;
+
+            _ewhMapper = ewhMapper;
             _account = account;
             MapFrom(account);
         }
 
-        public EwhAccount(string accountId, IAccountService accountService, IWebsiteService websiteService, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhAccount(string accountId, IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
         {
-            _accountService = accountService;
+            _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
+            _accountService = accountService;
+            _websiteService = websiteService;
+
+            _ewhMapper = ewhMapper;
             _account = _accountRepository.Get(accountId);
             MapFrom(_account);
         }
@@ -99,7 +102,7 @@ namespace ew.application.Entities
             return false;
         }
 
-        public bool Add(AddAccountDto dto)
+        public bool Create(AddAccountDto dto)
         {
             if (!ValidateHelper.Validate(dto, out ValidateResults))
             {
@@ -111,17 +114,15 @@ namespace ew.application.Entities
             this.Password = StringUtils.GenerateSaltedHash(dto.Password, this.PasswordSaft);
             return Save();
         }
-        
+
         public bool Save()
         {
-            if (!IsExits())
-            {
-            }
             if (CheckValidModel() && CheckIsIdentity())
             {
-                _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account, this));
+                _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account ?? new Account(), this));
+                return true;
             }
-            return true;
+            return false;
         }
 
         public bool UpdateInfo(AccountInfo info)

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ew.application.Entities.Dto;
 using ew.core.Dto;
+using ew.core.Repositories;
 
 namespace ew.application.Services
 {
@@ -15,6 +16,8 @@ namespace ew.application.Services
     {
         private readonly Lazy<IAccountService> _accountService;
         private readonly Lazy<IWebsiteService> _websiteService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IWebsiteRepository _websiteRepository;
 
         public EwhMapper(Lazy<IAccountService> accountService, Lazy<IWebsiteService> websiteService)
         {
@@ -24,7 +27,7 @@ namespace ew.application.Services
 
         public EwhAccount ToEwhAccount(Account account)
         {
-            return new EwhAccount(account, _accountService as IAccountService);
+            return new EwhAccount(account, _accountService as IAccountService, _websiteService as IWebsiteService, _websiteRepository, _accountRepository, this);
         }
 
         public void ToEntity(EwhAccount ewhAccount, Account account)
@@ -38,7 +41,7 @@ namespace ew.application.Services
 
         public List<EwhAccount> ToEwhAccounts(List<Account> listAccount)
         {
-            return listAccount.Select(x => new EwhAccount(x, _accountService as IAccountService)).ToList();
+            return listAccount.Select(x => new EwhAccount(x, _accountService as IAccountService, _websiteService as IWebsiteService, _websiteRepository, _accountRepository, this)).ToList();
         }
 
         public List<EwhWebsite> ToEwhWebsites(List<Website> listWebsite)
@@ -64,7 +67,7 @@ namespace ew.application.Services
         public WebsiteIdentity ToEntity(WebsiteIdentity entity, AddWebsiteAccountDto dto)
         {
             entity.DisplayName = dto.WebsiteDisplayName;
-            entity.WebsiteId = dto.WebsiteId;
+            //entity.WebsiteId = dto.WebsiteId;
             return entity;
         }
         public WebsiteAccountAccessLevel ToEntity(WebsiteAccountAccessLevel entity, AddWebsiteAccountDto dto)
@@ -76,7 +79,12 @@ namespace ew.application.Services
 
         EwhAccount IEwhMapper.ToEntity(EwhAccount ewhAccount, Account account)
         {
-            throw new NotImplementedException();
+            ewhAccount.AccountType = account.AccountType;
+            ewhAccount.UserName = account.UserName;
+            ewhAccount.Websites = account.Websites;
+            ewhAccount.Info = account.Info;
+
+            return ewhAccount;
         }
 
         public Account ToEntity(Account account, EwhAccount ewhAccount)
@@ -112,6 +120,22 @@ namespace ew.application.Services
             model.Url = dto.Url;
             return model;
         }
-        
+
+        public EwhWebsite ToEntity(EwhWebsite ewhWebsite, CreateWebsiteDto dto)
+        {
+            ewhWebsite.DisplayName = dto.DisplayName;
+            ewhWebsite.Url = dto.Url;
+            ewhWebsite.Name = dto.Name;
+
+            var listWebsiteAccountAccessLevel = new List<WebsiteAccountAccessLevel>();
+            if(dto.Accounts!=null)
+            foreach(var item in dto.Accounts)
+            {
+                var waal = this.ToEntity(new WebsiteAccountAccessLevel(), dto.Accounts.FirstOrDefault());
+                    listWebsiteAccountAccessLevel.Add(waal);
+            }
+            ewhWebsite.Accounts = listWebsiteAccountAccessLevel;
+            return ewhWebsite;
+        }
     }
 }

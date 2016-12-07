@@ -20,6 +20,7 @@ namespace ew.application.Services
 
         Website ToEntity(Website website, EwhWebsite ewhWebsite);
         WebsiteIdentity ToEntity(WebsiteIdentity entity, AddWebsiteAccountDto dto);
+        EwhWebsite ToEntity(EwhWebsite ewhWebsite, CreateWebsiteDto dto);
         WebsiteAccountAccessLevel ToEntity(WebsiteAccountAccessLevel entity, AddWebsiteAccountDto dto);
         DeploymentEnviromentModel ToEntity(DeploymentEnviromentModel model, UpdateDeploymentEnvironmentToWebsite dto);
     }

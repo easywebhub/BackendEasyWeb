@@ -1,4 +1,5 @@
 ﻿using ew.application.Entities;
+using ew.application.Entities.Dto;
 using ew.application.Services;
 using ew.core.Repositories;
 using System;
@@ -11,12 +12,17 @@ namespace ew.application
 {
     public class AccountManager : EwhEntityBase, IAccountManager
     {
+        private readonly IAccountService _accountService;
+        private readonly IWebsiteService _websiteService;
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
+
         private readonly IEwhMapper _ewhMapper;
 
-        public AccountManager(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public AccountManager(IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
         {
+            _accountService = accountService;
+            _websiteService = websiteService;
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
             _ewhMapper = ewhMapper;
@@ -26,12 +32,11 @@ namespace ew.application
         public EwhAccount EwhAccountAdded { get; protected set; }
         #endregion
 
-        public bool CreateAccount()
+        public bool CreateAccount(AddAccountDto dto)
         {
-            var ewhAccount = new EwhAccount(_websiteRepository, _accountRepository, _ewhMapper);
-            var info = new core.Users.AccountInfo() { Address = "", Age = "28", Name = "Thanh", Sex = "Nam" };
+            var ewhAccount = new EwhAccount(_accountService, _websiteService, _websiteRepository, _accountRepository, _ewhMapper);
             var check = false;
-            if (ewhAccount.Add(new Entities.Dto.AddAccountDto() { AccountType = "member", Info = info, Password = "@123456", UserName = "thanhtd01" }))
+            if (ewhAccount.Create(dto))
             {
                 check = true;
                 EwhAccountAdded = ewhAccount;
@@ -39,6 +44,18 @@ namespace ew.application
             SyncStatus(this, ewhAccount);
             return check;
         }
+
+        public EwhAccount GetEwhAccount(string id)
+        {
+            var account = _accountRepository.Get(id);
+            if (account == null)
+            {
+                EwhStatus = core.Enums.GlobalStatus.NotFound;
+                return null;
+            }
+            return new EwhAccount(account,_accountService, _websiteService, _websiteRepository, _accountRepository, _ewhMapper);
+        }
+
 
         public List<EwhAccount> GetListAccount()
         {

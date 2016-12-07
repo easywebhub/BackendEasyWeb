@@ -25,6 +25,7 @@ namespace ew.infrastructure.Repositories
             if (dto.Website == null || dto.Account == null) return false;
             var account = dto.Account;
             if (account.Websites == null) account.Websites = new List<WebsiteIdentity>();
+            if (account.Websites.Any(x => x.WebsiteId == dto.Website.Id)) return true;
             account.Websites.Add(new WebsiteIdentity() { WebsiteId = dto.Website.Id, DisplayName = dto.WebsiteDisplayName });
             this.AddOrUpdate(account);
             return true;

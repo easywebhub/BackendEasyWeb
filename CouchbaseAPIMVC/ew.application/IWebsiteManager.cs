@@ -1,4 +1,5 @@
 ﻿using ew.application.Entities;
+using ew.application.Entities.Dto;
 using System.Collections.Generic;
 
 namespace ew.application
@@ -7,7 +8,7 @@ namespace ew.application
     {
         EwhWebsite EwhWebsiteAdded { get; }
 
-        bool CreateWebsite();
+        bool CreateWebsite(CreateWebsiteDto dto);
         EwhWebsite GetEwhWebsite(string id);
         List<EwhWebsite> GetListEwhWebsite();
     }

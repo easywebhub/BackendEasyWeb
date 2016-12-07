@@ -6,9 +6,17 @@ using System.Threading.Tasks;
 
 namespace ew.application.Entities.Dto
 {
+    public class CreateWebsiteDto
+    {
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public string Url { get; set; }
+        public List<AddWebsiteAccountDto> Accounts { get; set; }
+    }
+
     public class UpdateDeploymentEnvironmentToWebsite
     {
-        public string WebsiteId { get; set; } // Add/Update/Remove
+        //public string WebsiteId { get; set; } // Add/Update/Remove
         public string EnviromentId { get; set; }
         public string Name { get; set; }
         public string HostingFee { get; set; }
@@ -19,7 +27,7 @@ namespace ew.application.Entities.Dto
 
     public class UpdateAccountAccessLevelToWebsite
     {
-        public string WebsiteId { get; set; }
+        //public string WebsiteId { get; set; }
         public string AccountId { get; set; }
         public List<string> AccessLevels { get; set; }
 

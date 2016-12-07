@@ -48,14 +48,14 @@ namespace ew.web.Controllers
             return Json(web, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult AddWebsite()
-        {
-            if (_websiteManager.CreateWebsite())
-            {
-                return Json(_websiteManager.EwhWebsiteAdded, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new { Status= _websiteManager.EwhStatus, Ex = _websiteManager.EwhException, Msg = _websiteManager.EwhErrorMessage }, JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult AddWebsite()
+        //{
+        //    if (_websiteManager.CreateWebsite())
+        //    {
+        //        return Json(_websiteManager.EwhWebsiteAdded, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json(new { Status= _websiteManager.EwhStatus, Ex = _websiteManager.EwhException, Msg = _websiteManager.EwhErrorMessage }, JsonRequestBehavior.AllowGet);
+        //}
 
         public JsonResult CreateAccount()
         {
@@ -69,7 +69,7 @@ namespace ew.web.Controllers
         [HttpPost]
         public JsonResult UpdateAccessLevel(UpdateAccountAccessLevelToWebsite model)
         {
-            var ewhWebsite = _websiteManager.GetEwhWebsite(model.WebsiteId);
+            var ewhWebsite = _websiteManager.GetEwhWebsite("");//model.WebsiteId);
             if (ewhWebsite.UpdateAccessLevel(model))
             {
                 return Json(ewhWebsite, JsonRequestBehavior.AllowGet);
@@ -79,7 +79,7 @@ namespace ew.web.Controllers
 
         public JsonResult AddStagging(UpdateDeploymentEnvironmentToWebsite dto)
         {
-            var ewhWebsite = _websiteManager.GetEwhWebsite(dto.WebsiteId);
+            var ewhWebsite = _websiteManager.GetEwhWebsite("");// dto.WebsiteId);
             if (ewhWebsite.AddStagging(dto))
             {
                 return Json(ewhWebsite, JsonRequestBehavior.AllowGet);
@@ -91,7 +91,7 @@ namespace ew.web.Controllers
 
         public JsonResult RemoveStagging(UpdateDeploymentEnvironmentToWebsite dto)
         {
-            var ewhWebsite = _websiteManager.GetEwhWebsite(dto.WebsiteId);
+            var ewhWebsite = _websiteManager.GetEwhWebsite("");// dto.WebsiteId);
             if (ewhWebsite.RemoveStaging(dto.EnviromentId))
             {
                 return Json(ewhWebsite, JsonRequestBehavior.AllowGet);
@@ -104,7 +104,7 @@ namespace ew.web.Controllers
 
         public JsonResult AddProduction(UpdateDeploymentEnvironmentToWebsite dto)
         {
-            var ewhWebsite = _websiteManager.GetEwhWebsite(dto.WebsiteId);
+            var ewhWebsite = _websiteManager.GetEwhWebsite("");// dto.WebsiteId);
             if (ewhWebsite.AddProduction(dto))
             {
                 return Json(ewhWebsite, JsonRequestBehavior.AllowGet);
@@ -117,7 +117,7 @@ namespace ew.web.Controllers
 
         public JsonResult RemoveProduction(UpdateDeploymentEnvironmentToWebsite dto)
         {
-            var ewhWebsite = _websiteManager.GetEwhWebsite(dto.WebsiteId);
+            var ewhWebsite = _websiteManager.GetEwhWebsite("");// dto.WebsiteId);
             if (ewhWebsite.RemoveProduction(dto.EnviromentId))
             {
                 return Json(ewhWebsite, JsonRequestBehavior.AllowGet);
@@ -131,7 +131,8 @@ namespace ew.web.Controllers
         public JsonResult AddWebsiteAccount(string wId, string uId)
         {
             var ewhWebsite = _websiteManager.GetEwhWebsite(wId);
-            if(ewhWebsite.AddAccount(new application.Entities.Dto.AddWebsiteAccountDto() { AccountId = uId, WebsiteId = wId, AccessLevels = new List<string>() { "dev", "test" }, WebsiteDisplayName = "My web" }))
+            //if(ewhWebsite.AddAccount(new application.Entities.Dto.AddWebsiteAccountDto() { AccountId = uId, WebsiteId = wId, AccessLevels = new List<string>() { "dev", "test" }, WebsiteDisplayName = "My web" }))
+            if (ewhWebsite.AddAccount(new application.Entities.Dto.AddWebsiteAccountDto() { AccountId = uId, AccessLevels = new List<string>() { "dev", "test" }, WebsiteDisplayName = "My web" }))
             {
                 return Json(ewhWebsite.GetListAccount(), JsonRequestBehavior.AllowGet);
             }

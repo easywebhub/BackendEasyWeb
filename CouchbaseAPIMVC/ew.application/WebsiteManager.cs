@@ -25,16 +25,12 @@ namespace ew.application
 
         public EwhWebsite EwhWebsiteAdded { get; private set; }
 
-        public bool CreateWebsite()
+        public bool CreateWebsite(CreateWebsiteDto dto)
         {
             var ewhWebsite = new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
-            var date = DateTime.Now.ToString();
-            ewhWebsite.Name = "name " + date;
-            ewhWebsite.DisplayName = "d name " + date;
-            ewhWebsite.Url = "url " + date;
+            _ewhMapper.ToEntity(ewhWebsite, dto);
             var check = false;
-
-            if (ewhWebsite.Save())
+            if (ewhWebsite.Create())
             {
                 check = true;
                 EwhWebsiteAdded = ewhWebsite;

@@ -24,6 +24,7 @@ namespace ew.infrastructure.Repositories
             //var website = Get(dto.Website.Id);
             var website = dto.Website;
             if (website == null) return false;
+            if (website.Accounts.Any(x => x.AccountId == dto.Account.Id)) return true;
             if (website.Accounts == null) website.Accounts = new List<WebsiteAccountAccessLevel>();
             website.Accounts.Add(new WebsiteAccountAccessLevel() { AccountId = dto.Account.Id, AccessLevels = dto.AccessLevels });
             this.AddOrUpdate(website);

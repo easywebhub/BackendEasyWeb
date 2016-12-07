@@ -23,7 +23,7 @@ namespace ew.application.Entities.Dto
 
     public class AddWebsiteAccountDto
     {
-        public string WebsiteId { get; set; }
+        //public string WebsiteId { get; set; }
         public string AccountId { get; set; }
         public List<string> AccessLevels { get; set; }
         public string WebsiteDisplayName { get; set; }

@@ -17,9 +17,9 @@ namespace ew.application.Entities
     public class EwhWebsite : EwhEntityBase
     {
         private readonly IAccountService _accountService;
+        private readonly IWebsiteService _websiteService;
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
-        private readonly IWebsiteService _websiteService;
         private readonly IEwhMapper _ewhMapper;
         public EwhWebsite(IAccountService accountService, IEwhMapper ewhMapper)
         {
@@ -58,7 +58,7 @@ namespace ew.application.Entities
         public string Url { get; set; }
         public List<DeploymentEnvironment> Stagging { get; private set; }
         public List<DeploymentEnvironment> Production { get; private set; }
-        public List<WebsiteAccountAccessLevel> Accounts { get; private set; }
+        public List<WebsiteAccountAccessLevel> Accounts { get; set; }
 
 
         //private List<EwhAccount> _ewhAccounts { get; set; }
@@ -93,6 +93,24 @@ namespace ew.application.Entities
         public bool Save()
         {
             _websiteRepository.AddOrUpdate(_ewhMapper.ToEntity(_website, this));
+            WebsiteId = _website.Id;
+            return true;
+        }
+
+        public bool Create()
+        {
+            _websiteRepository.AddOrUpdate(_ewhMapper.ToEntity(_website, this));
+            WebsiteId = _website.Id;
+            if(_website.Accounts!=null && _website.Accounts.Any())
+            {
+                var accList = new WebsiteAccountAccessLevel[_website.Accounts.Count];
+                _website.Accounts.CopyTo(accList);
+                foreach(var acc in accList)
+                {
+                    var addWebsiteAccount = new AddWebsiteAccountDto() { AccessLevels = acc.AccessLevels, AccountId = acc.AccountId, WebsiteDisplayName = _website.DisplayName };
+                    this.AddAccount(addWebsiteAccount);
+                }
+            }
             return true;
         }
 
