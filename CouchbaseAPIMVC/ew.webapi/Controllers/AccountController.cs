@@ -1,0 +1,186 @@
+﻿using ew.application;
+using ew.application.Entities;
+using ew.application.Entities.Dto;
+using ew.core.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace ew.webapi.Controllers
+{
+    /// <summary>
+    /// Tài khoản
+    /// </summary>
+    [RoutePrefix("users")]
+    public class AccountController : BaseApiController
+    {
+        private readonly IWebsiteManager _websiteManager;
+        private readonly IAccountManager _accountManager;
+
+        public AccountController(IWebsiteManager websiteManager, IAccountManager accountManager)
+        {
+            _websiteManager = websiteManager;
+            _accountManager = accountManager;
+        }
+
+        /// <summary>
+        /// Lấy danh sách tài khoản
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public IHttpActionResult Users()
+        {
+            var data = _accountManager.GetListAccount();
+            return Ok(data);
+        }
+
+        /// <summary>
+        /// Tạo mới tài khoản
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("")]
+        public IHttpActionResult CreateUser(AddAccountDto dto)
+        {
+            if (!ModelState.IsValid) return InvalidRequest();
+
+            if (_accountManager.CreateAccount(dto))
+            {
+                return Ok(_accountManager.EwhAccountAdded);
+            }else
+            {
+                return NoOK(_accountManager as EwhEntityBase);
+            }
+        }
+
+
+        /// <summary>
+        /// Lấy thông tin chi tiết của 1 tài khoản
+        /// </summary>
+        /// <param name="userId">id của tài khoản</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{userId}")]
+        public IHttpActionResult Users(string userId)
+        {
+            var data = _accountManager.GetEwhAccount(userId);
+            if (data == null) return NotFound();
+            return Ok(data);
+        }
+
+
+        /// <summary>
+        /// Chỉnh sửa thông tin của 1 tài khoản
+        /// </summary>
+        /// <param name="userId">id tài khoản</param>
+        /// <param name="dto">thông tin tài khoản</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{userId}")]
+        public IHttpActionResult UpdateUserInfo(string userId, AccountInfo dto)
+        {
+            if (!ModelState.IsValid) return InvalidRequest();
+            var ewhAccount = _accountManager.GetEwhAccount(userId);
+            if (ewhAccount == null) return NotFound();
+            if (ewhAccount.UpdateInfo(dto))
+            {
+                return Ok();
+            }else
+            {
+                return NoOK(ewhAccount);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách website được quản trị bởi tài khoản
+        /// </summary>
+        /// <param name="userId">id của tài khoản</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{userId}/websites")]
+        public IHttpActionResult GetWebsitesOfUser(string userId)
+        {
+            var account = _accountManager.GetEwhAccount(userId);
+            
+            if (account == null) return NotFound();
+            return Ok(account.GetListWebsite());
+        }
+
+        /// <summary>
+        /// Thêm quyền quản trị 1 website cho 1 tài khoản
+        /// </summary>
+        /// <param name="userId">id tài khoản</param>
+        /// <param name="websiteId">id website</param>
+        /// <param name="dto">Thông tin phân quyền</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{userId}/websites/{websiteId}")]
+        public IHttpActionResult AddWebsiteAccount(string userId, string websiteId, AddWebsiteAccountDto dto)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+
+            dto.AccountId = userId;
+            //dto.WebsiteId = websiteId;
+            if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
+            if (ewhWebsite.AddAccount(dto))
+            {
+                return NoContext();
+            }
+            return NoOK(ewhWebsite);
+        }
+
+        /// <summary>
+        /// Chỉnh sửa quyền quản trị 1 website của tài khoản
+        /// </summary>
+        /// <param name="userId">id của tài khoản</param>
+        /// <param name="websiteId">id của website</param>
+        /// <param name="dto">thông tin phần quyền</param>
+        /// <returns></returns>
+        [HttpPut, HttpPatch]
+        [Route("{userId}/websites/{websiteId}")]
+        public IHttpActionResult UpdateWebsiteAccessLevel(string userId, string websiteId, UpdateAccountAccessLevelToWebsite dto)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+
+            dto.AccountId = userId;
+            //dto.WebsiteId = websiteId;
+            if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
+            if (ewhWebsite.UpdateAccessLevel(dto))
+            {
+                return NoContext();
+            }
+            return NoOK(ewhWebsite);
+        }
+        
+
+        /// <summary>
+        /// Xóa quyền quản trị website của tài khoản
+        /// </summary>
+        /// <param name="userId">id tài khoản</param>
+        /// <param name="websiteId">id của website</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{userId}/websites/{websiteId}")]
+        public IHttpActionResult RemoveWebsiteAccount(string userId, string websiteId)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+
+            if (ewhWebsite.RemoveAccount(userId))
+            {
+                return NoContext();
+            }
+            return NoOK(ewhWebsite);
+        }
+
+
+
+
+    }
+}
