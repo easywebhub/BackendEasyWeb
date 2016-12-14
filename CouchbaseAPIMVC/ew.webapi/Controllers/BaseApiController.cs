@@ -31,6 +31,24 @@ namespace ew.webapi.Controllers
             return x;
         }
 
+        protected IHttpActionResult Pagination<T>(T data,int totalItems = 0, int limit = 20, int page = 1)
+        {
+            var x = new System.Web.Http.Results.ResponseMessageResult(
+                Request.CreateResponse(HttpStatusCode.OK, data)
+            );
+
+            int totalPage = totalItems / limit;
+            totalPage = totalItems % limit == 0 ? totalPage : (totalPage + 1);
+
+            x.Response.Headers.Add(EwHeaders.X_Status, HttpStatusCode.OK.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_TotalItems, totalItems.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_Limit, limit.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_Count, totalPage.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_Page, page.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Status, HttpStatusCode.OK.ToString());
+            return x;
+        }
+
         protected IHttpActionResult NoOK()
         {
             return NoOK("Something goes wrong");

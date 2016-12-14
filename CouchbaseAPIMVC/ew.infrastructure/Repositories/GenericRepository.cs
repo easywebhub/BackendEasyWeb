@@ -29,7 +29,7 @@ namespace ew.infrastructure.Repositories
                .ScanConsistency(ScanConsistency.RequestPlus)   // waiting for the indexing to complete before it returns a response
                ;
         }
-
+        
         public List<T> GetList(List<string> ids)
         {
             return FindAll().Where(x => ids.Contains(x.Id)).ToList();   // waiting for the indexing to complete before it returns a response

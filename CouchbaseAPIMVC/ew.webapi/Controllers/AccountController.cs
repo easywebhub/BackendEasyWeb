@@ -2,6 +2,7 @@
 using ew.application.Entities;
 using ew.application.Entities.Dto;
 using ew.core.Users;
+using ew.webapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,10 @@ namespace ew.webapi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult Users()
+        public IHttpActionResult Users(int limit = 20, int page = 1)
         {
-            var data = _accountManager.GetListAccount();
-            return Ok(data);
+            var data = _accountManager.GetListAccount(new core.Dtos.AccountQueryParams() { Limit = limit, Offset = (page - 1) * limit }).ToList();
+            return Pagination(data.Select(x => new AccountInfoDto(x)).ToList(), _accountManager.EwhCount, limit, page);
         }
 
         /// <summary>
@@ -51,7 +52,8 @@ namespace ew.webapi.Controllers
             if (_accountManager.CreateAccount(dto))
             {
                 return Ok(_accountManager.EwhAccountAdded);
-            }else
+            }
+            else
             {
                 return NoOK(_accountManager as EwhEntityBase);
             }
@@ -69,7 +71,7 @@ namespace ew.webapi.Controllers
         {
             var data = _accountManager.GetEwhAccount(userId);
             if (data == null) return NotFound();
-            return Ok(data);
+            return Ok(new AccountDetailDto(data));
         }
 
 
@@ -89,7 +91,8 @@ namespace ew.webapi.Controllers
             if (ewhAccount.UpdateInfo(dto))
             {
                 return Ok();
-            }else
+            }
+            else
             {
                 return NoOK(ewhAccount);
             }
@@ -105,9 +108,9 @@ namespace ew.webapi.Controllers
         public IHttpActionResult GetWebsitesOfUser(string userId)
         {
             var account = _accountManager.GetEwhAccount(userId);
-            
+
             if (account == null) return NotFound();
-            return Ok(account.GetListWebsite());
+            return Ok(account.GetListWebsite().Select(x => new WebsiteInfoDto(x)).ToList());
         }
 
         /// <summary>
@@ -157,7 +160,7 @@ namespace ew.webapi.Controllers
             }
             return NoOK(ewhWebsite);
         }
-        
+
 
         /// <summary>
         /// Xóa quyền quản trị website của tài khoản

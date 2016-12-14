@@ -1,6 +1,7 @@
 ﻿using ew.application.Entities;
 using ew.application.Entities.Dto;
 using ew.application.Services;
+using ew.core.Dtos;
 using ew.core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -57,9 +58,15 @@ namespace ew.application
         }
 
 
-        public List<EwhAccount> GetListAccount()
+        public List<EwhAccount> GetListAccount(AccountQueryParams queryParams = null )
         {
-            return _ewhMapper.ToEwhAccounts(_accountRepository.FindAll().ToList());
+            if (queryParams == null) queryParams = new AccountQueryParams();
+            var query = _accountRepository.Find(queryParams);
+            this.EwhCount = query.Count();
+            query = query.Skip(queryParams.Offset).Take(queryParams.Limit);
+            return _ewhMapper.ToEwhAccounts(query.ToList());
         }
+
+
     }
 }

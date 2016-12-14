@@ -31,6 +31,13 @@ namespace ew.infrastructure.Repositories
             return true;
         }
 
+        public IQueryable<Account> Find(EntityQueryParams queryParams)
+        {
+            var sql = FindAll();
+            
+            return sql;
+        }
+
         public bool IsExitsUserName(string username)
         {
             return this.FindAll().Any(x => x.UserName == username);

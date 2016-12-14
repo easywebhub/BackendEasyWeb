@@ -8,5 +8,7 @@ namespace ew.application.Entities
         string EwhErrorMessage { get; set; }
         Exception EwhException { get; set; }
         GlobalStatus EwhStatus { get; set; }
+
+        int EwhCount { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ew.application;
 using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.webapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace ew.webapi.Controllers
     /// <summary>
     /// Website
     /// </summary>
-    [RoutePrefix("Websites")]
+    [RoutePrefix("websites")]
     public class WebsiteController : BaseApiController
     {
         private readonly IWebsiteManager _websiteManager;
@@ -35,7 +36,7 @@ namespace ew.webapi.Controllers
         {
             var data = _websiteManager.GetListEwhWebsite();
 
-            return Ok(data);
+            return Ok(data.Select(x=>new WebsiteInfoDto(x)).ToList());
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace ew.webapi.Controllers
             {
                 if (_websiteManager.CreateWebsite(dto))
                 {
-                    return Ok(_websiteManager.EwhWebsiteAdded);
+                    return Ok(new WebsiteInfoDto(_websiteManager.EwhWebsiteAdded));
                 }
                 return NoOK(_websiteManager as EwhEntityBase);
             }
@@ -69,7 +70,7 @@ namespace ew.webapi.Controllers
         {
             var data = _websiteManager.GetEwhWebsite(websiteId);
             if (data == null) return NotFound();
-            return Ok(data);
+            return Ok(new WebsiteDetailDto(data));
         }
 
         /// <summary>
@@ -83,7 +84,7 @@ namespace ew.webapi.Controllers
         {
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
-            return Ok(ewhWebsite.GetListAccount());
+            return Ok(ewhWebsite.GetListAccount().Select(x=>new AccountInfoDto(x)).ToList());
         }
 
         /// <summary>

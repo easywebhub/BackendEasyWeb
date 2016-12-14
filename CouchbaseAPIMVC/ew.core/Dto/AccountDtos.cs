@@ -22,4 +22,9 @@ namespace ew.core.Dtos
         public Website Website { get; set; }
         public Account Account { get; set; }
     }
+
+    public class AccountQueryParams : EntityQueryParams
+    {
+        
+    }
 }

@@ -57,14 +57,14 @@ namespace ew.web.Controllers
         //    return Json(new { Status= _websiteManager.EwhStatus, Ex = _websiteManager.EwhException, Msg = _websiteManager.EwhErrorMessage }, JsonRequestBehavior.AllowGet);
         //}
 
-        public JsonResult CreateAccount()
-        {
-            if (_accountManager.CreateAccount())
-            {
-                return Json(_accountManager.EwhAccountAdded, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new { Status = _accountManager.EwhStatus.ToString(), Ex = _accountManager.EwhException, Msg = _accountManager.EwhErrorMessage }, JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult CreateAccount()
+        //{
+        //    if (_accountManager.CreateAccount())
+        //    {
+        //        return Json(_accountManager.EwhAccountAdded, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json(new { Status = _accountManager.EwhStatus.ToString(), Ex = _accountManager.EwhException, Msg = _accountManager.EwhErrorMessage }, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpPost]
         public JsonResult UpdateAccessLevel(UpdateAccountAccessLevelToWebsite model)
