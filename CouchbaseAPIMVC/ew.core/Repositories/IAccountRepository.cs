@@ -12,6 +12,7 @@ namespace ew.core.Repositories
     {
         IQueryable<Account> Find(EntityQueryParams queryParams);
         bool IsExitsUserName(string username);
+        Account GetByUsername(string username);
         bool AddWebsite(AddWebsiteAccountModel dto);
         bool RemoveWebsite(RemoveWebsiteAccountModel dto);
     }

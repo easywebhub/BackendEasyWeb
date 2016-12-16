@@ -82,6 +82,7 @@
     <Compile Include="Services\AuthService.cs" />
     <Compile Include="Services\EwhMapper.cs" />
     <Compile Include="Services\IAccountService.cs" />
+    <Compile Include="Services\IAuthService.cs" />
     <Compile Include="Services\IEwhMapper.cs" />
     <Compile Include="Services\IWebsiteService.cs" />
     <Compile Include="Services\RoleService.cs" />

@@ -82,6 +82,7 @@
     <Compile Include="Dto\AccountDtos.cs" />
     <Compile Include="Dto\WebsiteDtos.cs" />
     <Compile Include="EntityQueryParams.cs" />
+    <Compile Include="Enums\AccountStatus.cs" />
     <Compile Include="Enums\DeploymentEnviromentTypes.cs" />
     <Compile Include="Enums\EwHeaders.cs" />
     <Compile Include="Enums\GlobalStatus.cs" />

@@ -38,6 +38,11 @@ namespace ew.infrastructure.Repositories
             return sql;
         }
 
+        public Account GetByUsername(string username)
+        {
+            return FindAll().Where(x => x.UserName == username).FirstOrDefault();
+        }
+
         public bool IsExitsUserName(string username)
         {
             return this.FindAll().Any(x => x.UserName == username);

@@ -18,6 +18,8 @@ namespace ew.core.Enums
         NotFound,
         AlreadyExists,
 
+        Account_Username_NotFound,
+
         Account_NotFound,
         Account_Unauthorized,
         Account_IsLocked,

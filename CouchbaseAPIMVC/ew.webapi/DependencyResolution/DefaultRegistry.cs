@@ -54,8 +54,10 @@ namespace ew.webapi.DependencyResolution {
             For<IAccountManager>().Use<AccountManager>();
 
             For<IEwhMapper>().Use<EwhMapper>();
+            For<IAuthService>().Use<AuthService>();
             For<IAccountService>().Use<AccountService>();
             For<IWebsiteService>().Use<WebsiteService>();
+            
         }
 
         #endregion
