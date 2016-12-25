@@ -102,8 +102,8 @@
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Octokit, Version=0.23.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -315,6 +315,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AuthDtos.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\SourceDtos.cs" />
     <Compile Include="Models\WebsiteDtos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -396,6 +397,10 @@
     <ProjectReference Include="..\ew.application\ew.application.csproj">
       <Project>{CE64DB45-FD1B-4DAA-A965-3AE0B869AAA7}</Project>
       <Name>ew.application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ew.common\ew.common.csproj">
+      <Project>{4B05811F-36A8-4DF4-8D67-28F3A685DBAF}</Project>
+      <Name>ew.common</Name>
     </ProjectReference>
     <ProjectReference Include="..\ew.core\ew.core.csproj">
       <Project>{9FFE5002-974C-457D-B01F-8CC37926997E}</Project>

@@ -1,4 +1,7 @@
-﻿using Microsoft.ApplicationInsights.Extensibility.Implementation;
+﻿using ew.application;
+using ew.common.Helper;
+using ew.webapi.Models;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Octokit;
 using RestSharp;
 using System;
@@ -11,8 +14,19 @@ using System.Web.Http;
 
 namespace ew.webapi.Controllers
 {
-    public class GitHubController : ApiController
+    [RoutePrefix("sources")]
+    public class GitHubController : BaseApiController
     {
+        private readonly IWebsiteManager _websiteManager;
+        private readonly IAccountManager _accountManager;
+
+        public GitHubController(IWebsiteManager websiteManager, IAccountManager accountManager)
+        {
+            _websiteManager = websiteManager;
+            _accountManager = accountManager;
+        }
+
+
         [HttpGet]
         public async Task<string> Test()
         {
@@ -72,5 +86,57 @@ namespace ew.webapi.Controllers
         //    }
         //    return "False";
         //}
+
+        private string GogsBaseUrl = "http://212.47.253.180:7000/";
+
+        [Route("repositories")]
+        [HttpPost]
+        public IHttpActionResult CreateRepository(CreateRepositoryDto dto)
+        {
+            if (!ModelState.IsValid) return InvalidRequest();
+            var ewhAccount = _accountManager.GetEwhAccount(dto.AccountId);
+            if (ewhAccount == null) return NotFound();
+
+            var _client = new RestClient(GogsBaseUrl);
+            var request = new RestRequest("repos", Method.POST) { RequestFormat = DataFormat.Json };
+            //request.AddHeader("Authorization", "06272372527cf531fa0535ccbb33faf0fa2a2d9f");
+            request.AddBody(new { username = ewhAccount.UserName, repositoryName = dto.RepositoryName });
+            var response = _client.Execute(request);
+            if (response != null && response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(JsonHelper.DeserializeObject(response.Content));
+            }
+            return NoOK();
+        }
+
+        //[Route("repositories")]
+        //[HttpGet]
+        //public IHttpActionResult GetRepositories(int limit = 20, int page = 1)
+        //{
+        //    var data = _accountManager.GetListAccount(new core.Dtos.AccountQueryParams() { Limit = limit, Offset = (page - 1) * limit }).ToList();
+        //    return Pagination(data.Select(x => new AccountInfoDto(x)).ToList(), _accountManager.EwhCount, limit, page);
+        //}
+
+        [Route("repositories/users/{userId}")]
+        [HttpGet]
+        public IHttpActionResult GetUserRepositories(string userId, int limit = 20, int page = 1)
+        {
+            if (!ModelState.IsValid) return InvalidRequest();
+            var ewhAccount = _accountManager.GetEwhAccount(userId);
+            if (ewhAccount == null) return NotFound();
+
+            var _client = new RestClient(GogsBaseUrl);
+            var request = new RestRequest("repos/"+ewhAccount.UserName, Method.GET) { RequestFormat = DataFormat.Json };
+            //request.AddHeader("Authorization", "06272372527cf531fa0535ccbb33faf0fa2a2d9f");
+            
+            var response = _client.Execute(request);
+            if (response != null && response.StatusCode == HttpStatusCode.OK)
+            {
+                return Pagination(JsonHelper.DeserializeObject(response.Content), 1, limit, page);
+            }
+            return NoOK();
+        }
+
+        
     }
 }
