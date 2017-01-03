@@ -24,12 +24,12 @@ namespace ew.webapi.Controllers
         [Route("signin")]
         public IHttpActionResult SignIn(SignInDto dto)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
             if(_authService.CheckUserAuth(dto.Username, dto.Password))
             {
                 return Ok(new AccountInfoDto(_authService.AuthorizedAccount()));
             }
-            return NoOK(_authService as EwhEntityBase);
+            return ServerError(_authService as EwhEntityBase);
         }
 
 
