@@ -7,9 +7,11 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Results;
 using ew.application.Entities;
+using System.Web.Http.Cors;
 
 namespace ew.webapi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class BaseApiController : ApiController
     {
         protected StatusCodeResult NoContext()
