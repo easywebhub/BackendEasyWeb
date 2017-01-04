@@ -1,5 +1,6 @@
 ﻿using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.common.Entities;
 using System.Collections.Generic;
 
 namespace ew.application

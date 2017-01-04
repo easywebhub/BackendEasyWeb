@@ -1,5 +1,6 @@
 ﻿using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.common.Entities;
 using ew.core.Dtos;
 using System.Collections.Generic;
 

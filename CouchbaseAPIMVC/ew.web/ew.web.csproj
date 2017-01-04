@@ -352,6 +352,10 @@
       <Project>{CE64DB45-FD1B-4DAA-A965-3AE0B869AAA7}</Project>
       <Name>ew.application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ew.common\ew.common.csproj">
+      <Project>{4B05811F-36A8-4DF4-8D67-28F3A685DBAF}</Project>
+      <Name>ew.common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ew.core\ew.core.csproj">
       <Project>{9FFE5002-974C-457D-B01F-8CC37926997E}</Project>
       <Name>ew.core</Name>

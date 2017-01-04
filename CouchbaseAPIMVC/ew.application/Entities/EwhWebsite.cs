@@ -1,6 +1,7 @@
 ﻿using ew.application.Entities.Dto;
 using ew.application.Helpers;
 using ew.application.Services;
+using ew.common.Entities;
 using ew.core;
 using ew.core.Dto;
 using ew.core.Dtos;
@@ -56,6 +57,9 @@ namespace ew.application.Entities
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Url { get; set; }
+        public string WebTemplateId { get; set; }
+        public string Source { get; set; }
+        public string WebsiteType { get; set; }
         public List<DeploymentEnvironment> Stagging { get; private set; }
         public List<DeploymentEnvironment> Production { get; private set; }
         public List<WebsiteAccountAccessLevel> Accounts { get; set; }
@@ -223,6 +227,9 @@ namespace ew.application.Entities
             Stagging = website.Stagging ?? new List<DeploymentEnvironment>();
             Production = website.Production ?? new List<DeploymentEnvironment>();
             Accounts = website.Accounts ?? new List<WebsiteAccountAccessLevel>();
+            this.WebTemplateId = website.WebTemplateId;
+            this.Source = website.Source;
+            this.WebsiteType = website.WebsiteType;
         }
 
         #endregion

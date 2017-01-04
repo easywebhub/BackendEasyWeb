@@ -8,6 +8,7 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using ew.application.Entities;
 using System.Web.Http.Cors;
+using ew.common.Entities;
 
 namespace ew.webapi.Controllers
 {

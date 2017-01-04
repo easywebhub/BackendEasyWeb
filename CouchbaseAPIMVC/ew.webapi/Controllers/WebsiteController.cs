@@ -1,6 +1,7 @@
 ﻿using ew.application;
 using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.common.Entities;
 using ew.webapi.Models;
 using System;
 using System.Collections.Generic;

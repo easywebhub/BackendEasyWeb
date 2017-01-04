@@ -12,6 +12,7 @@ namespace ew.application.Entities.Dto
         public string DisplayName { get; set; }
         public string Url { get; set; }
         public List<AddWebsiteAccountDto> Accounts { get; set; }
+        public string WebTemplateId { get; set; }
     }
 
     public class UpdateDeploymentEnvironmentToWebsite

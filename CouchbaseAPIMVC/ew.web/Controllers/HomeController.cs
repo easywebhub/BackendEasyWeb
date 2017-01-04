@@ -155,9 +155,9 @@ namespace ew.web.Controllers
             return Json(websites, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetListAccount()
-        {
-            return Json(_accountManager.GetListAccount(), JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult GetListAccount()
+        //{
+        //    return Json(_accountManager.GetListAccount(), JsonRequestBehavior.AllowGet);
+        //}
     }
 }

@@ -108,6 +108,9 @@ namespace ew.application.Services
             website.Stagging = ewhWebsite.Stagging;
             website.Production = ewhWebsite.Production;
             website.Accounts = ewhWebsite.Accounts;
+            website.WebTemplateId = ewhWebsite.WebTemplateId;
+            website.WebsiteType = ewhWebsite.WebsiteType;
+            website.Source = ewhWebsite.Source;
             return website;
         }
 

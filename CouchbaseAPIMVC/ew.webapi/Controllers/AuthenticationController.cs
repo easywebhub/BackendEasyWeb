@@ -1,5 +1,6 @@
 ﻿using ew.application.Entities;
 using ew.application.Services;
+using ew.common.Entities;
 using ew.webapi.Models;
 using System;
 using System.Collections.Generic;

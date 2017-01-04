@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ew.application.Entities
+namespace ew.common.Entities
 {
     public abstract class EwhEntityBase : IEwhEntityBase
     {
@@ -21,10 +21,10 @@ namespace ew.application.Entities
         protected void SyncStatus(EwhEntityBase d, EwhEntityBase s)
         {
             d.EwhStatus = s.EwhStatus;
-            d.EwhErrorMessage= s.EwhErrorMessage;
+            d.EwhErrorMessage = s.EwhErrorMessage;
             d.EwhException = s.EwhException;
             d.ValidateResults = s.ValidateResults;
-            
+
         }
     }
 }

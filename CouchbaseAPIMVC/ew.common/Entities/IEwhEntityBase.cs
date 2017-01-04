@@ -1,7 +1,11 @@
-﻿using System;
-using ew.core.Enums;
+﻿using ew.core.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ew.application.Entities
+namespace ew.common.Entities
 {
     public interface IEwhEntityBase
     {

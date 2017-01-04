@@ -25,7 +25,9 @@ namespace ew.core
         public string Url { get; set; }
         public List<DeploymentEnvironment> Stagging { get; set; }
         public List<DeploymentEnvironment> Production { get; set; }
-
+        public string WebTemplateId { get; set; }
+        public string Source { get; set; }
+        public string WebsiteType { get; set; }
     }
 
     public class WebsiteIdentity

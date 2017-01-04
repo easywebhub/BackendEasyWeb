@@ -1,6 +1,7 @@
 ﻿using ew.application.Entities.Dto;
 using ew.application.Helpers;
 using ew.application.Services;
+using ew.common.Entities;
 using ew.common.Helper;
 using ew.core;
 using ew.core.Repositories;

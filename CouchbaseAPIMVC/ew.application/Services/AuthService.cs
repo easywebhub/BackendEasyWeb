@@ -1,4 +1,5 @@
 ﻿using ew.application.Entities;
+using ew.common.Entities;
 using ew.common.Helper;
 using ew.core.Enums;
 using ew.core.Repositories;
