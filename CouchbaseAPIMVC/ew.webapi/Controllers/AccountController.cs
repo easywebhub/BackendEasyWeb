@@ -47,7 +47,7 @@ namespace ew.webapi.Controllers
         [Route("")]
         public IHttpActionResult CreateUser(AddAccountDto dto)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
 
             if (_accountManager.CreateAccount(dto))
             {
@@ -55,7 +55,7 @@ namespace ew.webapi.Controllers
             }
             else
             {
-                return NoOK(_accountManager as EwhEntityBase);
+                return ServerError(_accountManager as EwhEntityBase);
             }
         }
 
@@ -85,7 +85,7 @@ namespace ew.webapi.Controllers
         [Route("{userId}")]
         public IHttpActionResult UpdateUserInfo(string userId, AccountInfo dto)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
             var ewhAccount = _accountManager.GetEwhAccount(userId);
             if (ewhAccount == null) return NotFound();
             if (ewhAccount.UpdateInfo(dto))
@@ -94,7 +94,7 @@ namespace ew.webapi.Controllers
             }
             else
             {
-                return NoOK(ewhAccount);
+                return ServerError(ewhAccount);
             }
         }
 
@@ -132,9 +132,9 @@ namespace ew.webapi.Controllers
             if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
             if (ewhWebsite.AddAccount(dto))
             {
-                return NoContext();
+                return NoContent();
             }
-            return NoOK(ewhWebsite);
+            return ServerError(ewhWebsite);
         }
 
         /// <summary>
@@ -156,9 +156,9 @@ namespace ew.webapi.Controllers
             if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
             if (ewhWebsite.UpdateAccessLevel(dto))
             {
-                return NoContext();
+                return NoContent();
             }
-            return NoOK(ewhWebsite);
+            return ServerError(ewhWebsite);
         }
 
 
@@ -177,9 +177,9 @@ namespace ew.webapi.Controllers
 
             if (ewhWebsite.RemoveAccount(userId))
             {
-                return NoContext();
+                return NoContent();
             }
-            return NoOK(ewhWebsite);
+            return ServerError(ewhWebsite);
         }
 
 

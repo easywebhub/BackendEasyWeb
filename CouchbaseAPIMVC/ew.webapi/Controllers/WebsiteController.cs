@@ -54,9 +54,9 @@ namespace ew.webapi.Controllers
                 {
                     return Ok(new WebsiteInfoDto(_websiteManager.EwhWebsiteAdded));
                 }
-                return NoOK(_websiteManager as EwhEntityBase);
+                return ServerError(_websiteManager as EwhEntityBase);
             }
-            return InvalidRequest();
+            return BadRequest();
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace ew.webapi.Controllers
         [Route("{websiteId}/staggings")]
         public IHttpActionResult AddStagging(string websiteId, UpdateDeploymentEnvironmentToWebsite dto)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
 
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
@@ -121,7 +121,7 @@ namespace ew.webapi.Controllers
             }
             else
             {
-                return NoOK(ewhWebsite);
+                return ServerError(ewhWebsite);
             }
         }
 
@@ -136,7 +136,7 @@ namespace ew.webapi.Controllers
         [Route("{websiteId}/staggings/{staggingId}")]
         public IHttpActionResult RemoveStagging(string websiteId, string staggingId)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
 
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
@@ -146,7 +146,7 @@ namespace ew.webapi.Controllers
             }
             else
             {
-                return NoOK(ewhWebsite);
+                return ServerError(ewhWebsite);
             }
         }
 
@@ -175,7 +175,7 @@ namespace ew.webapi.Controllers
         [Route("{websiteId}/productions")]
         public IHttpActionResult AddProduction(string websiteId, UpdateDeploymentEnvironmentToWebsite dto)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
 
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
@@ -185,7 +185,7 @@ namespace ew.webapi.Controllers
             }
             else
             {
-                return NoOK(ewhWebsite);
+                return ServerError(ewhWebsite);
             }
         }
 
@@ -200,7 +200,7 @@ namespace ew.webapi.Controllers
         [Route("{websiteId}/productions/{productionId}")]
         public IHttpActionResult RemoveProduction(string websiteId, string productionId)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
 
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
@@ -210,7 +210,7 @@ namespace ew.webapi.Controllers
             }
             else
             {
-                return NoOK(ewhWebsite);
+                return ServerError(ewhWebsite);
             }
         }
 

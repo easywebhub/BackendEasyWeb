@@ -93,7 +93,7 @@ namespace ew.webapi.Controllers
         [HttpPost]
         public IHttpActionResult CreateRepository(CreateRepositoryDto dto)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
             var ewhAccount = _accountManager.GetEwhAccount(dto.AccountId);
             if (ewhAccount == null) return NotFound();
 
@@ -121,7 +121,7 @@ namespace ew.webapi.Controllers
         [HttpGet]
         public IHttpActionResult GetUserRepositories(string userId, int limit = 20, int page = 1)
         {
-            if (!ModelState.IsValid) return InvalidRequest();
+            if (!ModelState.IsValid) return BadRequest();
             var ewhAccount = _accountManager.GetEwhAccount(userId);
             if (ewhAccount == null) return NotFound();
 

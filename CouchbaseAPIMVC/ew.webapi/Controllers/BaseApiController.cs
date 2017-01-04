@@ -14,12 +14,12 @@ namespace ew.webapi.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class BaseApiController : ApiController
     {
-        protected StatusCodeResult NoContext()
+        protected StatusCodeResult NoContent()
         {
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        protected IHttpActionResult InvalidRequest()
+        protected IHttpActionResult BadRequest()
         {
             var x = new System.Web.Http.Results.ResponseMessageResult(
                 Request.CreateErrorResponse(
@@ -41,8 +41,7 @@ namespace ew.webapi.Controllers
 
             int totalPage = totalItems / limit;
             totalPage = totalItems % limit == 0 ? totalPage : (totalPage + 1);
-
-            x.Response.Headers.Add(EwHeaders.X_Status, HttpStatusCode.OK.ToString());
+            
             x.Response.Headers.Add(EwHeaders.X_Paging_TotalItems, totalItems.ToString());
             x.Response.Headers.Add(EwHeaders.X_Paging_Limit, limit.ToString());
             x.Response.Headers.Add(EwHeaders.X_Paging_Count, totalPage.ToString());
@@ -58,15 +57,16 @@ namespace ew.webapi.Controllers
 
         protected IHttpActionResult NoOK(GlobalStatus statusCode)
         {
-            return NoOK(statusCode.ToString());
+            return NoOK(statusCode.ToString()) as ResponseMessageResult;
         }
 
-        protected IHttpActionResult NoOK(EwhEntityBase ewhEntityBase)
+        protected IHttpActionResult ServerError(EwhEntityBase ewhEntityBase)
         {
             var x = NoOK(ewhEntityBase.EwhStatus.ToString()) as ResponseMessageResult;
             if (ewhEntityBase != null)
             {
                 x.Response.Headers.Add(EwHeaders.X_Error_Message, ewhEntityBase.EwhErrorMessage);
+                x.Response.Headers.Add(EwHeaders.X_Status, ewhEntityBase.EwhStatus.ToString());
             }
             return x;
         }
@@ -85,6 +85,7 @@ namespace ew.webapi.Controllers
             return x;
         }
 
+      
         
         
     }
