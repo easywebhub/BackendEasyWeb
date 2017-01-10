@@ -87,6 +87,7 @@
     <Compile Include="Enums\DeploymentEnviromentTypes.cs" />
     <Compile Include="Enums\EwHeaders.cs" />
     <Compile Include="Enums\GlobalStatus.cs" />
+    <Compile Include="Enums\HostingFees.cs" />
     <Compile Include="Enums\WebsiteTypes.cs" />
     <Compile Include="IPagination.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

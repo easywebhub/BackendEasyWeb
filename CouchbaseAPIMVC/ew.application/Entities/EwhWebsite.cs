@@ -5,6 +5,7 @@ using ew.common.Entities;
 using ew.core;
 using ew.core.Dto;
 using ew.core.Dtos;
+using ew.core.Enums;
 using ew.core.Repositories;
 using ew.core.Users;
 using System;
@@ -59,11 +60,13 @@ namespace ew.application.Entities
         public string Url { get; set; }
         public string WebTemplateId { get; set; }
         public string Source { get; set; }
+        public string Git { get; set; }
         public string WebsiteType { get; set; }
         public List<DeploymentEnvironment> Stagging { get; private set; }
         public List<DeploymentEnvironment> Production { get; private set; }
         public List<WebsiteAccountAccessLevel> Accounts { get; set; }
 
+        public string RepositoryName { get { return this.Name; } }
 
         //private List<EwhAccount> _ewhAccounts { get; set; }
         //public List<EwhAccount> EwhAccounts
@@ -94,6 +97,26 @@ namespace ew.application.Entities
             EwhStatus = core.Enums.GlobalStatus.NotFound;
             return false;
         }
+
+        /// <summary>
+        /// get account as owner of website
+        /// </summary>
+        /// <returns>id of account</returns>
+        public string GetOwner()
+        {
+            if (!IsExits())
+            {
+                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.owner.ToString()));
+                if (owner != null)
+                {
+                    return owner.AccountId;
+                }
+            }
+            return string.Empty;
+        }
+
+        
+
         public bool Save()
         {
             _websiteRepository.AddOrUpdate(_ewhMapper.ToEntity(_website, this));
@@ -229,6 +252,7 @@ namespace ew.application.Entities
             Accounts = website.Accounts ?? new List<WebsiteAccountAccessLevel>();
             this.WebTemplateId = website.WebTemplateId;
             this.Source = website.Source;
+            this.Git = website.Git;
             this.WebsiteType = website.WebsiteType;
         }
 

@@ -411,9 +411,25 @@
       <Project>{4B05811F-36A8-4DF4-8D67-28F3A685DBAF}</Project>
       <Name>ew.common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ew.config\ew.config.csproj">
+      <Project>{b746399e-d2e3-40e6-b739-b6797445bdc4}</Project>
+      <Name>ew.config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ew.core\ew.core.csproj">
       <Project>{9FFE5002-974C-457D-B01F-8CC37926997E}</Project>
       <Name>ew.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ew.git-hook-listener\ew.git-hook-listener.csproj">
+      <Project>{241F2C68-0B4E-4F49-85B4-6DCE0355652F}</Project>
+      <Name>ew.git-hook-listener</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ew.github-wrapper\ew.github-wrapper.csproj">
+      <Project>{3520035F-ED60-4FB8-9587-FE89E6794102}</Project>
+      <Name>ew.github-wrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ew.gogs-wrapper\ew.gogs-wrapper.csproj">
+      <Project>{014136F4-B017-4388-9394-B31A5EE3FD28}</Project>
+      <Name>ew.gogs-wrapper</Name>
     </ProjectReference>
     <ProjectReference Include="..\ew.infrastructure\ew.infrastructure.csproj">
       <Project>{261BBCC9-C854-485A-9EA7-B50D9941E476}</Project>

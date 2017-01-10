@@ -111,6 +111,7 @@ namespace ew.application.Services
             website.WebTemplateId = ewhWebsite.WebTemplateId;
             website.WebsiteType = ewhWebsite.WebsiteType;
             website.Source = ewhWebsite.Source;
+            website.Git = ewhWebsite.Git;
             return website;
         }
 

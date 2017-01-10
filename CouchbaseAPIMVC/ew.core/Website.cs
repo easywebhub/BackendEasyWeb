@@ -27,6 +27,7 @@ namespace ew.core
         public List<DeploymentEnvironment> Production { get; set; }
         public string WebTemplateId { get; set; }
         public string Source { get; set; }
+        public string Git { get; set; }
         public string WebsiteType { get; set; }
     }
 

@@ -17,6 +17,7 @@ namespace ew.webapi.Models
         public string WebTemplateId { get; set; }
         public string Source { get; set; }
         public string WebsiteType { get; set; }
+        public string Git { get; set; }
 
         public WebsiteInfoDto() { }
 
@@ -29,6 +30,7 @@ namespace ew.webapi.Models
             this.WebTemplateId = entity.WebTemplateId;
             this.WebsiteType = entity.WebsiteType;
             this.Source = entity.Source;
+            this.Git = entity.Git;
         }
     }
 
