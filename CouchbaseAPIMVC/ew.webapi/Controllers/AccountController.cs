@@ -74,7 +74,7 @@ namespace ew.webapi.Controllers
             if (data == null) return NotFound();
             return Ok(new AccountDetailDto(data));
         }
-
+        
 
         /// <summary>
         /// Chỉnh sửa thông tin của 1 tài khoản
@@ -82,7 +82,7 @@ namespace ew.webapi.Controllers
         /// <param name="userId">id tài khoản</param>
         /// <param name="dto">thông tin tài khoản</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut, HttpPatch]
         [Route("{userId}")]
         public IHttpActionResult UpdateUserInfo(string userId, AccountInfo dto)
         {
@@ -123,15 +123,15 @@ namespace ew.webapi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{userId}/websites/{websiteId}")]
-        public IHttpActionResult AddWebsiteAccount(string userId, string websiteId, AddWebsiteAccountDto dto)
+        public IHttpActionResult AddWebsiteAccount(string userId, string websiteId, AddWebsitePermissionDto dto)
         {
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
 
-            dto.AccountId = userId;
+            //dto.AccountId = userId;
             //dto.WebsiteId = websiteId;
             if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
-            if (ewhWebsite.AddAccount(dto))
+            if (ewhWebsite.AddAccount(new AddWebsiteAccountDto() { AccessLevels = dto.AccessLevels, AccountId = userId, WebsiteDisplayName = dto.WebsiteDisplayName }))
             {
                 return NoContent();
             }
@@ -147,16 +147,18 @@ namespace ew.webapi.Controllers
         /// <returns></returns>
         [HttpPut, HttpPatch]
         [Route("{userId}/websites/{websiteId}")]
-        public IHttpActionResult UpdateWebsiteAccessLevel(string userId, string websiteId, UpdateAccountAccessLevelToWebsite dto)
+        public IHttpActionResult UpdateWebsiteAccessLevel(string userId, string websiteId, AddWebsitePermissionDto dto)
         {
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
 
-            dto.AccountId = userId;
+            //dto.AccountId = userId;
             //dto.WebsiteId = websiteId;
             if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
-            if (ewhWebsite.UpdateAccessLevel(dto))
+            if (ewhWebsite.UpdateAccessLevel(new UpdateAccountAccessLevelToWebsite() { AccessLevels = dto.AccessLevels, AccountId = userId, WebsiteDisplayName = dto.WebsiteDisplayName }))
             {
+                //var ewhAccount = _accountManager.GetEwhAccount(userId);
+                //ewhAccount.UpdateWebsiteName();
                 return NoContent();
             }
             return ServerError(ewhWebsite);

@@ -43,10 +43,10 @@ namespace ew.webapi.Controllers
             int totalPage = totalItems / limit;
             totalPage = totalItems % limit == 0 ? totalPage : (totalPage + 1);
             
-            x.Response.Headers.Add(EwHeaders.X_Paging_TotalItems, totalItems.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_Total_Count, totalItems.ToString());
             x.Response.Headers.Add(EwHeaders.X_Paging_Limit, limit.ToString());
-            x.Response.Headers.Add(EwHeaders.X_Paging_Count, totalPage.ToString());
-            x.Response.Headers.Add(EwHeaders.X_Paging_Page, page.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_Total_Pages, totalPage.ToString());
+            x.Response.Headers.Add(EwHeaders.X_Paging_Current_Page, page.ToString());
             x.Response.Headers.Add(EwHeaders.X_Status, HttpStatusCode.OK.ToString());
             return x;
         }
