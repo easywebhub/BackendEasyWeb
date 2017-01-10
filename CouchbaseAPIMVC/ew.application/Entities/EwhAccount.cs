@@ -118,7 +118,7 @@ namespace ew.application.Entities
 
         public bool Save()
         {
-            if (CheckValidModel() && CheckIsIdentity())
+            if (CheckValidModel() && (IsExits() || CheckIsIdentity()))
             {
                 _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account ?? new Account(), this));
                 return true;
