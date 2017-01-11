@@ -137,6 +137,14 @@ namespace ew.application.Entities
             return true;
         }
 
+        public bool ResetPassword()
+        {
+            this.PasswordSaft = StringUtils.CreateSalt(20);
+            this.Password = StringUtils.GenerateSaltedHash("123456", this.PasswordSaft);
+            Save();
+            return true;
+        }
+
         public bool RemoveWebsite(EwhWebsite website)
         {
             var webIdentity = this.Websites.FirstOrDefault(x => x.WebsiteId == website.WebsiteId);
