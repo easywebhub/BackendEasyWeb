@@ -27,7 +27,6 @@ namespace ew.webapi.Controllers
                     (HttpStatusCode)400,
                     new HttpError(GlobalStatus.InvalidData.ToString())
                 )
-
             );
 
             x.Response.Headers.Add(EwHeaders.X_Status, GlobalStatus.InvalidData.ToString());

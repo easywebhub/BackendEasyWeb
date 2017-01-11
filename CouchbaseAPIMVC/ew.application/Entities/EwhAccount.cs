@@ -163,6 +163,8 @@ namespace ew.application.Entities
             this.Status = account.Status;
             this.Info = account.Info ?? new AccountInfo();
             this.Websites = account.Websites ?? new List<WebsiteIdentity>();
+            this.Password = account.Password;
+            this.PasswordSaft = account.PasswordSalt;
         }
 
         private bool CheckValidModel()

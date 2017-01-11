@@ -36,7 +36,7 @@ namespace ew.common.Helper
             // http://stackoverflow.com/questions/2138429/hash-and-salt-passwords-in-c-sharp
 
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            var saltBytes = Encoding.UTF8.GetBytes(salt);
+            var saltBytes = Encoding.UTF8.GetBytes(salt ?? string.Empty);
 
             // Combine the two lists
             var plainTextWithSaltBytes = new List<byte>(plainTextBytes.Length + saltBytes.Length);
