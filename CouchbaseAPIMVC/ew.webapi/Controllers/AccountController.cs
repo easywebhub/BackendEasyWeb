@@ -148,7 +148,7 @@ namespace ew.webapi.Controllers
             //dto.AccountId = userId;
             //dto.WebsiteId = websiteId;
             if (dto.AccessLevels == null || !dto.AccessLevels.Any()) dto.AccessLevels = new List<string>() { "dev", "test" };
-            if (ewhWebsite.AddAccount(new AddWebsiteAccountDto() { AccessLevels = dto.AccessLevels, AccountId = userId, WebsiteDisplayName = dto.WebsiteDisplayName }))
+            if (ewhWebsite.AddAccount(new AddWebsiteAccountDto() { AccessLevels = dto.AccessLevels, AccountId = userId }))
             {
                 return NoContent();
             }

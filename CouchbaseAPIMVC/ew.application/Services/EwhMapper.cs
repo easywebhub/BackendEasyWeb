@@ -66,8 +66,9 @@ namespace ew.application.Services
 
         public WebsiteIdentity ToEntity(WebsiteIdentity entity, AddWebsiteAccountDto dto)
         {
-            entity.DisplayName = dto.WebsiteDisplayName;
+            //entity.DisplayName = dto.WebsiteDisplayName;
             //entity.WebsiteId = dto.WebsiteId;
+            
             return entity;
         }
         public AccountsAccessLevelOfWebsite ToEntity(AccountsAccessLevelOfWebsite entity, AddWebsiteAccountDto dto)

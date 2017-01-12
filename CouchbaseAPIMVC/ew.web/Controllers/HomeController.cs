@@ -132,7 +132,7 @@ namespace ew.web.Controllers
         {
             var ewhWebsite = _websiteManager.GetEwhWebsite(wId);
             //if(ewhWebsite.AddAccount(new application.Entities.Dto.AddWebsiteAccountDto() { AccountId = uId, WebsiteId = wId, AccessLevels = new List<string>() { "dev", "test" }, WebsiteDisplayName = "My web" }))
-            if (ewhWebsite.AddAccount(new application.Entities.Dto.AddWebsiteAccountDto() { AccountId = uId, AccessLevels = new List<string>() { "dev", "test" }, WebsiteDisplayName = "My web" }))
+            if (ewhWebsite.AddAccount(new application.Entities.Dto.AddWebsiteAccountDto() { AccountId = uId, AccessLevels = new List<string>() { "dev", "test" } }))
             {
                 return Json(ewhWebsite.GetListAccount(), JsonRequestBehavior.AllowGet);
             }

@@ -26,7 +26,7 @@ namespace ew.application.Entities.Dto
         //public string WebsiteId { get; set; }
         public string AccountId { get; set; }
         public List<string> AccessLevels { get; set; }
-        public string WebsiteDisplayName { get; set; }
+        //public string WebsiteDisplayName { get; set; }
     }
 
     public class AddWebsitePermissionDto

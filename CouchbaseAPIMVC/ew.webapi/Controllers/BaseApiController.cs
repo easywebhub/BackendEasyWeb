@@ -66,7 +66,7 @@ namespace ew.webapi.Controllers
             if (ewhEntityBase != null)
             {
                 x.Response.Headers.Add(EwHeaders.X_Error_Message, ewhEntityBase.EwhErrorMessage);
-                x.Response.Headers.Add(EwHeaders.X_Status, ewhEntityBase.EwhStatus.ToString());
+                //x.Response.Headers.Add(EwHeaders.X_Status, ewhEntityBase.EwhStatus.ToString());
             }
             return x;
         }
