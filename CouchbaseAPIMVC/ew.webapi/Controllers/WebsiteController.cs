@@ -25,6 +25,12 @@ namespace ew.webapi.Controllers
         private readonly IWebsiteManager _websiteManager;
         private readonly IAccountManager _accountManager;
 
+        //public WebsiteController(bool manualInit)
+        //{
+        //    _websiteManager = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IWebsiteManager)) as IWebsiteManager;
+        //    _accountManager = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAccountManager)) as IAccountManager;
+        //}
+
         public WebsiteController(IWebsiteManager websiteManager, IAccountManager accountManager)
         {
             _websiteManager = websiteManager;

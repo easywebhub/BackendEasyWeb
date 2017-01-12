@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ew.core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,40 @@ using System.Threading.Tasks;
 
 namespace ew.application.Entities.Dto
 {
-    public class CreateWebsiteDto
+    public class UserCreateWebsiteDto
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Url { get; set; }
-        public List<AddWebsiteAccountDto> Accounts { get; set; }
+        //public List<AddWebsiteAccountDto> Accounts { get; set; }
         public string WebTemplateId { get; set; }
+
+        public UserCreateWebsiteDto() { }
+        public UserCreateWebsiteDto(UserCreateWebsiteDto dto)
+        {
+            this.Name = dto.Name;
+            this.DisplayName = dto.DisplayName;
+            this.Url = dto.Url;
+            this.WebTemplateId = dto.WebTemplateId;
+        }
+    }
+
+    public class CreateWebsiteDto : UserCreateWebsiteDto
+    {
+        //public string Name { get; set; }
+        //public string DisplayName { get; set; }
+        //public string Url { get; set; }
+        public List<AddWebsiteAccountDto> Accounts { get; set; }
+        //public string WebTemplateId { get; set; }
+
+        public CreateWebsiteDto() : base() { }
+        public CreateWebsiteDto(string userId, UserCreateWebsiteDto dto) : base(dto)
+        {
+            this.Accounts = new List<AddWebsiteAccountDto>() {
+                new AddWebsiteAccountDto() {
+                    AccessLevels = new List<string>() { AccessLevels.owner.ToString() }, AccountId = userId, WebsiteDisplayName = this.DisplayName }
+            };
+        }
     }
 
     public class UpdateDeploymentEnvironmentToWebsite

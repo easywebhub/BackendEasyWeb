@@ -114,6 +114,23 @@ namespace ew.webapi.Controllers
             return Ok(account.GetListWebsite().Select(x => new NyWebsiteInfoDto(x, userId)).ToList());
         }
 
+
+        /// <summary>
+        /// Tạo mới website
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{userId}/websites")]
+        public IHttpActionResult UserCreateWebsite(string userId, UserCreateWebsiteDto dto)
+        {
+            var websiteController = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(WebsiteController)) as WebsiteController;
+            websiteController.ControllerContext = this.ControllerContext;
+            return websiteController.CreateWebsite(new CreateWebsiteDto(userId, dto));
+            
+        }
+
         /// <summary>
         /// Thêm quyền quản trị 1 website cho 1 tài khoản
         /// </summary>
