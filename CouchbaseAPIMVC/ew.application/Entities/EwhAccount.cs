@@ -69,7 +69,7 @@ namespace ew.application.Entities
         public string UserName { get; set; }
         public string Status { get; set; }
         public AccountInfo Info { get; set; }
-        public List<WebsiteIdentity> Websites { get; set; }
+        public List<WebsitesAccessLevelOfAccount> Websites { get; set; }
         #endregion
 
         #region ext properties
@@ -170,7 +170,7 @@ namespace ew.application.Entities
             this.AccountType = account.AccountType;
             this.Status = account.Status;
             this.Info = account.Info ?? new AccountInfo();
-            this.Websites = account.Websites ?? new List<WebsiteIdentity>();
+            this.Websites = account.Websites ?? new List<WebsitesAccessLevelOfAccount>();
             this.Password = account.Password;
             this.PasswordSaft = account.PasswordSalt;
         }

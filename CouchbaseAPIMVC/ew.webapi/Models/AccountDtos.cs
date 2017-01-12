@@ -31,9 +31,21 @@ namespace ew.webapi.Models
         }
     }
 
+    public class AccountInfoCanAccessWebsiteDto: AccountInfoDto
+    {
+        public List<string> AccessLevels { get; set; }
+
+        public AccountInfoCanAccessWebsiteDto(): base() { }
+
+        public AccountInfoCanAccessWebsiteDto(EwhAccount entity, string websiteId): base(entity)
+        {
+            this.AccessLevels = entity.Websites.Where(x => x.WebsiteId == websiteId).Select(x => x.AccessLevels).FirstOrDefault();
+        }
+    }
+
     public class AccountDetailDto: AccountInfoDto
     {
-        public List<WebsiteIdentity> Websites { get; set; }
+        public List<WebsitesAccessLevelOfAccount> Websites { get; set; }
 
         public AccountDetailDto() { }
 

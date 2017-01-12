@@ -35,7 +35,7 @@ namespace ew.application
             Account accountAsOwner;
             if (owner == null)
             {
-                this.EwhStatus = GlobalStatus.CreateWebsite_NeedAOwner;
+                this.EwhStatus = GlobalStatus.CreateWebsite_NeedAnOwner;
                 return false;
             }
             else
@@ -43,7 +43,7 @@ namespace ew.application
                 accountAsOwner = _accountRepository.Get(owner.AccountId);
                 if (accountAsOwner == null)
                 {
-                    this.EwhStatus = GlobalStatus.CreateWebsite_NeedAOwner;
+                    this.EwhStatus = GlobalStatus.CreateWebsite_NeedAnOwner;
                     return false;
                 }
             }

@@ -14,7 +14,7 @@ namespace ew.core.Users
         public Account() : base("Account")
         {
             Info = new AccountInfo();
-            Websites = new List<WebsiteIdentity>();
+            Websites = new List<WebsitesAccessLevelOfAccount>();
         }
 
         public string AccountType { get; set; }
@@ -23,7 +23,22 @@ namespace ew.core.Users
         public string PasswordSalt { get; set; }
         public string Status { get; set; }
         public AccountInfo Info { get; set; }
-        public List<WebsiteIdentity> Websites { get; set; }
+        public List<WebsitesAccessLevelOfAccount> Websites { get; set; }
+    }
+
+    public class WebsitesAccessLevelOfAccount
+    {
+        public string WebsiteId { get; set; }
+        public string DisplayName { get; set; }
+        public List<string> AccessLevels { get; set; }
+
+        public WebsitesAccessLevelOfAccount(Website website)
+        {
+            WebsiteId = website.Id;
+            DisplayName = website.DisplayName;
+            AccessLevels = website.Accounts.Where(x => x.AccountId == website.Id).Select(x => x.AccessLevels).FirstOrDefault();
+        }
+        public WebsitesAccessLevelOfAccount() { }
     }
 
     public class AccountIdentity

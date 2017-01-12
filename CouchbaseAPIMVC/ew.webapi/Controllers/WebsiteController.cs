@@ -159,7 +159,7 @@ namespace ew.webapi.Controllers
     {
         var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
         if (ewhWebsite == null) return NotFound();
-        return Ok(ewhWebsite.GetListAccount().Select(x => new AccountInfoDto(x)).ToList());
+        return Ok(ewhWebsite.GetListAccount().Select(x => new AccountInfoCanAccessWebsiteDto(x, websiteId)).ToList());
     }
 
     /// <summary>

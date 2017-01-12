@@ -34,11 +34,25 @@ namespace ew.webapi.Models
         }
     }
 
+    public class NyWebsiteInfoDto: WebsiteInfoDto
+    {
+        public List<string> AccessLevels { get; set; }
+
+        public NyWebsiteInfoDto(): base()
+        {
+        }
+
+        public NyWebsiteInfoDto(EwhWebsite entity, string userId): base(entity)
+        {
+            this.AccessLevels = entity.Accounts.Where(x => x.AccountId == userId).Select(x => x.AccessLevels).FirstOrDefault();
+        }
+    }
+
     public class WebsiteDetailDto: WebsiteInfoDto
     {
         public List<DeploymentEnvironment> Stagging { get; private set; }
         public List<DeploymentEnvironment> Production { get; private set; }
-        public List<WebsiteAccountAccessLevel> Accounts { get; set; }
+        public List<AccountsAccessLevelOfWebsite> Accounts { get; set; }
 
         public WebsiteDetailDto() { }
 

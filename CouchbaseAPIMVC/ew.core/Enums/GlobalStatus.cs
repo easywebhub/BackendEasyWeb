@@ -18,7 +18,7 @@ namespace ew.core.Enums
         NotFound,
         AlreadyExists,
 
-        CreateWebsite_NeedAOwner,
+        CreateWebsite_NeedAnOwner,
 
 
         Account_Username_NotFound,

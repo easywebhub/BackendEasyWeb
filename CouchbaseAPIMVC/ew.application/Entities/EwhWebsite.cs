@@ -64,7 +64,7 @@ namespace ew.application.Entities
         public string WebsiteType { get; set; }
         public List<DeploymentEnvironment> Stagging { get; private set; }
         public List<DeploymentEnvironment> Production { get; private set; }
-        public List<WebsiteAccountAccessLevel> Accounts { get; set; }
+        public List<AccountsAccessLevelOfWebsite> Accounts { get; set; }
 
         public string RepositoryName { get { return this.Name; } }
 
@@ -130,7 +130,7 @@ namespace ew.application.Entities
             WebsiteId = _website.Id;
             if(_website.Accounts!=null && _website.Accounts.Any())
             {
-                var accList = new WebsiteAccountAccessLevel[_website.Accounts.Count];
+                var accList = new AccountsAccessLevelOfWebsite[_website.Accounts.Count];
                 _website.Accounts.CopyTo(accList);
                 foreach(var acc in accList)
                 {
@@ -190,7 +190,7 @@ namespace ew.application.Entities
                 return false;
             }
             _website.Accounts.Remove(websiteAccount);
-            _website.Accounts.Add(new WebsiteAccountAccessLevel() { AccountId = dto.AccountId, AccessLevels = dto.AccessLevels });
+            _website.Accounts.Add(new AccountsAccessLevelOfWebsite() { AccountId = dto.AccountId, AccessLevels = dto.AccessLevels });
             _websiteRepository.AddOrUpdate(_website);
             return true;
         }
@@ -249,7 +249,7 @@ namespace ew.application.Entities
             Url = website.Url;
             Stagging = website.Stagging ?? new List<DeploymentEnvironment>();
             Production = website.Production ?? new List<DeploymentEnvironment>();
-            Accounts = website.Accounts ?? new List<WebsiteAccountAccessLevel>();
+            Accounts = website.Accounts ?? new List<AccountsAccessLevelOfWebsite>();
             this.WebTemplateId = website.WebTemplateId;
             this.Source = website.Source;
             this.Git = website.Git;

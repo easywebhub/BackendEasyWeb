@@ -111,7 +111,7 @@ namespace ew.webapi.Controllers
             var account = _accountManager.GetEwhAccount(userId);
 
             if (account == null) return NotFound();
-            return Ok(account.GetListWebsite().Select(x => new WebsiteInfoDto(x)).ToList());
+            return Ok(account.GetListWebsite().Select(x => new NyWebsiteInfoDto(x, userId)).ToList());
         }
 
         /// <summary>

@@ -14,13 +14,13 @@ namespace ew.core
     {
         public Website() : base("Website")
         {
-            Accounts = new List<WebsiteAccountAccessLevel>();
+            Accounts = new List<AccountsAccessLevelOfWebsite>();
             Stagging = new List<DeploymentEnvironment>();
             Production = new List<DeploymentEnvironment>();
         }
 
         public string DisplayName { get; set; }
-        public List<WebsiteAccountAccessLevel> Accounts { get; set; }// client push id
+        public List<AccountsAccessLevelOfWebsite> Accounts { get; set; }// client push id
         public string Name { get; set; }//client
         public string Url { get; set; }
         public List<DeploymentEnvironment> Stagging { get; set; }
@@ -44,7 +44,7 @@ namespace ew.core
         public WebsiteIdentity() { }
     }
 
-    public class WebsiteAccountAccessLevel
+    public class AccountsAccessLevelOfWebsite
     {
         public string AccountId { get; set; }
         public List<string> AccessLevels { get; set; }

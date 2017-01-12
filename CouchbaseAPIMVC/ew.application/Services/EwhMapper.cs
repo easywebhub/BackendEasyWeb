@@ -70,10 +70,11 @@ namespace ew.application.Services
             //entity.WebsiteId = dto.WebsiteId;
             return entity;
         }
-        public WebsiteAccountAccessLevel ToEntity(WebsiteAccountAccessLevel entity, AddWebsiteAccountDto dto)
+        public AccountsAccessLevelOfWebsite ToEntity(AccountsAccessLevelOfWebsite entity, AddWebsiteAccountDto dto)
         {
             entity.AccountId = dto.AccountId;
             entity.AccessLevels = dto.AccessLevels;
+            
             return entity;
         }
 
@@ -112,6 +113,7 @@ namespace ew.application.Services
             website.WebsiteType = ewhWebsite.WebsiteType;
             website.Source = ewhWebsite.Source;
             website.Git = ewhWebsite.Git;
+
             return website;
         }
 
@@ -131,13 +133,13 @@ namespace ew.application.Services
             ewhWebsite.Url = dto.Url;
             ewhWebsite.Name = dto.Name;
 
-            var listWebsiteAccountAccessLevel = new List<WebsiteAccountAccessLevel>();
-            if(dto.Accounts!=null)
-            foreach(var item in dto.Accounts)
-            {
-                var waal = this.ToEntity(new WebsiteAccountAccessLevel(), dto.Accounts.FirstOrDefault());
+            var listWebsiteAccountAccessLevel = new List<AccountsAccessLevelOfWebsite>();
+            if (dto.Accounts != null)
+                foreach (var item in dto.Accounts)
+                {
+                    var waal = this.ToEntity(new AccountsAccessLevelOfWebsite(), item);
                     listWebsiteAccountAccessLevel.Add(waal);
-            }
+                }
             ewhWebsite.Accounts = listWebsiteAccountAccessLevel;
             return ewhWebsite;
         }
