@@ -134,7 +134,7 @@ namespace ew.application.Entities
                 _website.Accounts.CopyTo(accList);
                 foreach(var acc in accList)
                 {
-                    var addWebsiteAccount = new AddWebsiteAccountDto() { AccessLevels = acc.AccessLevels, AccountId = acc.AccountId, WebsiteDisplayName = _website.DisplayName };
+                    var addWebsiteAccount = new AddWebsiteAccountDto() { AccessLevels = acc.AccessLevels, AccountId = acc.AccountId };
                     this.AddAccount(addWebsiteAccount);
                 }
             }
@@ -157,7 +157,7 @@ namespace ew.application.Entities
                 return false;
             }
 
-            var coreDto = new core.Dtos.AddWebsiteAccountModel() { Account = account, Website = _website, AccessLevels = dto.AccessLevels, WebsiteDisplayName = dto.WebsiteDisplayName };
+            var coreDto = new core.Dtos.AddWebsiteAccountModel() { Account = account, Website = _website, AccessLevels = dto.AccessLevels, WebsiteDisplayName = _website.DisplayName };
             _websiteRepository.AddAccount(coreDto);
             _accountRepository.AddWebsite(coreDto);
 
