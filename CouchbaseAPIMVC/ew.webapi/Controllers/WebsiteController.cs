@@ -87,13 +87,13 @@ namespace ew.webapi.Controllers
                 //create github repository
                 if (string.IsNullOrEmpty(ewhWebsite.Git))
                 {
-                    if(githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
+                    if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
                     {
                         ewhWebsite.Git = githubManager.RepositoryAdded.GitUrl;
                         ewhWebsite.Save();
                     }
                 }
-                
+
                 // add web-hook to demo & production server
                 var ewhGogsSource = new EwhSource();
                 var ewhAccountAsOwner = _accountManager.GetEwhAccount(ewhWebsite.GetOwner());
@@ -138,163 +138,211 @@ namespace ew.webapi.Controllers
                 return Ok(new WebsiteDetailDto(ewhWebsite));
             }
             return BadRequest();
-        }          
-
-    /// <summary>
-    /// Lấy thông tin chi tiết 1 website
-    /// </summary>
-    /// <param name="websiteId">Id của website</param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("{websiteId}")]
-    public IHttpActionResult Websites(string websiteId)
-    {
-        var data = _websiteManager.GetEwhWebsite(websiteId);
-        if (data == null) return NotFound();
-        return Ok(new WebsiteDetailDto(data));
-    }
-
-    /// <summary>
-    /// Lấy danh sách user được quản trị website
-    /// </summary>
-    /// <param name="websiteId">id của website</param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("{websiteId}/users")]
-    public IHttpActionResult Users(string websiteId)
-    {
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        return Ok(ewhWebsite.GetListAccount().Select(x => new AccountInfoCanAccessWebsiteDto(x, websiteId)).ToList());
-    }
-
-    /// <summary>
-    /// Danh sách môi trường stagging của website
-    /// </summary>
-    /// <param name="websiteId">id của website</param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("{websiteId}/staggings")]
-    public IHttpActionResult Staggings(string websiteId)
-    {
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        return Ok(ewhWebsite.Stagging);
-    }
-
-    /// <summary>
-    /// Thêm mới 1 môi trường stagging cho website
-    /// </summary>
-    /// <param name="websiteId">id của website</param>
-    /// <param name="dto">thông tin môi trường</param>
-    /// <returns></returns>
-    [HttpPut, HttpPatch]
-    [Route("{websiteId}/staggings")]
-    public IHttpActionResult AddStagging(string websiteId, UpdateDeploymentEnvironmentToWebsite dto)
-    {
-        if (!ModelState.IsValid) return BadRequest();
-
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        if (ewhWebsite.AddStagging(dto))
-        {
-            return Ok();
         }
-        else
+
+        /// <summary>
+        /// Lấy thông tin chi tiết 1 website
+        /// </summary>
+        /// <param name="websiteId">Id của website</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{websiteId}")]
+        public IHttpActionResult Websites(string websiteId)
         {
-            return ServerError(ewhWebsite);
+            var data = _websiteManager.GetEwhWebsite(websiteId);
+            if (data == null) return NotFound();
+            return Ok(new WebsiteDetailDto(data));
         }
+
+        /// <summary>
+        /// Lấy danh sách user được quản trị website
+        /// </summary>
+        /// <param name="websiteId">id của website</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{websiteId}/users")]
+        public IHttpActionResult Users(string websiteId)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            return Ok(ewhWebsite.GetListAccount().Select(x => new AccountInfoCanAccessWebsiteDto(x, websiteId)).ToList());
+        }
+
+        /// <summary>
+        /// Thêm tài khoản được phép quản trị website
+        /// </summary>
+        /// <param name="websiteId">mã website</param>
+        /// <param name="userId">mã tài khoản</param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{websiteId}/users/{userId}")]
+        public IHttpActionResult AddUser(string websiteId, string userId, AddWebsitePermissionDto dto)
+        {
+            var accountController = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(AccountController)) as AccountController;
+            accountController.ControllerContext = this.ControllerContext;
+            return accountController.AddWebsiteAccount(userId, websiteId, dto);
+        }
+
+        /// <summary>
+        /// Chỉnh sửa quyền quản trị website của 1 tài khoản
+        /// </summary>
+        /// <param name="websiteId"></param>
+        /// <param name="userId"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut, HttpPatch]
+        [Route("{websiteId}/users/{userId}")]
+        public IHttpActionResult UpdateUserAccessLevel(string websiteId, string userId, AddWebsitePermissionDto dto)
+        {
+            var accountController = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(AccountController)) as AccountController;
+            accountController.ControllerContext = this.ControllerContext;
+            return accountController.UpdateWebsiteAccessLevel(userId, websiteId, dto);
+        }
+
+
+        /// <summary>
+        /// Remove tài khoản ra khỏi danh sách được phép quản trị website
+        /// </summary>
+        /// <param name="websiteId">mã website</param>
+        /// <param name="userId">mã tài khoản</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{websiteId}/users/{userId}")]
+        public IHttpActionResult RemoveUser(string websiteId, string userId)
+        {
+            var accountController = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(AccountController)) as AccountController;
+            accountController.ControllerContext = this.ControllerContext;
+            return accountController.RemoveWebsiteAccount(userId, websiteId);
+        }
+
+        /// <summary>
+        /// Danh sách môi trường stagging của website
+        /// </summary>
+        /// <param name="websiteId">id của website</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{websiteId}/staggings")]
+        public IHttpActionResult Staggings(string websiteId)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            return Ok(ewhWebsite.Stagging);
+        }
+
+        /// <summary>
+        /// Thêm mới 1 môi trường stagging cho website
+        /// </summary>
+        /// <param name="websiteId">id của website</param>
+        /// <param name="dto">thông tin môi trường</param>
+        /// <returns></returns>
+        [HttpPut, HttpPatch]
+        [Route("{websiteId}/staggings")]
+        public IHttpActionResult AddStagging(string websiteId, UpdateDeploymentEnvironmentToWebsite dto)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            if (ewhWebsite.AddStagging(dto))
+            {
+                return Ok();
+            }
+            else
+            {
+                return ServerError(ewhWebsite);
+            }
+        }
+
+
+        /// <summary>
+        /// Xóa 1 môi trường stagging khỏi website
+        /// </summary>
+        /// <param name="websiteId">id website</param>
+        /// <param name="staggingId">id môi trường stagging</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{websiteId}/staggings/{staggingId}")]
+        public IHttpActionResult RemoveStagging(string websiteId, string staggingId)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            if (ewhWebsite.RemoveStaging(staggingId))
+            {
+                return Ok();
+            }
+            else
+            {
+                return ServerError(ewhWebsite);
+            }
+        }
+
+
+        /// <summary>
+        /// Danh sách môi trường production của website
+        /// </summary>
+        /// <param name="websiteId">id của website</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{websiteId}/productions")]
+        public IHttpActionResult Productions(string websiteId)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            return Ok(ewhWebsite.Production);
+        }
+
+        /// <summary>
+        /// Thêm mới 1 môi trường production cho website
+        /// </summary>
+        /// <param name="websiteId">id của website</param>
+        /// <param name="dto">thông tin môi trường</param>
+        /// <returns></returns>
+        [HttpPut, HttpPatch]
+        [Route("{websiteId}/productions")]
+        public IHttpActionResult AddProduction(string websiteId, UpdateDeploymentEnvironmentToWebsite dto)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            if (ewhWebsite.AddProduction(dto))
+            {
+                return Ok();
+            }
+            else
+            {
+                return ServerError(ewhWebsite);
+            }
+        }
+
+
+        /// <summary>
+        /// Xóa 1 môi trường production khỏi website
+        /// </summary>
+        /// <param name="websiteId">id website</param>
+        /// <param name="productionId">id môi trường production</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{websiteId}/productions/{productionId}")]
+        public IHttpActionResult RemoveProduction(string websiteId, string productionId)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            if (ewhWebsite.RemoveProduction(productionId))
+            {
+                return Ok();
+            }
+            else
+            {
+                return ServerError(ewhWebsite);
+            }
+        }
+
+
     }
-
-
-    /// <summary>
-    /// Xóa 1 môi trường stagging khỏi website
-    /// </summary>
-    /// <param name="websiteId">id website</param>
-    /// <param name="staggingId">id môi trường stagging</param>
-    /// <returns></returns>
-    [HttpDelete]
-    [Route("{websiteId}/staggings/{staggingId}")]
-    public IHttpActionResult RemoveStagging(string websiteId, string staggingId)
-    {
-        if (!ModelState.IsValid) return BadRequest();
-
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        if (ewhWebsite.RemoveStaging(staggingId))
-        {
-            return Ok();
-        }
-        else
-        {
-            return ServerError(ewhWebsite);
-        }
-    }
-
-
-    /// <summary>
-    /// Danh sách môi trường production của website
-    /// </summary>
-    /// <param name="websiteId">id của website</param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("{websiteId}/productions")]
-    public IHttpActionResult Productions(string websiteId)
-    {
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        return Ok(ewhWebsite.Production);
-    }
-
-    /// <summary>
-    /// Thêm mới 1 môi trường production cho website
-    /// </summary>
-    /// <param name="websiteId">id của website</param>
-    /// <param name="dto">thông tin môi trường</param>
-    /// <returns></returns>
-    [HttpPut, HttpPatch]
-    [Route("{websiteId}/productions")]
-    public IHttpActionResult AddProduction(string websiteId, UpdateDeploymentEnvironmentToWebsite dto)
-    {
-        if (!ModelState.IsValid) return BadRequest();
-
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        if (ewhWebsite.AddProduction(dto))
-        {
-            return Ok();
-        }
-        else
-        {
-            return ServerError(ewhWebsite);
-        }
-    }
-
-
-    /// <summary>
-    /// Xóa 1 môi trường production khỏi website
-    /// </summary>
-    /// <param name="websiteId">id website</param>
-    /// <param name="productionId">id môi trường production</param>
-    /// <returns></returns>
-    [HttpDelete]
-    [Route("{websiteId}/productions/{productionId}")]
-    public IHttpActionResult RemoveProduction(string websiteId, string productionId)
-    {
-        if (!ModelState.IsValid) return BadRequest();
-
-        var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-        if (ewhWebsite == null) return NotFound();
-        if (ewhWebsite.RemoveProduction(productionId))
-        {
-            return Ok();
-        }
-        else
-        {
-            return ServerError(ewhWebsite);
-        }
-    }
-
-
-}
 }
