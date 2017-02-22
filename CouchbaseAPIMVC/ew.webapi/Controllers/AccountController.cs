@@ -100,6 +100,51 @@ namespace ew.webapi.Controllers
         }
 
         /// <summary>
+        /// Full update thông tin tài khoản
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{accountId}/fullupdate")]
+        public IHttpActionResult FullUpdate(string accountId, AccountDetailDto dto)
+        {
+            dto.AccountId = accountId;
+            if (ModelState.IsValid)
+            {
+                var account = _accountManager.GetEwhAccount(dto.AccountId);
+                if (account != null && account.IsExits())
+                {
+                    if (_accountManager.UpdateAccount(dto.ToEntity(account)))
+                    {
+                        return Ok(dto);
+                    }
+                    return ServerError(_websiteManager as EwhEntityBase);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+                return ServerError(_websiteManager as EwhEntityBase);
+            }
+            return BadRequest();
+
+        }
+
+        [HttpGet]
+        [Route("{accountId}/sync")]
+        public IHttpActionResult SyncData(string accountId)
+        {
+            var account = _accountManager.GetEwhAccount(accountId);
+            if (account!=null && account.IsExits())
+            {
+                account.SelfSync();
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
         /// Lấy danh sách website được quản trị bởi tài khoản
         /// </summary>
         /// <param name="userId">id của tài khoản</param>

@@ -68,6 +68,24 @@ namespace ew.application
             return _ewhMapper.ToEwhAccounts(query.ToList());
         }
 
+        public bool CreateAccount(EwhAccount account)
+        {
+            return account.Create();
+        }
 
+        public bool UpdateAccount(EwhAccount account)
+        {
+            if (account.Save())
+            {
+                account.SelfSync();
+                return true;
+            }
+            return false;
+        }
+
+        public EwhAccount InitEwhAccount()
+        {
+            return new EwhAccount(_accountService, _websiteService, _websiteRepository, _accountRepository, _ewhMapper);
+        }
     }
 }

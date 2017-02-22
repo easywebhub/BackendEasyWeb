@@ -10,7 +10,7 @@ namespace ew.webapi.Models
 {
     public class AccountInfoDto
     {
-        public string AccountId { get; private set; }
+        public string AccountId { get; set; }
         public string AccountType { get; set; }
         public string UserName { get; set; }
         public string Status { get; set; }
@@ -52,6 +52,16 @@ namespace ew.webapi.Models
         public AccountDetailDto(EwhAccount entity): base(entity)
         {
             this.Websites = entity.Websites;
+        }
+
+        public EwhAccount ToEntity(EwhAccount entity)
+        {
+            entity.AccountType = this.AccountType;
+            entity.Info = this.Info;
+            entity.Status = this.Status;
+            entity.Websites = this.Websites;
+
+            return entity;
         }
     }
 }

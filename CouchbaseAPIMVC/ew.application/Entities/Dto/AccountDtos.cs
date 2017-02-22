@@ -16,6 +16,7 @@ namespace ew.application.Entities.Dto
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
+
         public AccountInfo Info { get; set; }
 
         public AddAccountDto() { }

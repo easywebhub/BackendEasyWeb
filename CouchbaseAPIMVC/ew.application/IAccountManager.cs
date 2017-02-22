@@ -11,7 +11,10 @@ namespace ew.application
         EwhAccount EwhAccountAdded { get; }
 
         bool CreateAccount(AddAccountDto dto);
+        bool CreateAccount(EwhAccount account);
+        bool UpdateAccount(EwhAccount account);
         EwhAccount GetEwhAccount(string id);
         List<EwhAccount> GetListAccount(AccountQueryParams queryParams = null);
+        EwhAccount InitEwhAccount();
     }
 }

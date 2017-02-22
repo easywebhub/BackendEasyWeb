@@ -18,6 +18,8 @@ namespace ew.webapi.Models
         public string Source { get; set; }
         public string WebsiteType { get; set; }
         public string Git { get; set; }
+        public bool Confirmed { get { return !string.IsNullOrEmpty(this.Git) && !string.IsNullOrEmpty(this.Source); } set { } }
+        public DateTime CreateDate { get; set; }
 
         public WebsiteInfoDto() { }
 
@@ -31,6 +33,7 @@ namespace ew.webapi.Models
             this.WebsiteType = entity.WebsiteType;
             this.Source = entity.Source;
             this.Git = entity.Git;
+            this.CreateDate = entity.CreatedDate;
         }
     }
 
@@ -50,8 +53,8 @@ namespace ew.webapi.Models
 
     public class WebsiteDetailDto: WebsiteInfoDto
     {
-        public List<DeploymentEnvironment> Stagging { get; private set; }
-        public List<DeploymentEnvironment> Production { get; private set; }
+        public List<DeploymentEnvironment> Stagging { get; set; }
+        public List<DeploymentEnvironment> Production { get; set; }
         public List<AccountsAccessLevelOfWebsite> Accounts { get; set; }
 
         public WebsiteDetailDto() { }
@@ -61,6 +64,23 @@ namespace ew.webapi.Models
             this.Stagging = entity.Stagging;
             this.Production = entity.Production;
             this.Accounts = entity.Accounts;
+        }
+
+        public EwhWebsite ToEntity(EwhWebsite entity)
+        {
+            entity.WebsiteId = this.WebsiteId;
+            entity.Name = this.Name;
+            entity.DisplayName = this.DisplayName;
+            entity.Url = this.Url;
+            entity.WebTemplateId = this.WebTemplateId;
+            entity.WebsiteType = this.WebsiteType;
+            entity.Source = this.Source;
+            entity.Git = this.Git;
+            
+            entity.Accounts = this.Accounts;
+            entity.Stagging = this.Stagging;
+            entity.Production = this.Production;
+            return entity;
         }
     }
 

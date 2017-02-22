@@ -1,6 +1,7 @@
 ﻿using ew.application.Entities.Dto;
 using ew.application.Helpers;
 using ew.application.Services;
+using ew.common;
 using ew.common.Entities;
 using ew.common.Helper;
 using ew.core;
@@ -116,6 +117,17 @@ namespace ew.application.Entities
             return Save();
         }
 
+        public bool Create()
+        {
+            if (Save())
+            {
+                AccountId = _account.Id;
+                SelfSync();
+                return true;
+            }
+            return false;
+        }
+
         public bool Save()
         {
             if (CheckValidModel() && (IsExits() || CheckIsIdentity()))
@@ -158,6 +170,32 @@ namespace ew.application.Entities
                 EwhStatus = core.Enums.GlobalStatus.NotFound;
                 return false;
             }
+        }
+
+        public bool SelfSync()
+        {
+            var websitesManaged = _websiteRepository.FindAll().Where(x => x.Accounts != null && x.Accounts.Any(y => y.AccountId == this.AccountId)).Select(x => x.Id).ToList();
+
+            if (IsExits())
+            {
+                EwhLogger.Common.Info("SeftSync start");
+
+                //var newStaggings = this.Stagging.Where(x=>x.Id==)
+                var newWebsiteManaged = this.Websites.Where(x => !websitesManaged.Contains(x.WebsiteId)).ToList();
+                var removeWebsiteManaged = websitesManaged.Where(x => !(this.Websites.Select(y => y.WebsiteId).ToList()).Contains(x)).ToList();
+                foreach (var item in newWebsiteManaged)
+                {
+                    var website = _websiteService.Get(item.WebsiteId);
+                    if (website != null) website.AddAccount(new AddWebsiteAccountDto() { AccessLevels = item.AccessLevels, AccountId = this.AccountId });
+                }
+                foreach (var id in removeWebsiteManaged)
+                {
+                    var website = _websiteService.Get(id);
+                    if (website != null) website.RemoveAccount(this.AccountId);
+                }
+                EwhLogger.Common.Info("SeftSync end");
+            }
+            return true;
         }
         #endregion
 

@@ -16,7 +16,6 @@ namespace ew.core.Users
             Info = new AccountInfo();
             Websites = new List<WebsitesAccessLevelOfAccount>();
         }
-
         public string AccountType { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
@@ -49,6 +48,8 @@ namespace ew.core.Users
 
     public class AccountInfo
     {
+        public string Email { get; set; }
+        public string Phone { get; set; }
         public string Name { get; set; }
         public string Age { get; set; }
         public string Sex { get; set; }

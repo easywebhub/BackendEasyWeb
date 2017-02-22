@@ -1,6 +1,8 @@
-﻿using ew.application.Entities.Dto;
+﻿using Common.Logging;
+using ew.application.Entities.Dto;
 using ew.application.Helpers;
 using ew.application.Services;
+using ew.common;
 using ew.common.Entities;
 using ew.core;
 using ew.core.Dto;
@@ -8,10 +10,12 @@ using ew.core.Dtos;
 using ew.core.Enums;
 using ew.core.Repositories;
 using ew.core.Users;
+using ew.gogs_wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ew.application.Entities
@@ -19,17 +23,10 @@ namespace ew.application.Entities
     public class EwhWebsite : EwhEntityBase
     {
         private readonly IAccountService _accountService;
-        private readonly IWebsiteService _websiteService;
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
         private readonly IEwhMapper _ewhMapper;
-        public EwhWebsite(IAccountService accountService, IEwhMapper ewhMapper)
-        {
-            _accountService = accountService;
-            _ewhMapper = ewhMapper;
-            _website = new Website();
-            MapFrom(_website);
-        }
+
 
         public EwhWebsite(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
         {
@@ -39,8 +36,10 @@ namespace ew.application.Entities
             _ewhMapper = ewhMapper;
         }
 
-        public EwhWebsite(Website website, IAccountService accountService)
+        public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IAccountService accountService)
         {
+            _accountRepository = accountRepository;
+            _websiteRepository = websiteRepository;
             _accountService = accountService;
             _website = website;
             MapFrom(website);
@@ -54,7 +53,7 @@ namespace ew.application.Entities
 
         #region properties
         private Website _website;
-        public string WebsiteId { get; private set; }
+        public string WebsiteId { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Url { get; set; }
@@ -62,11 +61,16 @@ namespace ew.application.Entities
         public string Source { get; set; }
         public string Git { get; set; }
         public string WebsiteType { get; set; }
-        public List<DeploymentEnvironment> Stagging { get; private set; }
-        public List<DeploymentEnvironment> Production { get; private set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastModifyDate { get; set; }
+        public List<DeploymentEnvironment> Stagging { get; set; }
+        public List<DeploymentEnvironment> Production { get; set; }
         public List<AccountsAccessLevelOfWebsite> Accounts { get; set; }
 
-        public string RepositoryName { get { return this.Name; } }
+        public string RepositoryName
+        {
+            get; set;
+        }
 
         //private List<EwhAccount> _ewhAccounts { get; set; }
         //public List<EwhAccount> EwhAccounts
@@ -106,7 +110,7 @@ namespace ew.application.Entities
         {
             if (!IsExits())
             {
-                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.owner.ToString()));
+                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
                 if (owner != null)
                 {
                     return owner.AccountId;
@@ -114,8 +118,6 @@ namespace ew.application.Entities
             }
             return string.Empty;
         }
-
-        
 
         public bool Save()
         {
@@ -127,12 +129,13 @@ namespace ew.application.Entities
         public bool Create()
         {
             _websiteRepository.AddOrUpdate(_ewhMapper.ToEntity(_website, this));
+            CreatedDate = DateTime.Now;
             WebsiteId = _website.Id;
-            if(_website.Accounts!=null && _website.Accounts.Any())
+            if (_website.Accounts != null && _website.Accounts.Any())
             {
                 var accList = new AccountsAccessLevelOfWebsite[_website.Accounts.Count];
                 _website.Accounts.CopyTo(accList);
-                foreach(var acc in accList)
+                foreach (var acc in accList)
                 {
                     var addWebsiteAccount = new AddWebsiteAccountDto() { AccessLevels = acc.AccessLevels, AccountId = acc.AccountId };
                     this.AddAccount(addWebsiteAccount);
@@ -194,12 +197,13 @@ namespace ew.application.Entities
             _websiteRepository.AddOrUpdate(_website);
             return true;
         }
-        
+
         public bool AddStagging(UpdateDeploymentEnvironmentToWebsite dto)
         {
             if (!IsExits()) return false;
             var model = new DeploymentEnviromentModel() { Website = _website };
-            if(_websiteRepository.AddOrUpdateStaging(_ewhMapper.ToEntity(model, dto))){
+            if (_websiteRepository.AddOrUpdateStaging(_ewhMapper.ToEntity(model, dto)))
+            {
                 return true;
             }
             return false;
@@ -210,7 +214,8 @@ namespace ew.application.Entities
 
             if (!IsExits()) return false;
             var model = new DeploymentEnviromentModel() { Website = _website };
-            if (_websiteRepository.AddOrUpdateProduction(_ewhMapper.ToEntity(model, dto))){
+            if (_websiteRepository.AddOrUpdateProduction(_ewhMapper.ToEntity(model, dto)))
+            {
                 return true;
             }
             return false;
@@ -238,6 +243,59 @@ namespace ew.application.Entities
             return false;
         }
 
+        public bool InitGogSource()
+        {
+            var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+            Account accountAsOwner;
+            if (owner == null)
+            {
+                this.EwhStatus = GlobalStatus.HaveNoAnOwner;
+                return false;
+            }
+            else
+            {
+                accountAsOwner = _accountRepository.Get(owner.AccountId);
+                if (accountAsOwner == null)
+                {
+                    this.EwhStatus = GlobalStatus.HaveNoAnOwner;
+                    return false;
+                }
+            }
+
+            var ewhSource = new EwhSource();
+            // create source
+            if (ewhSource.CreateRepository(accountAsOwner.UserName, this.Name))
+            {
+                this.Source = ewhSource.RepositoryAdded.Url;
+                this.Save();
+            }
+            return true;
+        }
+
+        public async Task<bool> SelfSync()
+        {
+            var accountIdsManageWebsite = _accountRepository.FindAll().Where(x => x.Websites != null && x.Websites.Any(y => y.WebsiteId == this.WebsiteId)).Select(x => x.Id).ToList();
+
+            if (IsExits())
+            {
+                EwhLogger.Common.Info("SeftSync start");
+
+                //var newStaggings = this.Stagging.Where(x=>x.Id==)
+                var newAccountsManageWebsite = this.Accounts.Where(x => !accountIdsManageWebsite.Contains(x.AccountId)).ToList();
+                var removeAccountsManageWebsite = accountIdsManageWebsite.Where(x => !(this.Accounts.Select(y => y.AccountId).ToList()).Contains(x)).ToList();
+                foreach (var item in newAccountsManageWebsite)
+                {
+                    this.AddAccount(new AddWebsiteAccountDto() { AccountId = item.AccountId, AccessLevels = item.AccessLevels });
+                }
+                foreach (var id in removeAccountsManageWebsite)
+                {
+                    this.RemoveAccount(id);
+                }
+                EwhLogger.Common.Info("SeftSync end");
+            }
+            return true;
+        }
+
         #endregion
 
         #region methods
@@ -254,6 +312,9 @@ namespace ew.application.Entities
             this.Source = website.Source;
             this.Git = website.Git;
             this.WebsiteType = website.WebsiteType;
+            this.CreatedDate = website.CreatedDate;
+            this.LastModifyDate = website.LastModifyDate;
+            this.RepositoryName = website.RepositoryName;
         }
 
         #endregion

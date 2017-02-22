@@ -31,41 +31,46 @@ namespace ew.application
 
         public bool CreateWebsite(CreateWebsiteDto dto)
         {
-            var owner = dto.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.owner.ToString()));
-            Account accountAsOwner;
-            if (owner == null)
-            {
-                this.EwhStatus = GlobalStatus.CreateWebsite_NeedAnOwner;
-                return false;
-            }
-            else
-            {
-                accountAsOwner = _accountRepository.Get(owner.AccountId);
-                if (accountAsOwner == null)
-                {
-                    this.EwhStatus = GlobalStatus.CreateWebsite_NeedAnOwner;
-                    return false;
-                }
-            }
             var ewhWebsite = new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
             _ewhMapper.ToEntity(ewhWebsite, dto);
-            ewhWebsite.WebsiteType = WebsiteTypes.free.ToString();
+            ewhWebsite.WebsiteType = WebsiteTypes.Free.ToString();
             var check = false;
             // create website
             if (ewhWebsite.Create())
             {
                 check = true;
-                var ewhSource = new EwhSource();
-                // create source
-                if (ewhSource.CreateRepository(accountAsOwner.UserName, dto.Name))
-                {
-                    ewhWebsite.Source = ewhSource.RepositoryAdded.Url;
-                    ewhWebsite.Save();
-                }
+                ewhWebsite.InitGogSource();
                 EwhWebsiteAdded = ewhWebsite;
             }
             SyncStatus(this, ewhWebsite);
             return check;
+        }
+
+        private bool CheckValidWebsite(EwhWebsite website)
+        {
+            var owner = website.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+            Account accountAsOwner;
+            if (owner == null)
+            {
+                this.EwhStatus = GlobalStatus.HaveNoAnOwner;
+                return false;
+            }
+            return true;
+        }
+
+        public bool CreateWebsite(EwhWebsite ewhWebsite)
+        {
+            if (!CheckValidWebsite(ewhWebsite)) return false;
+            ewhWebsite.Create();
+            return true;
+        }
+
+        public bool UpdateWebsite(EwhWebsite website)
+        {
+            if (!CheckValidWebsite(website)) return false;
+            website.Save();
+            website.SelfSync();
+            return true;
         }
 
         public EwhWebsite GetEwhWebsite(string id)
@@ -81,7 +86,23 @@ namespace ew.application
 
         public List<EwhWebsite> GetListEwhWebsite()
         {
-            return _ewhMapper.ToEwhWebsites(_websiteRepository.FindAll().ToList());
+            return _ewhMapper.ToEwhWebsites(_websiteRepository.FindAll().OrderByDescending(x=>x.CreatedDate).ToList());
         }
+        
+        public void SyncWebsite(string id)
+        {
+            var website = GetEwhWebsite(id);
+            if (website.IsExits())
+            {
+                website.SelfSync();
+            }
+        }
+
+        public EwhWebsite InitEwhWebsite()
+        {
+            return new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
+        }
+
+        
     }
 }

@@ -1,6 +1,9 @@
 ﻿using ew.application;
 using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.application.Services;
+using ew.cloudflare_wrapper;
+using ew.common;
 using ew.common.Entities;
 using ew.core.Enums;
 using ew.git_hook_listener;
@@ -12,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ew.webapi.Controllers
@@ -24,6 +29,7 @@ namespace ew.webapi.Controllers
     {
         private readonly IWebsiteManager _websiteManager;
         private readonly IAccountManager _accountManager;
+        private readonly IEwhMapper _ewhMapper;
 
         //public WebsiteController(bool manualInit)
         //{
@@ -31,10 +37,11 @@ namespace ew.webapi.Controllers
         //    _accountManager = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAccountManager)) as IAccountManager;
         //}
 
-        public WebsiteController(IWebsiteManager websiteManager, IAccountManager accountManager)
+        public WebsiteController(IWebsiteManager websiteManager, IAccountManager accountManager, IEwhMapper ewhMapper)
         {
             _websiteManager = websiteManager;
             _accountManager = accountManager;
+            _ewhMapper = ewhMapper;
         }
 
         /// <summary>
@@ -68,6 +75,82 @@ namespace ew.webapi.Controllers
                 return ServerError(_websiteManager as EwhEntityBase);
             }
             return BadRequest();
+        }
+
+        /// <summary>
+        /// Full Tạo mới website
+        /// </summary>
+        /// <param name="dto">AddNewWebsite model</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("fulladd")]
+        public IHttpActionResult CreateWebsite(WebsiteDetailDto dto)
+        {
+            dto.WebsiteId = string.Empty;
+            if (ModelState.IsValid)
+            {
+                if (_websiteManager.CreateWebsite(dto.ToEntity(_websiteManager.InitEwhWebsite())))
+                {
+                    return Ok(dto);
+                }
+                return ServerError(_websiteManager as EwhEntityBase);
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Full update website
+        /// </summary>
+        /// <param name="dto">AddNewWebsite model</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{websiteId}/fullupdate")]
+        public IHttpActionResult UpdateWebsite(string websiteId, WebsiteDetailDto dto)
+        {
+            dto.WebsiteId = websiteId;
+            if (ModelState.IsValid)
+            {
+                var website = _websiteManager.GetEwhWebsite(dto.WebsiteId);
+                if (website!=null && website.IsExits())
+                {
+                    if (_websiteManager.UpdateWebsite(dto.ToEntity(website)))
+                    {
+                        EwhLogger.Common.Info("FullUpdate End");
+                        return Ok(dto);
+                    }
+                    return ServerError(_websiteManager as EwhEntityBase);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+                return ServerError(_websiteManager as EwhEntityBase);
+            }
+            return BadRequest();
+        }
+
+        [Route("{websiteId}/sync")]
+        public IHttpActionResult SyncData(string websiteId)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if(ewhWebsite!=null && ewhWebsite.IsExits())
+            {
+                //ewhWebsite.SelfSync();
+                MethodASync();
+            }
+            EwhLogger.Common.Info("Seft");
+            return Ok();
+        }
+
+        public async Task<bool> MethodASync()
+        {
+            //await Task.Delay(2000);
+            EwhLogger.Common.Info("SeftSync");
+            for (int i = 1; i < 1000; i++)
+            {
+                EwhLogger.Common.Info(i);
+            }
+            return true;
         }
 
         /// <summary>
@@ -106,8 +189,26 @@ namespace ew.webapi.Controllers
                 // add git-hook-listerner to demo + production servers
                 if (string.IsNullOrEmpty(ewhWebsite.Source))
                 {
+                    ewhWebsite.InitGogSource();
+                }
+                if (string.IsNullOrEmpty(ewhWebsite.Source))
+                {
                     return NoOK("Source_Empty");
                 }
+
+                // create sub domain
+                var websiteDomain = string.Empty;
+                var subDomainName = string.Format("{0}-{1}.{2}", ewhAccountAsOwner.UserName, ewhWebsite.Name, ew.config.CloudflareInfo.EwhDomain).ToLower();
+                var cloudflareManager = new CloudflareManager();
+                if (cloudflareManager.CreateDNSRecord(ew.config.CloudflareInfo.EwhCloudflareZoneId, new cloudflare_wrapper.Models.UpdateDNSRecordDto() { Type = "CNAME", Name = subDomainName, Content = "easywebhub.github.io" }))
+                {
+                    websiteDomain = cloudflareManager.DNSRecordAdded.name;
+                }
+                else
+                {
+
+                }
+
                 var sourceRepoUrl = ewhWebsite.Source;
                 var ewhGitHookListener = new EwhGitHookListener();
                 var demoGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
@@ -120,7 +221,7 @@ namespace ew.webapi.Controllers
                 };
                 if (ewhGitHookListener.CreateGitHookListernerConfig(demoGitHook))
                 {
-                    ewhWebsite.AddStagging(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.free.ToString(), Name = "EasyWeb Environment" });
+                    ewhWebsite.AddStagging(new UpdateDeploymentEnvironmentToWebsite() { Url = websiteDomain, Git = sourceRepoUrl, HostingFee = HostingFees.Free.ToString(), Name = "EasyWeb Environment" });
                 }
 
                 var productionGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
@@ -133,8 +234,9 @@ namespace ew.webapi.Controllers
                 };
                 if (ewhGitHookListener.CreateGitHookListernerConfig(productionGitHook))
                 {
-                    ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.basic.ToString(), Name = "Production Enviroment" });
+                    ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
                 }
+
                 return Ok(new WebsiteDetailDto(ewhWebsite));
             }
             return BadRequest();
