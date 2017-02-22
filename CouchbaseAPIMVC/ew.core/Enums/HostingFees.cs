@@ -8,8 +8,9 @@ namespace ew.core.Enums
 {
     public enum HostingFees
     {
-        free,
-        basic,
-        pro
+        Free,
+        Basic,
+        Premium,
+        Enterprise
     }
 }

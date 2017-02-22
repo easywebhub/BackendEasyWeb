@@ -8,8 +8,8 @@ namespace ew.core.Enums
 {
     public enum AccessLevels
     {
-        owner,
-        admin,
-        dev
+        Owner,
+        Admin,
+        Dev
     }
 }

@@ -8,7 +8,7 @@ namespace ew.core.Enums
 {
     public enum WebsiteTypes
     {
-        free,
-        paid
+        Free,
+        Paid
     }
 }
