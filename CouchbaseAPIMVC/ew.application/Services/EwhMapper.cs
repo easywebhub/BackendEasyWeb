@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ew.application.Entities.Dto;
 using ew.core.Dto;
 using ew.core.Repositories;
+using ew.common.Helper;
 
 namespace ew.application.Services
 {
@@ -46,7 +47,7 @@ namespace ew.application.Services
 
         public List<EwhWebsite> ToEwhWebsites(List<Website> listWebsite)
         {
-            return listWebsite.Select(x => new EwhWebsite(x, _accountService as IAccountService)).ToList();
+            return listWebsite.Select(x => new EwhWebsite(x, _websiteRepository, _accountRepository, _accountService as IAccountService)).ToList();
         }
 
         public AddAccountDto ToEntity(AddAccountDto dto, EwhAccount ewhAccount)
@@ -105,7 +106,7 @@ namespace ew.application.Services
         public Website ToEntity(Website website, EwhWebsite ewhWebsite)
         {
             website.DisplayName = ewhWebsite.DisplayName;
-            website.Name = ewhWebsite.Name;
+            website.Name = StringUtils.GetSeName(ewhWebsite.Name);
             website.Url = ewhWebsite.Url;
             website.Stagging = ewhWebsite.Stagging;
             website.Production = ewhWebsite.Production;
@@ -114,6 +115,8 @@ namespace ew.application.Services
             website.WebsiteType = ewhWebsite.WebsiteType;
             website.Source = ewhWebsite.Source;
             website.Git = ewhWebsite.Git;
+            website.CreatedDate = ewhWebsite.CreatedDate;
+            website.LastModifyDate = ewhWebsite.LastModifyDate;
 
             return website;
         }

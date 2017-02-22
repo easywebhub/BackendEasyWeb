@@ -13,10 +13,14 @@ namespace ew.core
         [Key]
         public string Id { get; set; }
         public string Type { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastModifyDate { get; set; }
         
         public EwDocument(string type)
         {
             Type = type;
+            CreatedDate = DateTime.Now;
+            LastModifyDate = DateTime.Now;
         }
     }
 }

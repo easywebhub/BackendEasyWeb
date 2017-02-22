@@ -38,7 +38,7 @@ namespace ew.application.Entities.Dto
         {
             this.Accounts = new List<AddWebsiteAccountDto>() {
                 new AddWebsiteAccountDto() {
-                    AccessLevels = new List<string>() { AccessLevels.owner.ToString() }, AccountId = userId }
+                    AccessLevels = new List<string>() { AccessLevels.Owner.ToString() }, AccountId = userId }
             };
         }
     }

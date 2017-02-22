@@ -106,6 +106,7 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c" />
     <Reference Include="Octokit, Version=0.23.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Octokit.0.23.0\lib\net45\Octokit.dll</HintPath>
       <Private>True</Private>
@@ -361,6 +362,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Nlog.config" />
     <None Include="Properties\PublishProfiles\api.ewh.com.pubxml" />
     <None Include="Properties\PublishProfiles\demo.api.ew.com.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -406,6 +408,10 @@
     <ProjectReference Include="..\ew.application\ew.application.csproj">
       <Project>{CE64DB45-FD1B-4DAA-A965-3AE0B869AAA7}</Project>
       <Name>ew.application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ew.clourflare-wrapper\ew.cloudflare-wrapper.csproj">
+      <Project>{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8}</Project>
+      <Name>ew.cloudflare-wrapper</Name>
     </ProjectReference>
     <ProjectReference Include="..\ew.common\ew.common.csproj">
       <Project>{4B05811F-36A8-4DF4-8D67-28F3A685DBAF}</Project>
