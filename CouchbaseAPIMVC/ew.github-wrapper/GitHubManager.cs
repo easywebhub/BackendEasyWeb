@@ -14,9 +14,9 @@ namespace ew.github_wrapper
         public async Task<bool> CreateRepository(string reponame, string description)
         {
             var client = new GitHubClient(new ProductHeaderValue("easywebhub"));
-            var basicAuth = new Credentials("thanhtdvn", "Admin@123"); // NOTE: not real credentials
+            var basicAuth = new Credentials("ewh-support", "!@#456"); // NOTE: not real credentials
             client.Credentials = basicAuth;
-
+            
             var str = string.Empty;
 
             var createRepo = new NewRepository(reponame);
