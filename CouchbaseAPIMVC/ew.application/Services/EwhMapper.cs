@@ -20,10 +20,12 @@ namespace ew.application.Services
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
 
-        public EwhMapper(Lazy<IAccountService> accountService, Lazy<IWebsiteService> websiteService)
+        public EwhMapper(Lazy<IAccountService> accountService, Lazy<IWebsiteService> websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository)
         {
             _accountService = accountService;
             _websiteService = websiteService;
+            _websiteRepository = websiteRepository;
+            _accountRepository = accountRepository;
         }
 
         public EwhAccount ToEwhAccount(Account account)
@@ -47,7 +49,7 @@ namespace ew.application.Services
 
         public List<EwhWebsite> ToEwhWebsites(List<Website> listWebsite)
         {
-            return listWebsite.Select(x => new EwhWebsite(x, _websiteRepository, _accountRepository, _accountService as IAccountService)).ToList();
+            return listWebsite.Select(x => new EwhWebsite(x, _websiteRepository, _accountRepository, this)).ToList();
         }
 
         public AddAccountDto ToEntity(AddAccountDto dto, EwhAccount ewhAccount)

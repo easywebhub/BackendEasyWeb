@@ -45,12 +45,18 @@ namespace ew.webapi.Controllers
             _ewhMapper = ewhMapper;
         }
 
+        [Route("syncrepo")]
+        [HttpGet]
         public void SyncWebsiteRepositoryName()
         {
             var websites = _websiteManager.GetListEwhWebsite();
             foreach (var web in websites)
             {
-                web.Save();
+                if (string.IsNullOrEmpty(web.GetOwnerId()))
+                {
+                    web.AddAccount(new AddWebsiteAccountDto() { AccessLevels = new List<string>() { "Owner" }, AccountId = "01ff64fa-2895-41f6-9be6-b57667f1d598" });
+                    web.Save();
+                }
             }
         }
 

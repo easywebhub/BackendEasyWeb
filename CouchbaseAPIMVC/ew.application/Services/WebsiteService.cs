@@ -26,7 +26,7 @@ namespace ew.application.Services
 
         public EwhWebsite Get(string id)
         {
-            return new EwhWebsite(_websiteRepository.Get(id), _websiteRepository, _accountRepository, _accountService);
+            return new EwhWebsite(_websiteRepository.Get(id), _websiteRepository, _accountRepository, _ewhMapper);
         }
 
         public List<EwhWebsite> GetListWebsite(List<string> listWebsiteId)

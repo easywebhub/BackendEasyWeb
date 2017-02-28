@@ -35,15 +35,7 @@ namespace ew.application.Entities
             _accountRepository = accountRepository;
             _ewhMapper = ewhMapper;
         }
-
-        public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IAccountService accountService)
-        {
-            _accountRepository = accountRepository;
-            _websiteRepository = websiteRepository;
-            _accountService = accountService;
-            _website = website;
-            MapFrom(website);
-        }
+              
 
         public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper) : this(websiteRepository, accountRepository, ewhMapper)
         {
@@ -110,7 +102,7 @@ namespace ew.application.Entities
         {
             if (IsExits())
             {
-                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels!=null && x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
                 if (owner != null)
                 {
                     return owner.AccountId;
@@ -124,7 +116,8 @@ namespace ew.application.Entities
             var website = _ewhMapper.ToEntity(_website, this);
             if (!IsExits() || string.IsNullOrEmpty(website.RepositoryName))
             {
-                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+                website.RepositoryName = string.Empty;
+                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels!=null && x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
                 if (owner != null)
                 {
                     var ownerAcc = _accountRepository.Get(owner.AccountId);
