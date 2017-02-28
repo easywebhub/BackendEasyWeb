@@ -48,7 +48,7 @@ namespace ew.webapi.Controllers
         [Route("")]
         public IHttpActionResult CreateUser(AddAccountDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             if (_accountManager.CreateAccount(dto))
             {
@@ -86,7 +86,7 @@ namespace ew.webapi.Controllers
         [Route("{userId}")]
         public IHttpActionResult UpdateUserInfo(string userId, AccountInfo dto)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var ewhAccount = _accountManager.GetEwhAccount(userId);
             if (ewhAccount == null) return NotFound();
             if (ewhAccount.UpdateInfo(dto))

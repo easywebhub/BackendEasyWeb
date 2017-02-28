@@ -130,7 +130,7 @@ namespace ew.application.Entities
 
         public bool Save()
         {
-            if (CheckValidModel() && (IsExits() || CheckIsIdentity()))
+            if (CheckValidModel() && CheckIsIdentity())
             {
                 _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account ?? new Account(), this));
                 return true;
@@ -224,13 +224,27 @@ namespace ew.application.Entities
         }
         private bool CheckIsIdentity()
         {
-            return CheckValidUserName();
+            return (IsExits() || CheckValidUserName()) && CheckValidEmail();
         }
         public bool CheckValidUserName()
         {
             if (_accountRepository.IsExitsUserName(this.UserName))
             {
                 base.EwhStatus = core.Enums.GlobalStatus.AlreadyExists;
+                return false;
+            }
+            return true;
+        }
+        public bool CheckValidEmail()
+        {
+            if(string.IsNullOrEmpty(this.Info!=null? this.Info.Email: ""))
+            {
+                base.EwhStatus = core.Enums.GlobalStatus.Invalid;
+                return false;
+            }
+            if (_accountRepository.IsIdentityEmail(this.UserName, this.Info.Email))
+            {
+                base.EwhStatus = core.Enums.GlobalStatus.Account_EmailAlreadyInUse;
                 return false;
             }
             return true;

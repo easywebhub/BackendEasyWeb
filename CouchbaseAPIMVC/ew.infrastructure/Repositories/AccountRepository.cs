@@ -14,9 +14,9 @@ using ew.core.Dtos;
 
 namespace ew.infrastructure.Repositories
 {
-    public class AccountRepository: GenericRepository<Account>, IAccountRepository
+    public class AccountRepository : GenericRepository<Account>, IAccountRepository
     {
-        public AccountRepository(IBucket bucket, IBucketContext context): base(bucket, context)
+        public AccountRepository(IBucket bucket, IBucketContext context) : base(bucket, context)
         {
         }
 
@@ -34,7 +34,7 @@ namespace ew.infrastructure.Repositories
         public IQueryable<Account> Find(EntityQueryParams queryParams)
         {
             var sql = FindAll();
-            
+
             return sql;
         }
 
@@ -48,11 +48,21 @@ namespace ew.infrastructure.Repositories
             return this.FindAll().Any(x => x.UserName == username);
         }
 
+        public bool IsExitsEmail(string email)
+        {
+            return this.FindAll().Any(x => x.Info != null && x.Info.Email == email);
+        }
+
+        public bool IsIdentityEmail(string username, string email)
+        {
+            return this.FindAll().Any(x => x.UserName != username && x.Info != null && x.Info.Email == email);
+        }
+        
         public bool RemoveWebsite(RemoveWebsiteAccountModel dto)
         {
             if (dto.Website == null || dto.Account == null) return false;
             var account = dto.Account;
-            var webAccount = account.Websites != null ? account.Websites.FirstOrDefault(x => x.WebsiteId== dto.Website.Id) : null;
+            var webAccount = account.Websites != null ? account.Websites.FirstOrDefault(x => x.WebsiteId == dto.Website.Id) : null;
             if (webAccount == null) return false;
             account.Websites.Remove(webAccount);
             this.AddOrUpdate(account);
