@@ -29,6 +29,7 @@ namespace ew.core
         public string Source { get; set; }
         public string Git { get; set; }
         public string WebsiteType { get; set; }
+        public string RepositoryName { get; set; }
     }
 
     public class WebsiteIdentity

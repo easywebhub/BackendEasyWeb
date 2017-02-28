@@ -11,12 +11,20 @@ namespace ew.github_wrapper
     {
         public Repository RepositoryAdded { get; set; }
 
-        public async Task<bool> CreateRepository(string reponame, string description)
+        private string owner = "thanhtdvn";
+        private string password = "Admin@123";
+        private GitHubClient InitClient()
         {
             var client = new GitHubClient(new ProductHeaderValue("easywebhub"));
-            var basicAuth = new Credentials("ewh-support", "!@#456"); // NOTE: not real credentials
+            var basicAuth = new Credentials(owner, password); // NOTE: not real credentials
             client.Credentials = basicAuth;
-            
+
+            return client;
+        }
+
+        public async Task<bool> CreateRepository(string reponame, string description)
+        {
+            var client = InitClient();            
             var str = string.Empty;
 
             var createRepo = new NewRepository(reponame);
@@ -25,6 +33,12 @@ namespace ew.github_wrapper
             RepositoryAdded = null;
             RepositoryAdded = client.Repository.Create(createRepo).Result;
             return RepositoryAdded != null;
+        }
+
+        public async Task<Repository> GetRepository(string repoName)
+        {
+            var client = InitClient();
+            return client.Repository.Get(owner, repoName).Result;
         }
 
        

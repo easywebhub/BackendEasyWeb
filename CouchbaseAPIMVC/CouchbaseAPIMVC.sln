@@ -40,6 +40,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "presentation", "presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ew.config", "ew.config\ew.config.csproj", "{B746399E-D2E3-40E6-B739-B6797445BDC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ew.cloudflare-wrapper", "ew.clourflare-wrapper\ew.cloudflare-wrapper.csproj", "{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,10 @@ Global
 		{B746399E-D2E3-40E6-B739-B6797445BDC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B746399E-D2E3-40E6-B739-B6797445BDC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B746399E-D2E3-40E6-B739-B6797445BDC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +115,6 @@ Global
 		{3520035F-ED60-4FB8-9587-FE89E6794102} = {7C3B274F-9241-444A-ABA5-4719BE874EB6}
 		{241F2C68-0B4E-4F49-85B4-6DCE0355652F} = {7C3B274F-9241-444A-ABA5-4719BE874EB6}
 		{B746399E-D2E3-40E6-B739-B6797445BDC4} = {16C52A56-4900-42EE-962A-23EF09AF682D}
+		{01D4AE7C-6740-48E4-B5C0-0C3E8E7C9EF8} = {7C3B274F-9241-444A-ABA5-4719BE874EB6}
 	EndGlobalSection
 EndGlobal

@@ -106,9 +106,9 @@ namespace ew.application.Entities
         /// get account as owner of website
         /// </summary>
         /// <returns>id of account</returns>
-        public string GetOwner()
+        public string GetOwnerId()
         {
-            if (!IsExits())
+            if (IsExits())
             {
                 var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
                 if (owner != null)
@@ -118,18 +118,27 @@ namespace ew.application.Entities
             }
             return string.Empty;
         }
-
+        
         public bool Save()
         {
-            _websiteRepository.AddOrUpdate(_ewhMapper.ToEntity(_website, this));
+            var website = _ewhMapper.ToEntity(_website, this);
+            if (!IsExits() || string.IsNullOrEmpty(website.RepositoryName))
+            {
+                var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+                if (owner != null)
+                {
+                    var ownerAcc = _accountRepository.Get(owner.AccountId);
+                    if (ownerAcc != null) website.RepositoryName = string.Format("{0}-{1}", ownerAcc.UserName, website.Name);
+                }
+            }
+            _websiteRepository.AddOrUpdate(website);
             WebsiteId = _website.Id;
             return true;
         }
 
         public bool Create()
         {
-            _websiteRepository.AddOrUpdate(_ewhMapper.ToEntity(_website, this));
-            CreatedDate = DateTime.Now;
+            if (!Save()) return false;
             WebsiteId = _website.Id;
             if (_website.Accounts != null && _website.Accounts.Any())
             {
@@ -264,7 +273,7 @@ namespace ew.application.Entities
 
             var ewhSource = new EwhSource();
             // create source
-            if (ewhSource.CreateRepository(accountAsOwner.UserName, this.Name))
+            if (ewhSource.CreateRepository(accountAsOwner.UserName, this.RepositoryName))
             {
                 this.Source = ewhSource.RepositoryAdded.Url;
                 this.Save();

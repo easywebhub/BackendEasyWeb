@@ -21,6 +21,7 @@ using System.Web.Http;
 
 namespace ew.webapi.Controllers
 {
+    
     /// <summary>
     /// Website
     /// </summary>
@@ -42,6 +43,15 @@ namespace ew.webapi.Controllers
             _websiteManager = websiteManager;
             _accountManager = accountManager;
             _ewhMapper = ewhMapper;
+        }
+
+        public void SyncWebsiteRepositoryName()
+        {
+            var websites = _websiteManager.GetListEwhWebsite();
+            foreach (var web in websites)
+            {
+                web.Save();
+            }
         }
 
         /// <summary>
@@ -167,19 +177,23 @@ namespace ew.webapi.Controllers
                 var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
                 if (ewhWebsite == null) return NotFound();
                 var githubManager = new GitHubManager();
+                Octokit.Repository gitRepository = null;
                 //create github repository
                 if (string.IsNullOrEmpty(ewhWebsite.Git))
                 {
                     if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
                     {
-                        ewhWebsite.Git = githubManager.RepositoryAdded.GitUrl;
+                        ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
                         ewhWebsite.Save();
                     }
+                }else
+                {
+                    gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
                 }
 
                 // add web-hook to demo & production server
                 var ewhGogsSource = new EwhSource();
-                var ewhAccountAsOwner = _accountManager.GetEwhAccount(ewhWebsite.GetOwner());
+                var ewhAccountAsOwner = _accountManager.GetEwhAccount(ewhWebsite.GetOwnerId());
                 if (ewhAccountAsOwner != null)
                 {
                     ewhGogsSource.CreateWebHook(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.DemoServer.WebHookUrl);
@@ -209,33 +223,37 @@ namespace ew.webapi.Controllers
 
                 }
 
-                var sourceRepoUrl = ewhWebsite.Source;
-                var ewhGitHookListener = new EwhGitHookListener();
-                var demoGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
+                if (gitRepository != null)
                 {
-                    GitHookListenerBaseUrl = ew.config.DemoServer.BaseUrl,
-                    RepoUrl = sourceRepoUrl,
-                    Branch = "master",
-                    CloneBranch = "master",
-                    Path = string.Format("repositories/{0}", githubManager.RepositoryAdded.Name)
-                };
-                if (ewhGitHookListener.CreateGitHookListernerConfig(demoGitHook))
-                {
-                    ewhWebsite.AddStagging(new UpdateDeploymentEnvironmentToWebsite() { Url = websiteDomain, Git = sourceRepoUrl, HostingFee = HostingFees.Free.ToString(), Name = "EasyWeb Environment" });
-                }
+                    var sourceRepoUrl = ewhWebsite.Source;
+                    var ewhGitHookListener = new EwhGitHookListener();
+                    var demoGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
+                    {
+                        GitHookListenerBaseUrl = ew.config.DemoServer.BaseUrl,
+                        RepoUrl = sourceRepoUrl,
+                        Branch = "master",
+                        CloneBranch = "master",
+                        Path = string.Format("repositories/{0}", gitRepository.Name)
+                    };
+                    if (ewhGitHookListener.CreateGitHookListernerConfig(demoGitHook))
+                    {
+                        ewhWebsite.AddStagging(new UpdateDeploymentEnvironmentToWebsite() { Url = websiteDomain, Git = sourceRepoUrl, HostingFee = HostingFees.Free.ToString(), Name = "EasyWeb Environment" });
+                    }
 
-                var productionGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
-                {
-                    GitHookListenerBaseUrl = ew.config.ProductionServer.BaseUrl,
-                    RepoUrl = sourceRepoUrl,
-                    Branch = "master",
-                    CloneBranch = "master",
-                    Path = string.Format("repositories/{0}", githubManager.RepositoryAdded.Name)
-                };
-                if (ewhGitHookListener.CreateGitHookListernerConfig(productionGitHook))
-                {
-                    ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
+                    var productionGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
+                    {
+                        GitHookListenerBaseUrl = ew.config.ProductionServer.BaseUrl,
+                        RepoUrl = sourceRepoUrl,
+                        Branch = "master",
+                        CloneBranch = "master",
+                        Path = string.Format("repositories/{0}", gitRepository.Name)
+                    };
+                    if (ewhGitHookListener.CreateGitHookListernerConfig(productionGitHook))
+                    {
+                        ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
+                    }
                 }
+                
 
                 return Ok(new WebsiteDetailDto(ewhWebsite));
             }
