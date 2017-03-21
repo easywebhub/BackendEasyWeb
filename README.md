@@ -1,15 +1,19 @@
 
 ## Overview of BackendEasyWeb
-#### 1. API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
-   + Save source on ```/CouchbaseAPIMVC/*```
-   + Push to deploy: branch ```publicAPI``` is used to push and deploy to ```api.easywebhub.com``` 
- 
-#### 2. Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
-   + Save source on ```WebAdmin/*```
-   + Use branch `/gh-pages` to host Aurelia website on GitHub pages.
-   + CNAME:  easyadmincp.com
- 
+#### API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
+   + Save source on ```ew.webapi```
+   + Push to deploy: from git(https://github.com/easywebhub/deployments), branch ```api.easywebhub.com``` is used to push and deploy to ```api.easywebhub.com``` 
+
+### Refrences :
+#### Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
+   see more info at https://github.com/easywebhub/easyadmincp/blob/master/README.md
+#### Easy App:
+   see more at https://github.com/easywebhub/easyapp
+   
+   
+   
 ### List of API 
+current status: https://github.com/easywebhub/tasks/issues/63
 ### Authentication (with sample  ```input & output json```)
   + Sign Up [[more]](https://gist.github.com/thanhtdvn/0deddb983c95e64b15d7ba63532ac99b)
   + Sign In [[more]](https://gist.github.com/thanhtdvn/b24379343a50fe29cc9190fd0825231b)
