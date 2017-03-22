@@ -10,7 +10,17 @@
 #### Easy App:
    see more at https://github.com/easywebhub/easyapp
    
-   
+
+### Config to Run:
+1. Set project ```ew.api``` as startup project
+
+2. Change config in web.config file
+
+```<add key="couchbaseServer1" value="xxxxx" />``` point to couchbase server
+
+3. Ctrl + F5 to build and run web api
+
+
    
 ### List of API 
 current status: https://github.com/easywebhub/tasks/issues/63
