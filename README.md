@@ -1,8 +1,8 @@
 
 ## Overview
-> Là hệ thống quản trị account và websites của EasyWeb. Gồm các phần như sau
-
 >Triển khai ở api.easywebhub.com
+
+> Là hệ thống quản trị account và websites của EasyWeb. Gồm các phần như sau
 
 - Công nghệ sử dụng
    - Framework Asp.Net MVC5 Web API,  
