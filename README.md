@@ -6,16 +6,17 @@
 
 - Công nghệ sử dụng
    - Framework Asp.Net MVC5 Web API,  
-   - Database: using ```Couchbase``` NoSQL 
+   - Database: using ```Couchbase``` NoSQL, không sử dụng MSSQL
    - SwaggerUI cho Restful API document
 
 - Source Code
    + repo: `https://github.com/easywebhub/BackendEasyWeb`,  branch `master`
    + Couchbase Info:`http://104.168.94.152:8091`, db name `ewhcb` 
+
 - Development: đang áp dụng push to deploy
    + push-to-deploy server: `107.175.56.236`, port `4567`
-   + từ repo: `https://github.com/easywebhub/deployments`, branch `api.easywebhub.com`
-   + deployed: server: `107.175.56.236`, IIS Services name `api.easywebhub.com`
+   + từ repo: `https://github.com/easywebhub/deployments`, branch `api.easywebhub.com` 
+   + deployed: server: `107.175.56.236` US 4G RAM, IIS Services name `api.easywebhub.com`
        
 ## Hệ thống sử dụng
 
@@ -48,6 +49,26 @@
   - Repo: `https://github.com/easywebhub/easyapp` , branch `master`
 
 - Build
+
+### 3. Identity Server
+- Công nghệ sử dụng
+  - Identity Server 4, MSSQL Server 2012, .net Core
+
+- Danh sách tính năng
+  - tổng hợp ơ task #
+  
+- Source Code:
+  - Repo `https://github.com/easywebhub/NetCoreIdentityServer`, branch `master`
+  
+
+- Deployment: chưa áp dụng push to deploy
+ - ~~push-to-deploy server: `107.175.56.236`, port `4567`~~
+ - MSSQL server,  đổi sang  Azure server name: `ewh-server-01.database.windows.net`, dbname `ewh-admincp-dev` 
+ - từ repo: `https://github.com/easywebhub/deployments`, branch `id.easywebhub.com`
+ - deployed server: ~~server việt nam bị xóa~~ => chuyển sang `107.175.56.236` , IIS services `cap-nhat`
+ 
+
+
  
 
    
