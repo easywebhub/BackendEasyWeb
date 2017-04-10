@@ -1,65 +1,86 @@
 
-## Overview of BackendEasyWeb
-#### 1. API Back-end: .Net MVC5 Web API,  using ```Couchbase``` NoSQL (and RMDB such as MSSQL or MySQL)
-   + Save source on ```/CouchbaseAPIMVC/*```
-   + Push to deploy: branch ```publicAPI``` is used to push and deploy to ```api.easywebhub.com``` 
+## Overview
+>Triển khai ở api.easywebhub.com
+
+> Là hệ thống quản trị account và websites của EasyWeb. Gồm các phần như sau
+
+- Công nghệ sử dụng
+   - Framework Asp.Net MVC5 Web API,  
+   - Database: using ```Couchbase``` NoSQL, không sử dụng MSSQL
+   - SwaggerUI cho Restful API document
+
+- Source Code
+   + repo: `https://github.com/easywebhub/BackendEasyWeb`,  branch `master`
+   + Couchbase Info:`http://104.168.94.152:8091`, db name `ewhcb` 
+
+- Development: đang áp dụng push to deploy
+   + push-to-deploy server: `107.175.56.236`, port `4567`
+   + từ repo: `https://github.com/easywebhub/deployments`, branch `api.easywebhub.com` 
+   + deployed: server: `107.175.56.236` US 4G RAM, IIS Services name `api.easywebhub.com`
+       
+## Hệ thống sử dụng
+
+### 1. easyadmincp.com
+> chi tiết https://github.com/easywebhub/easyadmincp
+
+> Tóm lượt
+
+- Công nghệ sử dụng
+  - SPA : Aurelia, SemanticUI
+  - sử dụng API từ `api.easywebhub.com` bên trên
+
+- Source Code:
+  - Repo `https://github.com/easywebhub/easyadmincp`, branch `master`
+
+- Deployment: đang áp dụng push to deploy
+ - push-to-deploy server: `107.175.56.236`, port `4567`
+ - từ repo: `https://github.com/easywebhub/deployments`, branch `cap_nhat`
+ - deployed server: sử dụng github, repo `https://github.com/xxx`, branch `gh-pages
+
+### 2. EasyBuider
+> Là phần mềm chạy trên Win, Linux và MacOS
+> Chi tiết https://github.com/easywebhub/easyapp
+
+- Công nghệ sử dụng
+  - Electron, NodeJS, RiotJS, Git
+  - Metalsmith, HanderbarJS
+
+- Source code
+  - Repo: `https://github.com/easywebhub/easyapp` , branch `master`
+
+- Build
+
+### 3. Identity Server
+- Công nghệ sử dụng
+  - Identity Server 4, MSSQL Server 2012, .net Core
+
+- Danh sách tính năng
+  - tổng hợp ơ task #
+  
+- Source Code:
+  - Repo `https://github.com/easywebhub/NetCoreIdentityServer`, branch `master`
+  
+
+- Deployment: chưa áp dụng push to deploy
+ - ~~push-to-deploy server: `107.175.56.236`, port `4567`~~
+ - MSSQL server,  đổi sang  Azure server name: `ewh-server-01.database.windows.net`, dbname `ewh-admincp-dev` 
+ - từ repo: `https://github.com/easywebhub/deployments`, branch `id.easywebhub.com`
+ - deployed server: ~~server việt nam bị xóa~~ => chuyển sang `107.175.56.236` , IIS services `cap-nhat`
  
-#### 2. Web Admin:  Aurelia with Semantic UI (limit to use Bootstrap)
-   + Save source on ```WebAdmin/*```
-   + Use branch `/gh-pages` to host Aurelia website on GitHub pages.
-   + CNAME:  easyadmincp.com
+
+
  
-### List of API 
-### Authentication (with sample  ```input & output json```)
-  + Sign Up [[more]](https://gist.github.com/thanhtdvn/0deddb983c95e64b15d7ba63532ac99b)
-  + Sign In [[more]](https://gist.github.com/thanhtdvn/b24379343a50fe29cc9190fd0825231b)
-  + Update Account Info
 
-###  Create new website
-  + new website with owner is current user ```["creator", "dev"]```
-  + add ```websiteId``` to list of websites
-  
-  [more](https://gist.github.com/thanhtdvn/b1cf56686335287e603f90e0915ac836)
+   
 
-### Allow users to access website
-  + update website.json with input:  ```websiteId``` and  permisson ```accessLevel```
-  + add ```websiteId``` to list of websites
-  
-  [[more]](https://gist.github.com/thanhtdvn/f4b1f9b2687fbe0716ac281d27c49172)
+### Config to Run:
+1. Set project ```ew.api``` as startup project
 
-### Update website Info:
-  + update Stagging or Deploy information
-  + update website.json  only.
-  
-### Update more Info beside of WebsiteInfo
-  + Info to process the Shopping Cart https://gist.github.com/thinnv/97ca63a2a7a40e7701aa84cc983445b8
-  + Info of live domain
-  
-### Order
-  + Insert Order [JSON](https://gist.github.com/thinnv/584eacc7db1e8956dd2021b6ed5996d7)
-  + Update Order [JSON](https://gist.github.com/thinnv/df86acfcd7a19e13072b4de29181a242) // Có thêm OrderId
-  + Get List Order [link]( http://api.easywebhub.com//api-order/GetListOrder?siteId=mtfashion)
+2. Change config in web.config file
 
-### List of results (json) for easy debug or integrate with Aurelia Admin
-  + List of accounts [[more]](https://gist.github.com/thanhtdvn/a451ec9898d221b739f37087a3a7af12)
-  
-  + List of created websites [[more]](https://gist.github.com/thanhtdvn/ad72e51475204f0265caef91d15c7cf6) 
+```<add key="couchbaseServer1" value="xxxxx" />``` point to couchbase server
 
-### Core features
-#### 1. User management  with Admin forms
-  + Sign in/ Sign up 
-    + API: add here  add here link to the Url (or screenshot) 
-    + WebAdmin: add here link to the Url (or screenshot)
-  + API User info (json format) with function permissions 
-    + API: add here  add here link to the Url (or screenshot) 
-    + WebAdmin: add here link to the Url (or screenshot)
-  + List Users 
-    + List groups that a user belongs
- 
-#### 2. Group management with Admin forms
-   + A Group could have children groups
-   + Create / Edit a group 
-   + Set permissions for a group
-   + Assign users into a group
-   + List All Groups or children groups 
+3. Ctrl + F5 to build and run web api
 
+### Tính năng
+- List API https://github.com/easywebhub/BackendEasyWeb/blob/master/ListRestfulAPI.md
