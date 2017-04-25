@@ -113,18 +113,19 @@ namespace ew.application.Entities
         
         public bool Save()
         {
-            var website = _ewhMapper.ToEntity(_website, this);
-            if (!IsExits() || string.IsNullOrEmpty(website.RepositoryName))
+            if (_website == null) _website = new Website();
+            _ewhMapper.ToEntity(_website, this);
+            if (!IsExits() || string.IsNullOrEmpty(_website.RepositoryName))
             {
-                website.RepositoryName = string.Empty;
+                _website.RepositoryName = string.Empty;
                 var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels!=null && x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
                 if (owner != null)
                 {
                     var ownerAcc = _accountRepository.Get(owner.AccountId);
-                    if (ownerAcc != null) website.RepositoryName = string.Format("{0}-{1}", ownerAcc.UserName, website.Name);
+                    if (ownerAcc != null) _website.RepositoryName = string.Format("{0}-{1}", ownerAcc.UserName, _website.Name);
                 }
             }
-            _websiteRepository.AddOrUpdate(website);
+            _websiteRepository.AddOrUpdate(_website);
             WebsiteId = _website.Id;
             return true;
         }

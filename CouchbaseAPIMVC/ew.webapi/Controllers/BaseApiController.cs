@@ -33,7 +33,7 @@ namespace ew.webapi.Controllers
             return x;
         }
 
-        protected IHttpActionResult Pagination<T>(T data,int totalItems = 0, int limit = 20, int page = 1)
+        protected IHttpActionResult Pagination<T>(T data, int totalItems = 0, int limit = 20, int page = 1)
         {
             var x = new System.Web.Http.Results.ResponseMessageResult(
                 Request.CreateResponse(HttpStatusCode.OK, data)
@@ -41,7 +41,7 @@ namespace ew.webapi.Controllers
 
             int totalPage = totalItems / limit;
             totalPage = totalItems % limit == 0 ? totalPage : (totalPage + 1);
-            
+
             x.Response.Headers.Add(EwHeaders.X_Paging_Total_Count, totalItems.ToString());
             x.Response.Headers.Add(EwHeaders.X_Paging_Limit, limit.ToString());
             x.Response.Headers.Add(EwHeaders.X_Paging_Total_Pages, totalPage.ToString());
@@ -65,7 +65,7 @@ namespace ew.webapi.Controllers
             var x = NoOK(ewhEntityBase.EwhStatus.ToString()) as ResponseMessageResult;
             if (ewhEntityBase != null)
             {
-                x.Response.Headers.Add(EwHeaders.X_Error_Message, ewhEntityBase.EwhErrorMessage);
+                x.Response.Headers.Add(EwHeaders.X_Error_Message, ewhEntityBase.EwhErrorMessage ?? "");
                 //x.Response.Headers.Add(EwHeaders.X_Status, ewhEntityBase.EwhStatus.ToString());
             }
             return x;
@@ -85,8 +85,8 @@ namespace ew.webapi.Controllers
             return x;
         }
 
-      
-        
-        
+
+
+
     }
 }

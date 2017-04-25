@@ -17,6 +17,7 @@ namespace ew.core.Enums
         Access_Denied,
         NotFound,
         AlreadyExists,
+        UsernameAlreadyExists,
 
         HaveNoAnOwner,
 

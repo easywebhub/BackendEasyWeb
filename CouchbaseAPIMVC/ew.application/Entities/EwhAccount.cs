@@ -132,7 +132,9 @@ namespace ew.application.Entities
         {
             if (CheckValidModel() && CheckIsIdentity())
             {
-                _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account ?? new Account(), this));
+                if (_account == null) _account = new Account();
+                _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account, this));
+                AccountId = _account.Id;
                 return true;
             }
             return false;
@@ -203,6 +205,8 @@ namespace ew.application.Entities
         #region private methods
         private void MapFrom(Account account)
         {
+            if (account == null) return;
+
             this.AccountId = account.Id;
             this.UserName = account.UserName;
             this.AccountType = account.AccountType;
@@ -230,7 +234,7 @@ namespace ew.application.Entities
         {
             if (_accountRepository.IsExitsUserName(this.UserName))
             {
-                base.EwhStatus = core.Enums.GlobalStatus.AlreadyExists;
+                base.EwhStatus = core.Enums.GlobalStatus.UsernameAlreadyExists;
                 return false;
             }
             return true;

@@ -35,11 +35,11 @@ namespace ew.application.Services
 
         public void ToEntity(EwhAccount ewhAccount, Account account)
         {
-            account.AccountType = ewhAccount.AccountType;
-            account.UserName = ewhAccount.UserName;
-            account.Status = ewhAccount.Status;
-            account.Websites = ewhAccount.Websites;
-            account.Info = ewhAccount.Info;
+            ewhAccount.AccountType = account.AccountType;
+            ewhAccount.UserName = account.UserName;
+            ewhAccount.Status = account.Status;
+            ewhAccount.Websites = account.Websites;
+            ewhAccount.Info = account.Info;
         }
 
         public List<EwhAccount> ToEwhAccounts(List<Account> listAccount)
