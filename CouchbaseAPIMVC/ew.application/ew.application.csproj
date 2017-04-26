@@ -84,6 +84,7 @@
     <Compile Include="Services\IAuthService.cs" />
     <Compile Include="Services\IEwhMapper.cs" />
     <Compile Include="Services\IWebsiteService.cs" />
+    <Compile Include="Services\MailService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\WebsiteService.cs" />

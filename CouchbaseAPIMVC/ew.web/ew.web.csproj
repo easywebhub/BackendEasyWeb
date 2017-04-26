@@ -344,10 +344,6 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Couchbase.AspNet.Identity\Couchbase.AspNet.Identity.csproj">
-      <Project>{C6C0A42E-2783-4F5B-8904-05F0079E06BF}</Project>
-      <Name>Couchbase.AspNet.Identity</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ew.application\ew.application.csproj">
       <Project>{CE64DB45-FD1B-4DAA-A965-3AE0B869AAA7}</Project>
       <Name>ew.application</Name>
