@@ -10,29 +10,20 @@ using ew.application.Entities.Dto;
 using ew.core.Dto;
 using ew.core.Repositories;
 using ew.common.Helper;
+using ew.application.Managers;
 
 namespace ew.application.Services
 {
     public class EwhMapper : IEwhMapper
     {
-        private readonly Lazy<IAccountService> _accountService;
-        private readonly Lazy<IWebsiteService> _websiteService;
-        private readonly IAccountRepository _accountRepository;
-        private readonly IWebsiteRepository _websiteRepository;
+        private readonly Lazy<IEntityFactory> _entityFactory;
+        private IEntityFactory entityFactory { get { return _entityFactory.Value; } }
 
-        public EwhMapper(Lazy<IAccountService> accountService, Lazy<IWebsiteService> websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository)
+        public EwhMapper(Lazy<IEntityFactory> entityFactory)
         {
-            _accountService = accountService;
-            _websiteService = websiteService;
-            _websiteRepository = websiteRepository;
-            _accountRepository = accountRepository;
+            _entityFactory = entityFactory;
         }
-
-        public EwhAccount ToEwhAccount(Account account)
-        {
-            return new EwhAccount(account, _accountService as IAccountService, _websiteService as IWebsiteService, _websiteRepository, _accountRepository, this);
-        }
-
+        
         public void ToEntity(EwhAccount ewhAccount, Account account)
         {
             ewhAccount.AccountType = account.AccountType;
@@ -44,12 +35,12 @@ namespace ew.application.Services
 
         public List<EwhAccount> ToEwhAccounts(List<Account> listAccount)
         {
-            return listAccount.Select(x => new EwhAccount(x, _accountService as IAccountService, _websiteService as IWebsiteService, _websiteRepository, _accountRepository, this)).ToList();
+            return listAccount.Select(x=> entityFactory.GetAccount(x)).ToList();
         }
 
         public List<EwhWebsite> ToEwhWebsites(List<Website> listWebsite)
         {
-            return listWebsite.Select(x => new EwhWebsite(x, _websiteRepository, _accountRepository, this)).ToList();
+            return listWebsite.Select(x => entityFactory.GetWebsite(x)).ToList();
         }
 
         public AddAccountDto ToEntity(AddAccountDto dto, EwhAccount ewhAccount)

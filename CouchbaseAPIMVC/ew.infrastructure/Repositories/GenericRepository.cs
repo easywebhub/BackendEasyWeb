@@ -65,6 +65,6 @@ namespace ew.infrastructure.Repositories
             //_bucket.Remove(string.Format("{0}::{1}", typeof(T).Name, id));
             _bucket.Remove(id);
         }
-
+        
     }
 }

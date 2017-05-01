@@ -28,6 +28,7 @@ namespace ew.web.DependencyResolution
     using Couchbase.Linq;
     using StructureMap.Web;
     using application;
+    using application.Managers;
 
     public class DefaultRegistry : Registry
     {
@@ -58,10 +59,12 @@ namespace ew.web.DependencyResolution
             //services 
             For<IWebsiteManager>().Use<WebsiteManager>();
             For<IAccountManager>().Use<AccountManager>();
+            For<IManagerFactory>().Use<ManagerFactory>();
 
             For<IEwhMapper>().Use<EwhMapper>();
-            For<IAccountService>().Use<AccountService>();
-            For<IWebsiteService>().Use<WebsiteService>();
+            For<IEntityFactory>().Use<EntityFactory>();
+            //For<IAccountService>().Use<AccountService>();
+            //For<IWebsiteService>().Use<WebsiteService>();
 
         }
 

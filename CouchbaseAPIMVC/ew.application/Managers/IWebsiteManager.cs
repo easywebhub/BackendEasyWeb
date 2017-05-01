@@ -15,5 +15,6 @@ namespace ew.application
         bool UpdateWebsite(EwhWebsite website);
         EwhWebsite GetEwhWebsite(string id);
         List<EwhWebsite> GetListEwhWebsite();
+        List<EwhWebsite> GetListEwhWebsite(List<string> WebsiteIds);
     }
 }

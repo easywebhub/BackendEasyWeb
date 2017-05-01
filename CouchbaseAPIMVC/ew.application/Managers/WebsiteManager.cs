@@ -18,9 +18,10 @@ namespace ew.application
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
-        private readonly IEwhMapper _ewhMapper;
+        private readonly Lazy<IEwhMapper> _ewhMapper;
+        private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
 
-        public WebsiteManager(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public WebsiteManager(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper)
         {
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
@@ -32,7 +33,7 @@ namespace ew.application
         public bool CreateWebsite(CreateWebsiteDto dto)
         {
             var ewhWebsite = new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
-            _ewhMapper.ToEntity(ewhWebsite, dto);
+            ewhMapper.ToEntity(ewhWebsite, dto);
             ewhWebsite.WebsiteType = WebsiteTypes.Free.ToString();
             var check = false;
             // create website
@@ -86,9 +87,14 @@ namespace ew.application
 
         public List<EwhWebsite> GetListEwhWebsite()
         {
-            return _ewhMapper.ToEwhWebsites(_websiteRepository.FindAll().OrderByDescending(x=>x.CreatedDate).ToList());
+            return ewhMapper.ToEwhWebsites(_websiteRepository.FindAll().OrderByDescending(x=>x.CreatedDate).ToList());
         }
-        
+
+        public List<EwhWebsite> GetListEwhWebsite(List<string> WebsiteIds)
+        {
+            return ewhMapper.ToEwhWebsites(_websiteRepository.FindAll().Where(x=>WebsiteIds.Contains(x.Id)).OrderByDescending(x => x.CreatedDate).ToList());
+        }
+
         public void SyncWebsite(string id)
         {
             var website = GetEwhWebsite(id);

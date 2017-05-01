@@ -27,6 +27,7 @@ namespace ew.webapi.DependencyResolution {
     using StructureMap.Web;
     using System.Configuration;
     using infrastructure.Repositories;
+    using application.Managers;
 
     public class DefaultRegistry : Registry {
         #region Constructors and Destructors
@@ -49,15 +50,17 @@ namespace ew.webapi.DependencyResolution {
             For<IAccountRepository>().Use<AccountRepository>();
             For<IWebsiteRepository>().Use<WebsiteRepository>();
 
+
             //services 
             For<IWebsiteManager>().Use<WebsiteManager>();
             For<IAccountManager>().Use<AccountManager>();
+            For<IManagerFactory>().Use<ManagerFactory>();
 
             For<IEwhMapper>().Use<EwhMapper>();
-            For<IAuthService>().Use<AuthService>();
-            For<IAccountService>().Use<AccountService>();
-            For<IWebsiteService>().Use<WebsiteService>();
-            
+            For<IEntityFactory>().Use<EntityFactory>();
+            //For<IAccountService>().Use<AccountService>();
+            //For<IWebsiteService>().Use<WebsiteService>();
+
         }
 
         #endregion

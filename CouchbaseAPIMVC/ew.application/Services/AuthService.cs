@@ -1,4 +1,5 @@
 ﻿using ew.application.Entities;
+using ew.application.Managers;
 using ew.common.Entities;
 using ew.common.Helper;
 using ew.core.Enums;
@@ -15,12 +16,14 @@ namespace ew.application.Services
     public class AuthService : EwhEntityBase, IAuthService
     {
         private readonly IAccountRepository _accountRepository;
-        private readonly IEwhMapper _ewhMapper;
+        private readonly IEntityFactory _entityFactory;
+        private readonly Lazy<IEwhMapper> _ewhMapper;
         private Account authorizedAccount;
         
-        public AuthService(IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public AuthService(IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper, IEntityFactory entityFactory)
         {
             _accountRepository = accountRepository;
+            _entityFactory = entityFactory;
             this._ewhMapper = ewhMapper;
         }
 
@@ -38,7 +41,7 @@ namespace ew.application.Services
 
         public EwhAccount AuthorizedAccount()
         {
-            return _ewhMapper.ToEwhAccount(this.authorizedAccount);
+            return _entityFactory.GetAccount(this.authorizedAccount);
         }
 
         private bool CheckPassword(Account account, string password)

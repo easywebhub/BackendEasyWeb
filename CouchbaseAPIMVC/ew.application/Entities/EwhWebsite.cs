@@ -22,13 +22,13 @@ namespace ew.application.Entities
 {
     public class EwhWebsite : EwhEntityBase
     {
-        private readonly IAccountService _accountService;
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
-        private readonly IEwhMapper _ewhMapper;
+        private readonly Lazy<IEwhMapper>_ewhMapper;
+        private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
 
 
-        public EwhWebsite(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhWebsite(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper)
         {
             _website = new Website();
             _websiteRepository = websiteRepository;
@@ -37,10 +37,15 @@ namespace ew.application.Entities
         }
               
 
-        public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper) : this(websiteRepository, accountRepository, ewhMapper)
+        public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper) : this(websiteRepository, accountRepository, ewhMapper)
         {
             _website = website;
             MapFrom(website);
+        }
+        public EwhWebsite(string websiteId, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper): this(websiteRepository, accountRepository, ewhMapper)
+        {
+            _website = _websiteRepository.Get(websiteId);
+            MapFrom(_website);
         }
 
         #region properties
@@ -78,7 +83,7 @@ namespace ew.application.Entities
         public List<EwhAccount> GetListAccount()
         {
             var listAccountId = this.Accounts.Select(x => x.AccountId).ToList();
-            return _ewhMapper.ToEwhAccounts(_accountRepository.GetList(listAccountId));
+            return ewhMapper.ToEwhAccounts(_accountRepository.GetList(listAccountId));
         }
 
         #endregion
@@ -114,7 +119,7 @@ namespace ew.application.Entities
         public bool Save()
         {
             if (_website == null) _website = new Website();
-            _ewhMapper.ToEntity(_website, this);
+            ewhMapper.ToEntity(_website, this);
             if (!IsExits() || string.IsNullOrEmpty(_website.RepositoryName))
             {
                 _website.RepositoryName = string.Empty;
@@ -205,7 +210,7 @@ namespace ew.application.Entities
         {
             if (!IsExits()) return false;
             var model = new DeploymentEnviromentModel() { Website = _website };
-            if (_websiteRepository.AddOrUpdateStaging(_ewhMapper.ToEntity(model, dto)))
+            if (_websiteRepository.AddOrUpdateStaging(ewhMapper.ToEntity(model, dto)))
             {
                 return true;
             }
@@ -217,7 +222,7 @@ namespace ew.application.Entities
 
             if (!IsExits()) return false;
             var model = new DeploymentEnviromentModel() { Website = _website };
-            if (_websiteRepository.AddOrUpdateProduction(_ewhMapper.ToEntity(model, dto)))
+            if (_websiteRepository.AddOrUpdateProduction(ewhMapper.ToEntity(model, dto)))
             {
                 return true;
             }
@@ -304,6 +309,8 @@ namespace ew.application.Entities
         #region methods
         private void MapFrom(Website website)
         {
+            if (website == null) return;
+
             WebsiteId = website.Id;
             Name = website.Name;
             DisplayName = website.DisplayName;

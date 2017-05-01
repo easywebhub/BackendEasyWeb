@@ -1,6 +1,7 @@
 ﻿using ew.application;
 using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.application.Services;
 using ew.common.Entities;
 using ew.core.Users;
 using ew.webapi.Models;
@@ -34,8 +35,14 @@ namespace ew.webapi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
+        [WebApiOutputCache(Duration: 3)]
         public IHttpActionResult Users(int limit = 20, int page = 1)
         {
+            //ew.common.EwhLogger.Common.Debug("Call /users");
+            //var mailService = new MailService("smtp.yandex.ru", 587, true, "reply@easyadmincp.com", "ew!@#456");
+            //mailService.Send("reply@easyadmincp.com", "register.thanh@gmail.com", "truongducthanh88@gmail.com", "Test send mail", "<html><h1 style=\"color: red;\">HELLO</h1><a href=\"google.com\">LAN</a><html>");
+
+            //return Pagination(new List<string>() { "one", "two", "three", page.ToString(), limit.ToString(), DateTime.Now.ToString() });
             var data = _accountManager.GetListAccount(new core.Dtos.AccountQueryParams() { Limit = limit, Offset = (page - 1) * limit }).ToList();
             return Pagination(data.Select(x => new AccountInfoDto(x)).ToList(), _accountManager.EwhCount, limit, page);
         }

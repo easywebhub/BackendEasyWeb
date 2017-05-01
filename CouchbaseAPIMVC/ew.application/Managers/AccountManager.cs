@@ -1,5 +1,6 @@
 ﻿using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.application.Managers;
 using ew.application.Services;
 using ew.common.Entities;
 using ew.core.Dtos;
@@ -14,19 +15,19 @@ namespace ew.application
 {
     public class AccountManager : EwhEntityBase, IAccountManager
     {
-        private readonly IAccountService _accountService;
-        private readonly IWebsiteService _websiteService;
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
+        private readonly Lazy<IEntityFactory> _entityFactory;
+        private IEntityFactory entityFactory { get { return _entityFactory.Value; } }
 
-        private readonly IEwhMapper _ewhMapper;
+        private readonly Lazy<IEwhMapper> _ewhMapper;
+        private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
 
-        public AccountManager(IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public AccountManager(Lazy<IEntityFactory> entityFactory, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper)
         {
-            _accountService = accountService;
-            _websiteService = websiteService;
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
+            _entityFactory = entityFactory;
             _ewhMapper = ewhMapper;
         }
 
@@ -36,7 +37,7 @@ namespace ew.application
 
         public bool CreateAccount(AddAccountDto dto)
         {
-            var ewhAccount = new EwhAccount(_accountService, _websiteService, _websiteRepository, _accountRepository, _ewhMapper);
+            var ewhAccount = entityFactory.InitAccount();
             var check = false;
             if (ewhAccount.Create(dto))
             {
@@ -55,7 +56,7 @@ namespace ew.application
                 EwhStatus = core.Enums.GlobalStatus.NotFound;
                 return null;
             }
-            return new EwhAccount(account,_accountService, _websiteService, _websiteRepository, _accountRepository, _ewhMapper);
+            return entityFactory.GetAccount(account);
         }
 
 
@@ -65,7 +66,7 @@ namespace ew.application
             var query = _accountRepository.Find(queryParams);
             this.EwhCount = query.Count();
             query = query.Skip(queryParams.Offset).Take(queryParams.Limit);
-            return _ewhMapper.ToEwhAccounts(query.ToList());
+            return ewhMapper.ToEwhAccounts(query.ToList());
         }
 
         public bool CreateAccount(EwhAccount account)
@@ -85,7 +86,7 @@ namespace ew.application
 
         public EwhAccount InitEwhAccount()
         {
-            return new EwhAccount(_accountService, _websiteService, _websiteRepository, _accountRepository, _ewhMapper);
+            return entityFactory.InitAccount();
         }
     }
 }

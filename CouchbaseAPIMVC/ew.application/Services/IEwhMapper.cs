@@ -10,7 +10,7 @@ namespace ew.application.Services
 {
     public interface IEwhMapper
     {
-        EwhAccount ToEwhAccount(Account account);
+        //EwhAccount ToEwhAccount(Account account);
         List<EwhAccount> ToEwhAccounts(List<Account> listAccount);
         List<EwhWebsite> ToEwhWebsites(List<Website> listWebsite);
         EwhAccount ToEntity(EwhAccount ewhAccount, Account account);

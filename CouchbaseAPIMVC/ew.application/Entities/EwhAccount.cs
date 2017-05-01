@@ -1,5 +1,6 @@
 ﻿using ew.application.Entities.Dto;
 using ew.application.Helpers;
+using ew.application.Managers;
 using ew.application.Services;
 using ew.common;
 using ew.common.Entities;
@@ -18,43 +19,33 @@ namespace ew.application.Entities
 {
     public class EwhAccount : EwhEntityBase
     {
-        private readonly IAccountService _accountService;
         private readonly IAccountRepository _accountRepository;
         private readonly IWebsiteRepository _websiteRepository;
-        private readonly IWebsiteService _websiteService;
-        private readonly IEwhMapper _ewhMapper;
+        private readonly Lazy<IWebsiteManager> _websiteManager;
+        private IWebsiteManager websiteManager { get { return _websiteManager.Value; } }
+
+        private readonly Lazy<IEwhMapper> _ewhMapper;
+        private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
         //private readonly AuthService _authService;
-        public EwhAccount(IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhAccount(Lazy<IWebsiteManager> websiteManager, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper)
         {
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
-            _accountService = accountService;
-            _websiteService = websiteService;
-
+            //_entityFactory = entityFactory;
+            _websiteManager = websiteManager;
+           
             _ewhMapper = ewhMapper;
             //_authService = authService;
         }
 
-        public EwhAccount(Account account, IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhAccount(Account account, Lazy<IWebsiteManager> websiteManager, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper): this( websiteManager, websiteRepository, accountRepository, ewhMapper)
         {
-            _websiteRepository = websiteRepository;
-            _accountRepository = accountRepository;
-            _accountService = accountService;
-            _websiteService = websiteService;
-
-            _ewhMapper = ewhMapper;
             _account = account;
             MapFrom(account);
         }
 
-        public EwhAccount(string accountId, IAccountService accountService, IWebsiteService websiteService, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, IEwhMapper ewhMapper)
+        public EwhAccount(string accountId, Lazy<IWebsiteManager> websiteManager, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper) : this( websiteManager, websiteRepository, accountRepository, ewhMapper)
         {
-            _websiteRepository = websiteRepository;
-            _accountRepository = accountRepository;
-            _accountService = accountService;
-            _websiteService = websiteService;
-
-            _ewhMapper = ewhMapper;
             _account = _accountRepository.Get(accountId);
             MapFrom(_account);
         }
@@ -91,7 +82,7 @@ namespace ew.application.Entities
 
         public List<EwhWebsite> GetListWebsite()
         {
-            return _websiteService.GetListWebsite(this.Websites.Select(x => x.WebsiteId).ToList());
+            return websiteManager.GetListEwhWebsite(this.Websites.Select(x => x.WebsiteId).ToList());
         }
 
         public bool IsExits()
@@ -111,7 +102,7 @@ namespace ew.application.Entities
                 EwhStatus = core.Enums.GlobalStatus.InvalidData;
                 return false;
             }
-            _ewhMapper.ToEntity(this, dto);
+            ewhMapper.ToEntity(this, dto);
             this.PasswordSaft = StringUtils.CreateSalt(20);
             this.Password = StringUtils.GenerateSaltedHash(dto.Password, this.PasswordSaft);
             return Save();
@@ -133,7 +124,7 @@ namespace ew.application.Entities
             if (CheckValidModel() && CheckIsIdentity())
             {
                 if (_account == null) _account = new Account();
-                _accountRepository.AddOrUpdate(_ewhMapper.ToEntity(_account, this));
+                _accountRepository.AddOrUpdate(ewhMapper.ToEntity(_account, this));
                 AccountId = _account.Id;
                 return true;
             }
@@ -187,12 +178,12 @@ namespace ew.application.Entities
                 var removeWebsiteManaged = websitesManaged.Where(x => !(this.Websites.Select(y => y.WebsiteId).ToList()).Contains(x)).ToList();
                 foreach (var item in newWebsiteManaged)
                 {
-                    var website = _websiteService.Get(item.WebsiteId);
+                    var website = websiteManager.GetEwhWebsite(item.WebsiteId);
                     if (website != null) website.AddAccount(new AddWebsiteAccountDto() { AccessLevels = item.AccessLevels, AccountId = this.AccountId });
                 }
                 foreach (var id in removeWebsiteManaged)
                 {
-                    var website = _websiteService.Get(id);
+                    var website = websiteManager.GetEwhWebsite(id);
                     if (website != null) website.RemoveAccount(this.AccountId);
                 }
                 EwhLogger.Common.Info("SeftSync end");
