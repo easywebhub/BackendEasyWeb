@@ -18,10 +18,10 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>53819</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -309,6 +309,7 @@
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\GitHubController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\WebsiteController.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AuthDtos.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\MessageDtos.cs" />
     <Compile Include="Models\SourceDtos.cs" />
     <Compile Include="Models\WebsiteDtos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -461,7 +463,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>53819</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:53819/</IISUrl>
+          <IISUrl>http://localhost:8090/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
