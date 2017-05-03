@@ -13,7 +13,11 @@ namespace ew.webapi.Controllers
     public class MessageController : BaseApiController
     {
         #region mail
-
+        /// <summary>
+        /// Gửi mail
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("mail/compose")]
         public IHttpActionResult SendMail(Request_SendMailDto dto)
@@ -23,13 +27,18 @@ namespace ew.webapi.Controllers
                 var mailService = new MailService("smtp.yandex.ru", 587, true, "reply@easyadmincp.com", "ew!@#456");
                 if (mailService.Send("reply@easyadmincp.com", dto.MailTo, dto.MailBccs, dto.Subject, dto.Body))
                 {
-                    return Ok(dto);
+                    return Ok();
                 }
                 return NoOK(core.Enums.GlobalStatus.UnSuccess);
             }
             return BadRequest();
         }
 
+        /// <summary>
+        /// Gửi mail đăng ký thành công
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("mail/registersuccess")]
         public IHttpActionResult SendMailRegisterSuccess(Request_SendMailRegisterSuccessDto dto)
