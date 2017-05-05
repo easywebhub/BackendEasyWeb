@@ -60,6 +60,7 @@ namespace ew.webapi.DependencyResolution {
             For<IEntityFactory>().Use<EntityFactory>();
             //For<IAccountService>().Use<AccountService>();
             //For<IWebsiteService>().Use<WebsiteService>();
+            For<IAuthService>().Use<AuthService>();
 
         }
 
