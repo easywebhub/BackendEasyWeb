@@ -19,7 +19,7 @@ namespace ew.git_hook_listener
         public bool CreateGitHookListernerConfig(CreateGitHookListenerConfigDto dto)
         {
             var _client = new RestClient(dto.GitHookListenerBaseUrl);
-            _client.Authenticator = new SimpleAuthenticator("username", dto.BasicAuthUsername, "password", dto.BasicAuthPassword);
+            //_client.Authenticator = new SimpleAuthenticator("username", dto.BasicAuthUsername, "password", dto.BasicAuthPassword);
             var request = new RestRequest(string.Format("repositories"), Method.POST) { RequestFormat = DataFormat.Json };
             request.AddBody(dto);
             //request.AddHeader("Authorization", "06272372527cf531fa0535ccbb33faf0fa2a2d9f");

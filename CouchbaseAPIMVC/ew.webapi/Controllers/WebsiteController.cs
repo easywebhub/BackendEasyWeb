@@ -236,11 +236,16 @@ namespace ew.webapi.Controllers
                     var demoGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
                     {
                         GitHookListenerBaseUrl = ew.config.DemoServer.BaseUrl,
-                        RepoUrl = sourceRepoUrl,
-                        Branch = "master",
-                        CloneBranch = "master",
-                        Path = string.Format("repositories/{0}", gitRepository.Name)
+                        repoUrl = sourceRepoUrl,
+                        branch = "master",
+                        cloneBranch = "master",
+                        path = string.Format("repositories/{0}", gitRepository.Name),
+                        args = new List<string>(),
+                        then = new List<git_hook_listener.Models.RepoCommand>()
                     };
+                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", ewhWebsite.Git }, options = new git_hook_listener.Models.RepoCommandOption() { cwd= demoGitHook.path} });
+                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "push", "--force", "github", "gh-pages" }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = demoGitHook.path } });
+
                     if (ewhGitHookListener.CreateGitHookListernerConfig(demoGitHook))
                     {
                         ewhWebsite.AddStagging(new UpdateDeploymentEnvironmentToWebsite() { Url = websiteDomain, Git = sourceRepoUrl, HostingFee = HostingFees.Free.ToString(), Name = "EasyWeb Environment" });
@@ -249,11 +254,14 @@ namespace ew.webapi.Controllers
                     var productionGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
                     {
                         GitHookListenerBaseUrl = ew.config.ProductionServer.BaseUrl,
-                        RepoUrl = sourceRepoUrl,
-                        Branch = "master",
-                        CloneBranch = "master",
-                        Path = string.Format("repositories/{0}", gitRepository.Name)
+                        repoUrl = sourceRepoUrl,
+                        branch = "master",
+                        cloneBranch = "master",
+                        path = string.Format("repositories/{0}", gitRepository.Name)
                     };
+                    productionGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", ewhWebsite.Git }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = productionGitHook.path } });
+                    productionGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "push", "--force", "github", "gh-pages" }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = productionGitHook.path } });
+
                     if (ewhGitHookListener.CreateGitHookListernerConfig(productionGitHook))
                     {
                         ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
