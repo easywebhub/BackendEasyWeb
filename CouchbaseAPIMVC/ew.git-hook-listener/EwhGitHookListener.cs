@@ -1,4 +1,5 @@
-﻿using ew.common.Entities;
+﻿using ew.common;
+using ew.common.Entities;
 using ew.common.Helper;
 using ew.git_hook_listener.Models;
 using RestSharp;
@@ -18,6 +19,7 @@ namespace ew.git_hook_listener
 
         public bool CreateGitHookListernerConfig(CreateGitHookListenerConfigDto dto)
         {
+            EwhLogger.Common.Debug("Create git-hook-listener : "+ JsonHelper.SerializeObject(dto));
             var _client = new RestClient(dto.GitHookListenerBaseUrl);
             //_client.Authenticator = new SimpleAuthenticator("username", dto.BasicAuthUsername, "password", dto.BasicAuthPassword);
             var request = new RestRequest(string.Format("repositories"), Method.POST) { RequestFormat = DataFormat.Json };
@@ -26,13 +28,15 @@ namespace ew.git_hook_listener
             
             this.GitHookListenerAdded = null;
             var response = _client.Execute(request);
-            if (response != null && response.ResponseStatus == ResponseStatus.Completed)
+            if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
             {
+                EwhLogger.Common.Debug("Create git-hook-listener success: "+ response.Content);
                 this.GitHookListenerAdded = JsonHelper.DeserializeObject<Repository>(response.Content);
                 return true;
             }
             else
             {
+                EwhLogger.Common.Debug("Create git-hook-listener failed: "+ JsonHelper.SerializeObject(response.ErrorException));
                 this.EwhErrorMessage = response.ErrorMessage;
                 this.EwhException = response.ErrorException;
             }

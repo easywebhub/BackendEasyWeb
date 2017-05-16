@@ -20,6 +20,7 @@ namespace ew.webapi.Models
         public string Git { get; set; }
         public bool Confirmed { get { return !string.IsNullOrEmpty(this.Git) && !string.IsNullOrEmpty(this.Source); } set { } }
         public DateTime CreateDate { get; set; }
+        public string RepositoryName { get; set; }
 
         public WebsiteInfoDto() { }
 
@@ -34,6 +35,7 @@ namespace ew.webapi.Models
             this.Source = entity.Source;
             this.Git = entity.Git;
             this.CreateDate = entity.CreatedDate;
+            this.RepositoryName = entity.RepositoryName;
         }
     }
 

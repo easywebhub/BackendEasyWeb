@@ -17,6 +17,7 @@ namespace ew.core
             Accounts = new List<AccountsAccessLevelOfWebsite>();
             Stagging = new List<DeploymentEnvironment>();
             Production = new List<DeploymentEnvironment>();
+            this.CreatedDate = DateTime.Now;
         }
 
         public string DisplayName { get; set; }

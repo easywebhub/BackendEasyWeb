@@ -99,7 +99,7 @@ namespace ew.application.Services
         public Website ToEntity(Website website, EwhWebsite ewhWebsite)
         {
             website.DisplayName = ewhWebsite.DisplayName;
-            website.Name = StringUtils.GetSeName(ewhWebsite.Name);
+            website.Name = StringUtils.GetSeName(string.IsNullOrEmpty(ewhWebsite.Name)? ewhWebsite.DisplayName: ewhWebsite.Name);
             website.Url = ewhWebsite.Url;
             website.Stagging = ewhWebsite.Stagging;
             website.Production = ewhWebsite.Production;
@@ -108,7 +108,6 @@ namespace ew.application.Services
             website.WebsiteType = ewhWebsite.WebsiteType;
             website.Source = ewhWebsite.Source;
             website.Git = ewhWebsite.Git;
-            website.CreatedDate = ewhWebsite.CreatedDate;
             website.LastModifyDate = ewhWebsite.LastModifyDate;
 
             return website;

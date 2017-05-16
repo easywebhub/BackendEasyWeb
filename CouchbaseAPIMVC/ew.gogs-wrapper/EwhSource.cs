@@ -1,4 +1,5 @@
-﻿using ew.common.Entities;
+﻿using ew.common;
+using ew.common.Entities;
 using ew.common.Helper;
 using ew.config;
 using ew.gogs_wrapper.Models;
@@ -21,6 +22,7 @@ namespace ew.gogs_wrapper
 
         public bool CreateRepository(string gogsUsername, string repositoryName)
         {
+            EwhLogger.Common.Debug("Create source repo : "+ JsonHelper.SerializeObject(new { GogsUserName = gogsUsername, RepoName = repositoryName }));
             var _client = new RestClient(GogsBaseUrl);
             var request = new RestRequest("repos", Method.POST) { RequestFormat = DataFormat.Json };
             //request.AddHeader("Authorization", "06272372527cf531fa0535ccbb33faf0fa2a2d9f");
@@ -28,8 +30,13 @@ namespace ew.gogs_wrapper
             var response = _client.Execute(request);
             if (response != null && response.StatusCode == HttpStatusCode.OK)
             {
+                EwhLogger.Common.Error("Create source repo Success: ", JsonHelper.SerializeObject(response.Content));
                 RepositoryAdded = JsonHelper.DeserializeObject<Repository>(response.Content);
                 return true;
+            }
+            else
+            {
+                EwhLogger.Common.Error("Create source repo Falied: ",JsonHelper.SerializeObject(response.ErrorException));
             }
             return false;
         }
@@ -52,7 +59,8 @@ namespace ew.gogs_wrapper
             if (response != null && response.StatusCode == HttpStatusCode.OK)
             {
                 return JsonHelper.DeserializeObject<List<Repository>>(response.Content);
-            }else
+            }
+            else
             {
                 this.EwhErrorMessage = response.ErrorMessage;
                 this.EwhException = response.ErrorException;
@@ -61,11 +69,12 @@ namespace ew.gogs_wrapper
         }
 
 
-        public bool CreateWebHook(string gogsUsername, string repositoryName, string deployServerUrl)
+        public bool CreateWebHook(CreateWebHookDto dto)
         {
+            EwhLogger.Common.Debug("=Create web-hook : "+ JsonHelper.SerializeObject(dto));
             var _client = new RestClient(GogsBaseUrl);
-            var request = new RestRequest(string.Format("repos/{0}/{1}/hooks", gogsUsername, repositoryName), Method.POST) { RequestFormat = DataFormat.Json };
-            var data = new { url = deployServerUrl, secret = "Web!@#456Hook", active = false };
+            var request = new RestRequest(string.Format("repos/{0}/{1}/hooks", dto.GogsUsername, dto.RepositoryName), Method.POST) { RequestFormat = DataFormat.Json };
+            var data = new { url = dto.ReployServerUrl, secret = dto.SecretKey, active = false };
             //"url": "http://deploy.server/project/hook",
             //"secret": "bat-mi",
             //"active": false
@@ -74,16 +83,42 @@ namespace ew.gogs_wrapper
 
             this.WebHookAdded = null;
             var response = _client.Execute(request);
-            if (response != null && response.ResponseStatus == ResponseStatus.Completed)
+            if (response != null && response.StatusCode == HttpStatusCode.OK)
             {
+                EwhLogger.Common.Debug("  ++ Success: "+ response.Content);
                 WebHookAdded = JsonHelper.DeserializeObject<WebHook>(response.Content);
                 return true;
-            }else
+            }
+            else
             {
+                EwhLogger.Common.Debug(" ++ Failed: "+ JsonHelper.SerializeObject(response.ErrorException));
                 this.EwhErrorMessage = response.ErrorMessage;
                 this.EwhException = response.ErrorException;
             }
             return false;
+        }
+
+        public class CreateWebHookDto
+        {
+            public string GogsUsername { get; }
+            public string RepositoryName { get; }
+            public string ReployServerUrl { get; }
+            public string SecretKey { get; }
+
+            public CreateWebHookDto(string gogsUsername, string repoName)
+            {
+                this.GogsUsername = gogsUsername;
+                this.RepositoryName = repoName;
+                ReployServerUrl = ew.config.DemoServer.WebHookUrl;
+                SecretKey = ew.config.DemoServer.SecretKey;
+            }
+            public CreateWebHookDto(string gogsUsername, string repoName, string deployUrl, string secret)
+            {
+                this.GogsUsername = gogsUsername;
+                this.RepositoryName = repoName;
+                ReployServerUrl = deployUrl;
+                SecretKey = secret;
+            }
         }
     }
 }

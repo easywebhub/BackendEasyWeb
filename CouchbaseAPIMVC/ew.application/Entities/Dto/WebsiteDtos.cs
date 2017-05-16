@@ -1,6 +1,7 @@
 ﻿using ew.core.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace ew.application.Entities.Dto
 {
     public class UserCreateWebsiteDto
     {
+        [Required]
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Url { get; set; }

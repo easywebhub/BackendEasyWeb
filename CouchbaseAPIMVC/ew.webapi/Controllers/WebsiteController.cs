@@ -178,6 +178,7 @@ namespace ew.webapi.Controllers
         [Route("{websiteId}/confirm")]
         public IHttpActionResult ConfirmWebsite(string websiteId)
         {
+            ew.common.EwhLogger.Common.Debug("START CONFIRM WEBSITE: " + websiteId);
             if (ModelState.IsValid)
             {
                 var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
@@ -189,24 +190,19 @@ namespace ew.webapi.Controllers
                 {
                     if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
                     {
+                        gitRepository = githubManager.RepositoryAdded;
                         ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
                         ewhWebsite.Save();
+                    }else
+                    {
+                        EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
+                        return NoOK("Can not create github repository");
                     }
                 }else
                 {
                     gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
                 }
-
-                // add web-hook to demo & production server
-                var ewhGogsSource = new EwhSource();
-                var ewhAccountAsOwner = _accountManager.GetEwhAccount(ewhWebsite.GetOwnerId());
-                if (ewhAccountAsOwner != null)
-                {
-                    ewhGogsSource.CreateWebHook(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.DemoServer.WebHookUrl);
-                    ewhGogsSource.CreateWebHook(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.ProductionServer.WebHookUrl);
-                }
-
-                // add git-hook-listerner to demo + production servers
+                
                 if (string.IsNullOrEmpty(ewhWebsite.Source))
                 {
                     ewhWebsite.InitGogSource();
@@ -216,6 +212,16 @@ namespace ew.webapi.Controllers
                     return NoOK("Source_Empty");
                 }
 
+                // add web-hook to demo & production server
+                var ewhGogsSource = new EwhSource();
+                var ewhAccountAsOwner = _accountManager.GetEwhAccount(ewhWebsite.GetOwnerId());
+                if (ewhAccountAsOwner != null)
+                {
+                    ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName));
+
+                    ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.ProductionServer.WebHookUrl, ew.config.ProductionServer.SecretKey));
+                }
+                
                 // create sub domain
                 var websiteDomain = string.Empty;
                 var subDomainName = string.Format("{0}-{1}.{2}", ewhAccountAsOwner.UserName, ewhWebsite.Name, ew.config.CloudflareInfo.EwhDomain).ToLower();
@@ -231,20 +237,21 @@ namespace ew.webapi.Controllers
 
                 if (gitRepository != null)
                 {
+                    var gitUrlIncludePass = githubManager.GetGitUrlIncludePassword(ewhWebsite.Git);
                     var sourceRepoUrl = ewhWebsite.Source;
                     var ewhGitHookListener = new EwhGitHookListener();
                     var demoGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
                     {
                         GitHookListenerBaseUrl = ew.config.DemoServer.BaseUrl,
                         repoUrl = sourceRepoUrl,
-                        branch = "master",
-                        cloneBranch = "master",
+                        branch = "gh-pages",
+                        cloneBranch = "gh-pages",
                         path = string.Format("repositories/{0}", gitRepository.Name),
                         args = new List<string>(),
                         then = new List<git_hook_listener.Models.RepoCommand>()
                     };
-                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", ewhWebsite.Git }, options = new git_hook_listener.Models.RepoCommandOption() { cwd= demoGitHook.path} });
-                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "push", "--force", "github", "gh-pages" }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = demoGitHook.path } });
+                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", gitUrlIncludePass }, options = new git_hook_listener.Models.RepoCommandOption() { cwd= demoGitHook.path} });
+                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "push", "--force", "github", "HEAD:gh-pages" }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = demoGitHook.path } });
 
                     if (ewhGitHookListener.CreateGitHookListernerConfig(demoGitHook))
                     {
@@ -259,7 +266,7 @@ namespace ew.webapi.Controllers
                         cloneBranch = "master",
                         path = string.Format("repositories/{0}", gitRepository.Name)
                     };
-                    productionGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", ewhWebsite.Git }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = productionGitHook.path } });
+                    productionGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", gitUrlIncludePass }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = productionGitHook.path } });
                     productionGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "push", "--force", "github", "gh-pages" }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = productionGitHook.path } });
 
                     if (ewhGitHookListener.CreateGitHookListernerConfig(productionGitHook))
@@ -267,12 +274,12 @@ namespace ew.webapi.Controllers
                         ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
                     }
                 }
-                
-
                 return Ok(new WebsiteDetailDto(ewhWebsite));
             }
             return BadRequest();
         }
+
+       
 
         /// <summary>
         /// Lấy thông tin chi tiết 1 website

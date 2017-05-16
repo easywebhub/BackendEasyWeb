@@ -1,9 +1,13 @@
-﻿using Octokit;
+﻿using ew.common;
+using ew.common.Helper;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ew.github_wrapper
 {
@@ -11,8 +15,8 @@ namespace ew.github_wrapper
     {
         public Repository RepositoryAdded { get; set; }
 
-        private string owner = "thanhtdvn";
-        private string password = "Admin@123";
+        public string owner = "thanhtdvn";
+        public string password = "Admin@123";
         private GitHubClient InitClient()
         {
             var client = new GitHubClient(new ProductHeaderValue("easywebhub"));
@@ -24,6 +28,7 @@ namespace ew.github_wrapper
 
         public async Task<bool> CreateRepository(string reponame, string description)
         {
+            EwhLogger.Common.Debug("Create github repo : "+ JsonHelper.SerializeObject(new { RepoName = reponame, Desc = description }));
             var client = InitClient();            
             var str = string.Empty;
 
@@ -31,8 +36,22 @@ namespace ew.github_wrapper
             createRepo.Description = description;
             createRepo.Private = false;
             RepositoryAdded = null;
-            RepositoryAdded = client.Repository.Create(createRepo).Result;
-            return RepositoryAdded != null;
+            try
+            {
+                RepositoryAdded = client.Repository.Create(createRepo).Result;
+            }catch(Exception ex)
+            {
+                EwhLogger.Common.Debug("Create github repo Failed: " + JsonHelper.SerializeObject(ex));
+                return false;
+            }
+            
+            if (RepositoryAdded != null)
+            {
+                EwhLogger.Common.Debug("Create github repo Success: "+ JsonHelper.SerializeObject(RepositoryAdded));
+                return true;
+            }
+            EwhLogger.Common.Debug("Create github repo Falied ");
+            return false;
         }
 
         public async Task<Repository> GetRepository(string repoName)
@@ -41,7 +60,11 @@ namespace ew.github_wrapper
             return client.Repository.Get(owner, repoName).Result;
         }
 
-       
+        public string GetGitUrlIncludePassword(string git)
+        {
+            git = git.Replace("//github.com/", string.Format("//{0}:{1}@github.com/", this.owner, HttpUtility.UrlEncode(this.password)));
+            return git;
+        }
 
     }
 }
