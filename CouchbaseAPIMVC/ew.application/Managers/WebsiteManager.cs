@@ -36,7 +36,6 @@ namespace ew.application
             ewhWebsite = GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return false; // NotFound();
             
-            Octokit.Repository gitRepository = CreateGithubRepo();
             
             
             if (string.IsNullOrEmpty(ewhWebsite.Source))
@@ -71,6 +70,7 @@ namespace ew.application
 
             }
 
+            Octokit.Repository gitRepository = CreateGithubRepo();
             if (gitRepository != null)
             {
                 var gitUrlIncludePass = githubManager.GetGitUrlIncludePassword(ewhWebsite.Git);
