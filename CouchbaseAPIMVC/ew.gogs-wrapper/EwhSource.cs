@@ -68,19 +68,23 @@ namespace ew.gogs_wrapper
             return new List<Repository>();
         }
 
-        //bao: add them 2 function mới 
-        public bool CreateWebhook_v2(string gogsUsername, string repoName)
+        //bao: add them 2 constructor mới 
+        private CreateWebHookDto _createWebHookDto
+        public EwhSource(string gogsUsername, string repoName)
         {
-            return new CreateWebHookDto(gogsUsername,repoName);
-          
+            _createWebHookDto = new CreateWebHookDto(gogsUsername,repoName);
+        } 
+        public EwhSource(string gogsUsername, string repoName, string deployUrl, string secret)
+        {
+            _createWebHookDto = new CreateWebHookDto(gogsUsername,repoName,deployUrl,secret)
+        } 
+
+        public bool CreateWebHook_v2()
+        {
+            return CreateWebHook(_createWebHookDto);
         }
         
-        public bool CreateWebhook_v2(string gogsUsername, string repoName, string deployUrl, string secret)
-        {
-            return new CreateWebHookDto(gogsUsername,repoName,deployUrl,secret);
-          
-        }
-
+     
         public bool CreateWebHook(CreateWebHookDto dto)
         {
             EwhLogger.Common.Debug("=Create web-hook : "+ JsonHelper.SerializeObject(dto));
