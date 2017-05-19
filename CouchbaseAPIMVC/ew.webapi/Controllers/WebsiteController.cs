@@ -181,6 +181,13 @@ namespace ew.webapi.Controllers
             ew.common.EwhLogger.Common.Debug("START CONFIRM WEBSITE: " + websiteId);
             if (ModelState.IsValid)
             {
+                if (_websiteManager.ConfirmWebsite(websiteId))
+                {
+                    return OK();
+                }else
+                {
+                    return NoOK("bug when confirm");
+                }
                 var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
                 if (ewhWebsite == null) return NotFound();
                 var githubManager = new GitHubManager();
