@@ -106,6 +106,8 @@ namespace ew.application
                 var gitUrlIncludePass = githubManager.GetGitUrlIncludePassword(ewhWebsite.Git);
                 var sourceRepoUrl = ewhWebsite.Source;
                 var ewhGitHookListener = new EwhGitHookListener();
+
+                //bao: cần refactor theo từng function riêng dành cho demoGithook và productionGithook 
                 var demoGitHook = new git_hook_listener.Models.CreateGitHookListenerConfigDto()
                 {
                     GitHookListenerBaseUrl = ew.config.DemoServer.BaseUrl,

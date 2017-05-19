@@ -68,6 +68,18 @@ namespace ew.gogs_wrapper
             return new List<Repository>();
         }
 
+        //bao: add them 2 function mới 
+        public bool CreateWebhook_v2(string gogsUsername, string repoName)
+        {
+            return new CreateWebHookDto(gogsUsername,repoName);
+          
+        }
+        
+        public bool CreateWebhook_v2(string gogsUsername, string repoName, string deployUrl, string secret)
+        {
+            return new CreateWebHookDto(gogsUsername,repoName,deployUrl,secret);
+          
+        }
 
         public bool CreateWebHook(CreateWebHookDto dto)
         {
