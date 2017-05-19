@@ -29,29 +29,15 @@ namespace ew.application
         }
 
         public EwhWebsite EwhWebsiteAdded { get; private set; }
+
+        public EwhWebsite ewhWebsite {get;} 
         public bool ConfirmWebsite(string websiteId)
         {
-            var ewhWebsite = GetEwhWebsite(websiteId);
-            if (ewhWebsite == null) return NotFound();
-            var githubManager = new GitHubManager();
-            Octokit.Repository gitRepository = null;
-            //create github repository
-            if (string.IsNullOrEmpty(ewhWebsite.Git))
-            {
-                if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
-                {
-                    gitRepository = githubManager.RepositoryAdded;
-                    ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
-                    ewhWebsite.Save();
-                }else
-                {
-                    EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
-                    return NoOK("Can not create github repository");
-                }
-            }else
-            {
-                gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
-            }
+            ewhWebsite = GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return false; // NotFound();
+            
+            Octokit.Repository gitRepository = CreateGithubRepo();
+            
             
             if (string.IsNullOrEmpty(ewhWebsite.Source))
             {
@@ -126,6 +112,30 @@ namespace ew.application
             }
             return true;
         } 
+
+        private Octokit.Repository CreateGithubRepo()
+        {
+            var githubManager = new GitHubManager();
+            Octokit.Repository gitRepository = null;
+            //create github repository
+            if (string.IsNullOrEmpty(ewhWebsite.Git))
+            {
+                if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
+                {
+                    gitRepository = githubManager.RepositoryAdded;
+                    ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
+                    ewhWebsite.Save();
+                }else
+                {
+                    EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
+                    //return NoOK("Can not create github repository");
+                }
+            }else
+            {
+                gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
+            }
+            return gitRepository;
+        }
 
         public bool CreateWebsite(CreateWebsiteDto dto)
         {
