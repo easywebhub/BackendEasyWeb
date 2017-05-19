@@ -70,12 +70,16 @@ namespace ew.application
 
             }
 
-            Octokit.Repository gitRepository = CreateGithubRepo();
+            if (CreateGithubRepo() == false)
+            {
+                return false; 
+                //return NoOK("Can not create github repository");
+            }
             
             return true;
         } 
 
-        private Octokit.Repository CreateGithubRepo()
+        private bool CreateGithubRepo()
         {
             var githubManager = new GitHubManager();
             Octokit.Repository gitRepository = null;
@@ -90,13 +94,13 @@ namespace ew.application
                 }else
                 {
                     EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
-                    //return NoOK("Can not create github repository");
+                    return false; //return NoOK("Can not create github repository");
                 }
             }else
             {
                 gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
             }
-            
+
             if (gitRepository != null)
             {
                 var gitUrlIncludePass = githubManager.GetGitUrlIncludePassword(ewhWebsite.Git);
@@ -135,9 +139,12 @@ namespace ew.application
                 {
                     ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
                 }
+            }else
+            {
+               return false;   
             }
-
-            return gitRepository;
+            
+            return true; 
         }
 
         public bool CreateWebsite(CreateWebsiteDto dto)
