@@ -48,13 +48,23 @@ namespace ew.application
             }
 
             // add web-hook to demo & production server
-            var ewhGogsSource = new EwhSource();
+            //var ewhGogsSource = new EwhSource();
             var ewhAccountAsOwner = _accountManager.GetEwhAccount(ewhWebsite.GetOwnerId());
             if (ewhAccountAsOwner != null)
             {
-                ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName));
+                //Bao: nhiều new class như vậy: ewhGogsSource = new EwhSource và new EwhSource.CreateWebHookDto
+                // ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName));
 
-                ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.ProductionServer.WebHookUrl, ew.config.ProductionServer.SecretKey));
+                // ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.ProductionServer.WebHookUrl, ew.config.ProductionServer.SecretKey));
+          
+                //ewhGogsSource.CreateWebHook_v2(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName);
+                //ewhGogsSource.CreateWebHook_v2(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.ProductionServer.WebHookUrl, ew.config.ProductionServer.SecretKey);
+                
+                var ewhGogsSource = new EwhSource(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName)
+                if (!ewhGogsSource.CreateWebHook_v2()) return false;
+
+                ewhGogsSource = new EwhSource(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName,  ew.config.ProductionServer.WebHookUrl, ew.config.ProductionServer.SecretKey);
+                if (!ewhGogsSource.CreateWebHook_v2()) return false;
             }
             
             // create sub domain
