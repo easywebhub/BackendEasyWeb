@@ -37,14 +37,14 @@ namespace ew.application
             if (ewhWebsite == null) return false; // NotFound();
             
             
-            
+            //kiểm tra source gogs repo đã tạo chưa, chưa thì tạo mới và kiểm tra lại
             if (string.IsNullOrEmpty(ewhWebsite.Source))
             {
                 ewhWebsite.InitGogSource();
             }
             if (string.IsNullOrEmpty(ewhWebsite.Source))
             {
-                return NoOK("Source_Empty");
+                return false; // NoOK("Source_Empty");
             }
 
             // add web-hook to demo & production server
@@ -71,6 +71,32 @@ namespace ew.application
             }
 
             Octokit.Repository gitRepository = CreateGithubRepo();
+            
+            return true;
+        } 
+
+        private Octokit.Repository CreateGithubRepo()
+        {
+            var githubManager = new GitHubManager();
+            Octokit.Repository gitRepository = null;
+            //create github repository
+            if (string.IsNullOrEmpty(ewhWebsite.Git))
+            {
+                if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
+                {
+                    gitRepository = githubManager.RepositoryAdded;
+                    ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
+                    ewhWebsite.Save();
+                }else
+                {
+                    EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
+                    //return NoOK("Can not create github repository");
+                }
+            }else
+            {
+                gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
+            }
+            
             if (gitRepository != null)
             {
                 var gitUrlIncludePass = githubManager.GetGitUrlIncludePassword(ewhWebsite.Git);
@@ -110,30 +136,7 @@ namespace ew.application
                     ewhWebsite.AddProduction(new UpdateDeploymentEnvironmentToWebsite() { Git = sourceRepoUrl, HostingFee = HostingFees.Basic.ToString(), Name = "Production Enviroment" });
                 }
             }
-            return true;
-        } 
 
-        private Octokit.Repository CreateGithubRepo()
-        {
-            var githubManager = new GitHubManager();
-            Octokit.Repository gitRepository = null;
-            //create github repository
-            if (string.IsNullOrEmpty(ewhWebsite.Git))
-            {
-                if (githubManager.CreateRepository(ewhWebsite.RepositoryName, ewhWebsite.DisplayName).Result)
-                {
-                    gitRepository = githubManager.RepositoryAdded;
-                    ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
-                    ewhWebsite.Save();
-                }else
-                {
-                    EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
-                    //return NoOK("Can not create github repository");
-                }
-            }else
-            {
-                gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
-            }
             return gitRepository;
         }
 
