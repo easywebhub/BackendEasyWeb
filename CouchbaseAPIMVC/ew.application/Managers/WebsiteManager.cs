@@ -31,7 +31,7 @@ namespace ew.application
         public EwhWebsite EwhWebsiteAdded { get; private set; }
         public bool ConfirmWebsite(string websiteId)
         {
-            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            var ewhWebsite = GetEwhWebsite(websiteId);
             if (ewhWebsite == null) return NotFound();
             var githubManager = new GitHubManager();
             Octokit.Repository gitRepository = null;
