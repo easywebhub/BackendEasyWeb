@@ -87,7 +87,8 @@ namespace ew.gogs_wrapper
      
         public bool CreateWebHook(CreateWebHookDto dto)
         {
-            EwhLogger.Common.Debug("=Create web-hook : "+ JsonHelper.SerializeObject(dto));
+            // EwhLogger.Common.Debug("=Create web-hook : "+ JsonHelper.SerializeObject(dto));
+            EwhLogger.Common.Debug("=Create web-hook() : ");
             var _client = new RestClient(GogsBaseUrl);
             var request = new RestRequest(string.Format("repos/{0}/{1}/hooks", dto.GogsUsername, dto.RepositoryName), Method.POST) { RequestFormat = DataFormat.Json };
             var data = new { url = dto.ReployServerUrl, secret = dto.SecretKey, active = false };
@@ -96,6 +97,8 @@ namespace ew.gogs_wrapper
             //"active": false
             request.AddBody(data);
             //request.AddHeader("Authorization", "06272372527cf531fa0535ccbb33faf0fa2a2d9f");
+            
+            EwhLogger.Common.Debug("gogsBaseUrl: {0}, userName: {1}, repoName: {2}  ",GogsBaseUrl, dto.GogsUsername, dto.RepositoryName );
 
             this.WebHookAdded = null;
             var response = _client.Execute(request);
