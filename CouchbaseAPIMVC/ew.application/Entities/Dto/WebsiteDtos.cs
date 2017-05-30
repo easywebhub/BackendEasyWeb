@@ -34,8 +34,11 @@ namespace ew.application.Entities.Dto
         //public string Url { get; set; }
         public List<AddWebsiteAccountDto> Accounts { get; set; }
         //public string WebTemplateId { get; set; }
+        public bool EnableAutoConfirm { get; set; }
 
-        public CreateWebsiteDto() : base() { }
+        public CreateWebsiteDto() : base() {
+            EnableAutoConfirm = false;
+        }
         public CreateWebsiteDto(string userId, UserCreateWebsiteDto dto) : base(dto)
         {
             this.Accounts = new List<AddWebsiteAccountDto>() {

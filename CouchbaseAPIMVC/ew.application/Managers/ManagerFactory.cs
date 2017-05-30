@@ -38,7 +38,7 @@ namespace ew.application.Managers
 
         public WebsiteManager InitWebsiteManager()
         {
-            return new WebsiteManager(_websiteRepository, _accountRepository, _ewhMapper);
+            return new WebsiteManager(_websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace ew.application
         EwhWebsite EwhWebsiteAdded { get; }
         EwhWebsite InitEwhWebsite();
         bool CreateWebsite(CreateWebsiteDto dto);
+        bool CreateWebsiteAndConfirm(CreateWebsiteDto dto);
         bool CreateWebsite(EwhWebsite dto);
         bool UpdateWebsite(EwhWebsite website);
         EwhWebsite GetEwhWebsite(string id);

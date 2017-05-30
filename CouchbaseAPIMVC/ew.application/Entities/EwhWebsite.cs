@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using ew.application.Entities.Dto;
 using ew.application.Helpers;
+using ew.application.Managers;
 using ew.application.Services;
 using ew.common;
 using ew.common.Entities;
@@ -11,6 +12,7 @@ using ew.core.Dtos;
 using ew.core.Enums;
 using ew.core.Repositories;
 using ew.core.Users;
+using ew.gitea_wrapper;
 using ew.gogs_wrapper;
 using System;
 using System.Collections.Generic;
@@ -27,23 +29,26 @@ namespace ew.application.Entities
         private readonly IWebsiteRepository _websiteRepository;
         private readonly Lazy<IEwhMapper> _ewhMapper;
         private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
+        private readonly Lazy<IEntityFactory> _entityFactory;
+        private IEntityFactory entityFactory { get { return _entityFactory.Value; } }
 
 
-        public EwhWebsite(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper)
+        public EwhWebsite(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper, Lazy<IEntityFactory> entityFactory)
         {
             _website = new Website();
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
+            _entityFactory = entityFactory;
             _ewhMapper = ewhMapper;
         }
 
 
-        public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper) : this(websiteRepository, accountRepository, ewhMapper)
+        public EwhWebsite(Website website, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper, Lazy<IEntityFactory> entityFactory) : this(websiteRepository, accountRepository, ewhMapper, entityFactory)
         {
             _website = website;
             MapFrom(website);
         }
-        public EwhWebsite(string websiteId, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper) : this(websiteRepository, accountRepository, ewhMapper)
+        public EwhWebsite(string websiteId, IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper, Lazy<IEntityFactory> entityFactory) : this(websiteRepository, accountRepository, ewhMapper, entityFactory)
         {
             _website = _websiteRepository.Get(websiteId);
             MapFrom(_website);
@@ -85,6 +90,35 @@ namespace ew.application.Entities
         {
             var listAccountId = this.Accounts.Select(x => x.AccountId).ToList();
             return ewhMapper.ToEwhAccounts(_accountRepository.GetList(listAccountId));
+        }
+
+        private EwhAccount owner;
+        public EwhAccount Owner
+        {
+            get
+            {
+                if (owner != null) return owner;
+                var ow = this.Accounts.FirstOrDefault(x => x.AccessLevels != null && x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+                Account accountAsOwner;
+                if (ow == null)
+                {
+                    this.EwhStatus = GlobalStatus.HaveNoAnOwner;
+                }
+                else
+                {
+                    accountAsOwner = _accountRepository.Get(ow.AccountId);
+                    if (accountAsOwner == null)
+                    {
+                        this.EwhStatus = GlobalStatus.HaveNoAnOwner;
+                    }
+                    else
+                    {
+                        owner = entityFactory.InitAccount();
+                        ewhMapper.ToEntity(owner, accountAsOwner);
+                    }
+                }
+                return owner;
+            }
         }
 
         #endregion
@@ -129,11 +163,13 @@ namespace ew.application.Entities
                 if (owner != null)
                 {
                     var ownerAcc = _accountRepository.Get(owner.AccountId);
-                    if (ownerAcc != null) _website.RepositoryName = string.Format("{0}-{1}", ownerAcc.UserName, _website.Name);
+                    if (ownerAcc != null) _website.RepositoryName = _website.Name;
                     var checkExitsRepo = _websiteRepository.FindAll().Any(x => x.RepositoryName.ToLower() == _website.RepositoryName.ToLower());
+                    int i = 1;
                     while (checkExitsRepo)
                     {
-                        _website.RepositoryName = string.Format("{0}-{1}-{2}", ownerAcc.UserName, _website.Name, Guid.NewGuid().ToString());
+                        _website.RepositoryName = string.Format("{0}-{1}", _website.Name, i);
+                        i++;
                         checkExitsRepo = _websiteRepository.FindAll().Any(x => x.RepositoryName.ToLower() == _website.RepositoryName.ToLower());
                     }
                 }
@@ -264,9 +300,37 @@ namespace ew.application.Entities
             return false;
         }
 
+        public bool Confirm()
+        {
+            if (!IsExits() || !HasOwner()) return false;
+            var ewhGitea = new EwhGitea();
+            if (ewhGitea.ConfirmWebsite(new gitea_wrapper.Models.ConfirmWebsiteDto(this.Owner.UserName, this.RepositoryName, this.WebTemplateId)))
+            {
+                this.Git = ewhGitea.WebsiteInfo.Git;
+                this.Source = ewhGitea.WebsiteInfo.Source;
+                this.Url = ewhGitea.WebsiteInfo.Url;
+                return this.Save();
+            }
+            else
+            {
+                SyncStatus(this, ewhGitea);
+            }
+            return false;
+        }
+
+        public bool HasOwner()
+        {
+            if (Owner == null)
+            {
+                this.EwhStatus = GlobalStatus.HaveNoAnOwner;
+                return false;
+            }
+            return true;
+        }
+
         public bool InitGogSource()
         {
-            var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels!=null && x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
+            var owner = this.Accounts.FirstOrDefault(x => x.AccessLevels != null && x.AccessLevels.Contains(AccessLevels.Owner.ToString()));
             Account accountAsOwner;
             if (owner == null)
             {
@@ -344,7 +408,7 @@ namespace ew.application.Entities
             this.LastModifyDate = website.LastModifyDate;
             this.RepositoryName = website.RepositoryName;
         }
-        
+
 
         #endregion
 

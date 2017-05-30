@@ -101,6 +101,10 @@
       <Project>{9ffe5002-974c-457d-b01f-8cc37926997e}</Project>
       <Name>ew.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ew.gitea-wrapper\ew.gitea-wrapper.csproj">
+      <Project>{738068A4-4B43-4B5B-909E-9B25A6FF182A}</Project>
+      <Name>ew.gitea-wrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ew.gogs-wrapper\ew.gogs-wrapper.csproj">
       <Project>{014136F4-B017-4388-9394-B31A5EE3FD28}</Project>
       <Name>ew.gogs-wrapper</Name>

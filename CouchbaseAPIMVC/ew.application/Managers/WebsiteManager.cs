@@ -1,5 +1,6 @@
 ﻿using ew.application.Entities;
 using ew.application.Entities.Dto;
+using ew.application.Managers;
 using ew.application.Services;
 using ew.common.Entities;
 using ew.core.Enums;
@@ -20,19 +21,22 @@ namespace ew.application
         private readonly IWebsiteRepository _websiteRepository;
         private readonly Lazy<IEwhMapper> _ewhMapper;
         private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
+        private readonly Lazy<IEntityFactory> _entityFactory;
+        private IEntityFactory entityFactory { get { return _entityFactory.Value; } }
 
-        public WebsiteManager(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper)
+        public WebsiteManager(IWebsiteRepository websiteRepository, IAccountRepository accountRepository, Lazy<IEwhMapper> ewhMapper, Lazy<IEntityFactory> entityFactory)
         {
             _websiteRepository = websiteRepository;
             _accountRepository = accountRepository;
             _ewhMapper = ewhMapper;
+            _entityFactory = entityFactory;
         }
 
         public EwhWebsite EwhWebsiteAdded { get; private set; }
 
         public bool CreateWebsite(CreateWebsiteDto dto)
         {
-            var ewhWebsite = new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
+            var ewhWebsite = new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper,_entityFactory);
             ewhMapper.ToEntity(ewhWebsite, dto);
             ewhWebsite.WebsiteType = WebsiteTypes.Free.ToString();
             var check = false;
@@ -41,6 +45,24 @@ namespace ew.application
             {
                 check = true;
                 ewhWebsite.InitGogSource();
+                EwhWebsiteAdded = ewhWebsite;
+            }
+            SyncStatus(this, ewhWebsite);
+            return check;
+        }
+
+        public bool CreateWebsiteAndConfirm(CreateWebsiteDto dto)
+        {
+            var ewhWebsite = new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
+            ewhMapper.ToEntity(ewhWebsite, dto);
+            ewhWebsite.WebsiteType = WebsiteTypes.Free.ToString();
+            var check = false;
+            // create website
+            if (ewhWebsite.Create())
+            {
+                check = true;
+                //ewhWebsite.InitGogSource();
+                ewhWebsite.Confirm();
                 EwhWebsiteAdded = ewhWebsite;
             }
             SyncStatus(this, ewhWebsite);
@@ -82,7 +104,7 @@ namespace ew.application
                 EwhStatus = core.Enums.GlobalStatus.NotFound;
                 return null;
             }
-            return new EwhWebsite(website, _websiteRepository, _accountRepository, _ewhMapper);
+            return new EwhWebsite(website, _websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
         }
 
         public List<EwhWebsite> GetListEwhWebsite()
@@ -106,7 +128,7 @@ namespace ew.application
 
         public EwhWebsite InitEwhWebsite()
         {
-            return new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
+            return new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
         }
 
         

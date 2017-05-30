@@ -128,6 +128,7 @@ namespace ew.application.Services
             ewhWebsite.DisplayName = dto.DisplayName;
             ewhWebsite.Url = dto.Url;
             ewhWebsite.Name = dto.Name;
+            ewhWebsite.WebTemplateId = dto.WebTemplateId;
 
             var listWebsiteAccountAccessLevel = new List<AccountsAccessLevelOfWebsite>();
             if (dto.Accounts != null)

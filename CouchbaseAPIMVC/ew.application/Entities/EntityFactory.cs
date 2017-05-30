@@ -32,13 +32,15 @@ namespace ew.application.Managers
         private IWebsiteManager websiteManager { get { return _websiteManager.Value; } }
         private readonly Lazy<IEwhMapper> _ewhMapper;
         private IEwhMapper ewhMapper { get { return _ewhMapper.Value; } }
+        private readonly Lazy<IEntityFactory> _entityFactory;
 
-        public EntityFactory( IAccountRepository accountRepository, IWebsiteRepository websiteRepository, Lazy<IEwhMapper> ewhMapper, Lazy<IWebsiteManager> websiteManager)
+        public EntityFactory(IAccountRepository accountRepository, IWebsiteRepository websiteRepository, Lazy<IEwhMapper> ewhMapper, Lazy<IWebsiteManager> websiteManager, Lazy<IEntityFactory> entityFactory)
         {
             _accountRepository = accountRepository;
             _websiteRepository = websiteRepository;
             _websiteManager = websiteManager;
             _ewhMapper = ewhMapper;
+            _entityFactory = entityFactory;
         }
 
         public EwhAccount GetAccount(Account account)
@@ -53,12 +55,12 @@ namespace ew.application.Managers
 
         public EwhWebsite GetWebsite(string id)
         {
-            return new EwhWebsite(id, _websiteRepository, _accountRepository, _ewhMapper);
+            return new EwhWebsite(id, _websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
         }
 
         public EwhWebsite GetWebsite(Website website)
         {
-            return new EwhWebsite(website, _websiteRepository, _accountRepository, _ewhMapper);
+            return new EwhWebsite(website, _websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
         }
 
         public EwhAccount InitAccount()
@@ -78,7 +80,7 @@ namespace ew.application.Managers
 
         public EwhWebsite InitWebsite()
         {
-            return new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper);
+            return new EwhWebsite(_websiteRepository, _accountRepository, _ewhMapper, _entityFactory);
         }
     }
 }
