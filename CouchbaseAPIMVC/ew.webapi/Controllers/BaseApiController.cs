@@ -9,10 +9,12 @@ using System.Web.Http.Results;
 using ew.application.Entities;
 using System.Web.Http.Cors;
 using ew.common.Entities;
+using ew.webapi.Filters;
 
 namespace ew.webapi.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [ValidateFilter]
     public class BaseApiController : ApiController
     {
         protected StatusCodeResult NoContent()
