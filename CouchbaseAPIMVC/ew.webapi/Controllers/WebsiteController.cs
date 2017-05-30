@@ -82,9 +82,30 @@ namespace ew.webapi.Controllers
         [Route("")]
         public IHttpActionResult CreateWebsite(CreateWebsiteDto dto)
         {
+            if (dto.EnableAutoConfirm) return CreateWebsiteAndConfirm(dto);
             if (ModelState.IsValid)
             {
                 if (_websiteManager.CreateWebsite(dto))
+                {
+                    return Ok(new WebsiteInfoDto(_websiteManager.EwhWebsiteAdded));
+                }
+                return ServerError(_websiteManager as EwhEntityBase);
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Tạo mới website và tự động confirm
+        /// </summary>
+        /// <param name="dto">AddNewWebsite model</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AddAndConfirm")]
+        public IHttpActionResult CreateWebsiteAndConfirm(CreateWebsiteDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_websiteManager.CreateWebsiteAndConfirm(dto))
                 {
                     return Ok(new WebsiteInfoDto(_websiteManager.EwhWebsiteAdded));
                 }
