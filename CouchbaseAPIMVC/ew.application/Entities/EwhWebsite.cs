@@ -318,6 +318,23 @@ namespace ew.application.Entities
             return false;
         }
 
+        public bool SetDomain(string domain)
+        {
+            if (!IsExits()) return false;
+            domain = domain.ToLower().Trim();
+            if(string.IsNullOrEmpty(domain) || domain.Contains("://") || domain.StartsWith("*"))
+            {
+                this.EwhStatus = GlobalStatus.Invalid;
+                return false;
+            }
+            if(_websiteRepository.FindAll().Any(x=>x.Url==domain && x.Id != this.WebsiteId))
+            {
+                this.EwhStatus = GlobalStatus.AlreadyExists;
+                return false;
+            }
+            this.Url = domain;
+            return Save();
+        }
         public bool HasOwner()
         {
             if (Owner == null)

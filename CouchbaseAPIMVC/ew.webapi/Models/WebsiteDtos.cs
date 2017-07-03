@@ -2,6 +2,7 @@
 using ew.core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -86,6 +87,10 @@ namespace ew.webapi.Models
         }
     }
 
-    
+    public class SetDomainWebsiteDto
+    {
+        [Required]
+        public string Domain { get; set; }
+    }
     #endregion
 }

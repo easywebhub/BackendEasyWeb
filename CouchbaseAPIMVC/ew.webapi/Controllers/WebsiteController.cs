@@ -21,7 +21,7 @@ using System.Web.Http;
 
 namespace ew.webapi.Controllers
 {
-    
+
     /// <summary>
     /// Website
     /// </summary>
@@ -148,7 +148,7 @@ namespace ew.webapi.Controllers
             if (ModelState.IsValid)
             {
                 var website = _websiteManager.GetEwhWebsite(dto.WebsiteId);
-                if (website!=null && website.IsExits())
+                if (website != null && website.IsExits())
                 {
                     if (_websiteManager.UpdateWebsite(dto.ToEntity(website)))
                     {
@@ -170,7 +170,7 @@ namespace ew.webapi.Controllers
         public IHttpActionResult SyncData(string websiteId)
         {
             var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
-            if(ewhWebsite!=null && ewhWebsite.IsExits())
+            if (ewhWebsite != null && ewhWebsite.IsExits())
             {
                 //ewhWebsite.SelfSync();
                 MethodASync();
@@ -214,16 +214,16 @@ namespace ew.webapi.Controllers
                         gitRepository = githubManager.RepositoryAdded;
                         ewhWebsite.Git = githubManager.RepositoryAdded.CloneUrl;
                         ewhWebsite.Save();
-                    }else
+                    } else
                     {
                         EwhLogger.Common.Debug(string.Format("Create Repository Failed: {0} - {1}", ewhWebsite.RepositoryName, ewhWebsite.DisplayName));
                         return NoOK("Can not create github repository");
                     }
-                }else
+                } else
                 {
                     gitRepository = githubManager.GetRepository(repoName: ewhWebsite.RepositoryName).Result;
                 }
-                
+
                 if (string.IsNullOrEmpty(ewhWebsite.Source))
                 {
                     ewhWebsite.InitGogSource();
@@ -242,7 +242,7 @@ namespace ew.webapi.Controllers
 
                     ewhGogsSource.CreateWebHook(new EwhSource.CreateWebHookDto(ewhAccountAsOwner.UserName, ewhWebsite.RepositoryName, ew.config.ProductionServer.WebHookUrl, ew.config.ProductionServer.SecretKey));
                 }
-                
+
                 // create sub domain
                 var websiteDomain = string.Empty;
                 var subDomainName = string.Format("{0}-{1}.{2}", ewhAccountAsOwner.UserName, ewhWebsite.Name, ew.config.CloudflareInfo.EwhDomain).ToLower();
@@ -271,7 +271,7 @@ namespace ew.webapi.Controllers
                         args = new List<string>(),
                         then = new List<git_hook_listener.Models.RepoCommand>()
                     };
-                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", gitUrlIncludePass }, options = new git_hook_listener.Models.RepoCommandOption() { cwd= demoGitHook.path} });
+                    demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "remote", "add", "github", gitUrlIncludePass }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = demoGitHook.path } });
                     demoGitHook.then.Add(new git_hook_listener.Models.RepoCommand() { command = "git", args = new List<string>() { "push", "--force", "github", "HEAD:gh-pages" }, options = new git_hook_listener.Models.RepoCommandOption() { cwd = demoGitHook.path } });
 
                     if (ewhGitHookListener.CreateGitHookListernerConfig(demoGitHook))
@@ -300,7 +300,7 @@ namespace ew.webapi.Controllers
             return BadRequest();
         }
 
-       
+
 
         /// <summary>
         /// Lấy thông tin chi tiết 1 website
@@ -363,6 +363,25 @@ namespace ew.webapi.Controllers
         }
 
 
+        /// <summary>
+        /// Set domain cho website 
+        /// </summary>
+        /// <param name="websiteId"></param>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{websiteId}/domain")]
+        public IHttpActionResult SetDomain(string websiteId, SetDomainWebsiteDto dto)
+        {
+            var ewhWebsite = _websiteManager.GetEwhWebsite(websiteId);
+            if (ewhWebsite == null) return NotFound();
+            if (ewhWebsite.SetDomain(dto.Domain))
+            {
+                return Ok();
+            }
+            return NoOK(ewhWebsite);
+        }
+        
         /// <summary>
         /// Remove tài khoản ra khỏi danh sách được phép quản trị website
         /// </summary>

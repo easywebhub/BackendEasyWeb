@@ -80,15 +80,22 @@ namespace ew.webapi.Controllers
                     (HttpStatusCode)422,
                     new HttpError(statusCode)
                 )
-
             );
 
             x.Response.Headers.Add(EwHeaders.X_Status, statusCode);
             return x;
         }
 
-
-
+        protected IHttpActionResult NoOK(IEwhEntityBase ewhEntityBase)
+        {
+            var x = NoOK(ewhEntityBase.EwhStatus.ToString()) as ResponseMessageResult;
+            if (ewhEntityBase != null)
+            {
+                x.Response.Headers.Add(EwHeaders.X_Error_Message, ewhEntityBase.EwhErrorMessage ?? "");
+                //x.Response.Headers.Add(EwHeaders.X_Status, ewhEntityBase.EwhStatus.ToString());
+            }
+            return x;
+        }
 
     }
 }
