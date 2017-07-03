@@ -91,15 +91,10 @@
     <Compile Include="Enums\HostingFees.cs" />
     <Compile Include="Enums\WebsiteTypes.cs" />
     <Compile Include="IPagination.cs" />
-    <Compile Include="Messages\EmailAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\IMessageTemplateRepository.cs" />
-    <Compile Include="Repositories\IEmailAccountRepository.cs" />
     <Compile Include="Repositories\IWebsiteRepository.cs" />
     <Compile Include="Repositories\IAccountRepository.cs" />
     <Compile Include="Repositories\IGenericRepository.cs" />
-    <Compile Include="Messages\QueuedMailMessage.cs" />
-    <Compile Include="Messages\MessageTemplates.cs" />
     <Compile Include="Users\Account.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Website.cs" />
