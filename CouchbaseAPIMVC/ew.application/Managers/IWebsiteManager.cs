@@ -13,9 +13,11 @@ namespace ew.application
         bool CreateWebsite(CreateWebsiteDto dto);
         bool CreateWebsiteAndConfirm(CreateWebsiteDto dto);
         bool CreateWebsite(EwhWebsite dto);
+        bool ConfirmWebsite(string websiteId) //bao
         bool UpdateWebsite(EwhWebsite website);
         EwhWebsite GetEwhWebsite(string id);
         List<EwhWebsite> GetListEwhWebsite();
         List<EwhWebsite> GetListEwhWebsite(List<string> WebsiteIds);
+        
     }
 }
